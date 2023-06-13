@@ -37,6 +37,9 @@
 #ifdef CONFIG_TEGRA_NEXT2_HWPM
 #include <tegra_hwpm_next2_init.h>
 #endif
+#ifdef CONFIG_TEGRA_NEXT3_HWPM
+#include <tegra_hwpm_next3_init.h>
+#endif
 
 static int tegra_hwpm_init_chip_ip_structures(struct tegra_soc_hwpm *hwpm,
 	u32 chip_id, u32 chip_id_rev)
@@ -63,10 +66,25 @@ static int tegra_hwpm_init_chip_ip_structures(struct tegra_soc_hwpm *hwpm,
 		}
 		break;
 	default:
-#ifdef CONFIG_TEGRA_NEXT2_HWPM
+#if defined(CONFIG_TEGRA_NEXT2_HWPM)
 		err = tegra_hwpm_next2_init_chip_ip_structures(
 			hwpm, chip_id, chip_id_rev);
-#else
+		if (err == 0) {
+			/* Execution is for NEXT2 chip */
+			break;
+		}
+#endif
+
+#if defined(CONFIG_TEGRA_NEXT3_HWPM)
+		err = tegra_hwpm_next3_init_chip_ip_structures(
+			hwpm, chip_id, chip_id_rev);
+		if (err == 0) {
+			/* Execution is for NEXT3 chip */
+			break;
+		}
+#endif
+
+#if !defined(CONFIG_TEGRA_NEXT2_HWPM) && !defined(CONFIG_TEGRA_NEXT3_HWPM)
 		tegra_hwpm_err(hwpm, "Chip 0x%x not supported", chip_id);
 #endif
 		break;

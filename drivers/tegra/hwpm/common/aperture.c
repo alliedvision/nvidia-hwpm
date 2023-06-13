@@ -320,10 +320,24 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			}
 		}
 
-		/* Validate perfmux availability by reading 1st alist offset */
-		ret = tegra_hwpm_regops_readl(hwpm, ip_inst, element,
-			tegra_hwpm_safe_add_u64(element->start_abs_pa,
-				element->alist[0U].reg_offset), &reg_val);
+		if (hwpm->fake_registers_enabled) {
+			/*
+			 * In this case, HWPM will allocate memory to simulate
+			 * IP perfmux address space. Hence, the perfmux will
+			 * always be available.
+			 * Indicate this by setting ret = 0.
+			 */
+			ret = 0;
+		} else {
+			/*
+			 * Validate perfmux availability by reading 1st alist offset
+			 */
+			ret = tegra_hwpm_regops_readl(hwpm, ip_inst, element,
+				tegra_hwpm_safe_add_u64(element->start_abs_pa,
+					element->alist[0U].reg_offset),
+				&reg_val);
+		}
+
 		if (ret != 0) {
 			/*
 			 * If an IP element is unavailable, perfmux register

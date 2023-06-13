@@ -52,6 +52,11 @@ int tegra_hwpm_fake_readl_impl(struct tegra_soc_hwpm *hwpm,
 		return -ENODEV;
 	}
 
+	if (aperture->fake_registers == NULL) {
+		tegra_hwpm_err(hwpm, "Expected fake registers to be populated");
+		return -ENODEV;
+	}
+
 	*val = aperture->fake_registers[offset];
 	return 0;
 }
@@ -61,6 +66,11 @@ int tegra_hwpm_fake_writel_impl(struct tegra_soc_hwpm *hwpm,
 {
 	if (!hwpm->fake_registers_enabled) {
 		tegra_hwpm_err(hwpm, "Fake registers are disabled!");
+		return -ENODEV;
+	}
+
+	if (aperture->fake_registers == NULL) {
+		tegra_hwpm_err(hwpm, "Expected fake registers to be populated");
 		return -ENODEV;
 	}
 

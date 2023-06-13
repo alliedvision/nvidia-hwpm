@@ -46,6 +46,9 @@ static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 #ifdef CONFIG_TEGRA_NEXT2_HWPM
 #include <os/linux/next2_driver.h>
 #endif
+#ifdef CONFIG_TEGRA_NEXT3_HWPM
+#include <os/linux/next3_driver.h>
+#endif
 	{ },
 };
 MODULE_DEVICE_TABLE(of, tegra_soc_hwpm_of_match);
