@@ -6,6 +6,7 @@
 GCOV_PROFILE := y
 
 ifeq ($(origin srctree.hwpm), undefined)
+# Set HWPM source repo path
 srctree.hwpm := $(abspath $(shell dirname $(lastword $(MAKEFILE_LIST))))/../../..
 endif
 
@@ -15,10 +16,10 @@ ccflags-y += -DCONFIG_TEGRA_SOC_HWPM
 CONFIG_TEGRA_T234_HWPM := y
 ccflags-y += -DCONFIG_TEGRA_T234_HWPM
 
-NVHWPM_OBJ = m
-
 # For OOT builds, set required config flags
 ifeq ($(CONFIG_TEGRA_OOT_MODULE),m)
+NVHWPM_OBJ = m
+
 CONFIG_TEGRA_HWPM_OOT := y
 ccflags-y += -DCONFIG_TEGRA_HWPM_OOT
 
@@ -30,7 +31,8 @@ LINUXINCLUDE += -I$(srctree.hwpm)/drivers/tegra/hwpm/include
 LINUXINCLUDE += -I$(srctree.hwpm)/drivers/tegra/hwpm
 
 else
-ccflags-y += -I$(srctree.nvidia)/include
+NVHWPM_OBJ = y
+
 ccflags-y += -I$(srctree.hwpm)/include
 ccflags-y += -I$(srctree.hwpm)/drivers/tegra/hwpm/include
 ccflags-y += -I$(srctree.hwpm)/drivers/tegra/hwpm
@@ -42,7 +44,7 @@ nvhwpm-y := tegra_hwpm_mock.o
 
 else
 # Add required objects to nvhwpm object variable
-include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.sources
+include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.hwpm.sources
 
 endif
 

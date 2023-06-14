@@ -1,6 +1,6 @@
 config TEGRA_SOC_HWPM
-	tristate "Tegra SOC HWPM driver"
-	default m
+	bool "Tegra SOC HWPM driver"
+	default y
 	help
 	  The SOC HWPM driver enables performance monitoring for various Tegra
 	  IPs.
