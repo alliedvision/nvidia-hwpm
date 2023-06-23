@@ -232,7 +232,7 @@ int tegra_hwpm_obtain_resource_info(struct tegra_soc_hwpm *hwpm,
 }
 
 static int tegra_hwpm_record_ip_ops(struct tegra_soc_hwpm *hwpm,
-	struct tegra_soc_hwpm_ip_ops *soc_ip_ops)
+	struct tegra_soc_hwpm_ip_ops *soc_ip_ops, bool available)
 {
 	struct tegra_hwpm_ip_ops ip_ops;
 
@@ -252,7 +252,7 @@ static int tegra_hwpm_record_ip_ops(struct tegra_soc_hwpm *hwpm,
 		tegra_hwpm_translate_soc_hwpm_resource(hwpm,
 			(enum tegra_soc_hwpm_resource)soc_ip_ops->resource_enum),
 		soc_ip_ops->ip_base_address,
-		&ip_ops, true);
+		&ip_ops, available);
 }
 
 int tegra_hwpm_complete_ip_register_impl(struct tegra_soc_hwpm *hwpm)
@@ -263,7 +263,7 @@ int tegra_hwpm_complete_ip_register_impl(struct tegra_soc_hwpm *hwpm)
 	tegra_hwpm_fn(hwpm, " ");
 
 	while (node != NULL) {
-		ret = tegra_hwpm_record_ip_ops(hwpm, &node->ip_ops);
+		ret = tegra_hwpm_record_ip_ops(hwpm, &node->ip_ops, REGISTER_IP);
 		if (ret != 0) {
 			tegra_hwpm_err(hwpm,
 				"Resource enum %d extract IP ops failed",
@@ -360,7 +360,7 @@ void tegra_soc_hwpm_ip_register(struct tegra_soc_hwpm_ip_ops *hwpm_ip_ops)
 		tegra_hwpm_dbg(hwpm, hwpm_info | hwpm_dbg_ip_register,
 		"Register IP 0x%llx", hwpm_ip_ops->ip_base_address);
 
-		ret = tegra_hwpm_record_ip_ops(hwpm, hwpm_ip_ops);
+		ret = tegra_hwpm_record_ip_ops(hwpm, hwpm_ip_ops, REGISTER_IP);
 		if (ret < 0) {
 			tegra_hwpm_err(hwpm, "Failed to set IP ops for IP %d",
 				hwpm_ip_ops->resource_enum);
@@ -392,7 +392,7 @@ void tegra_soc_hwpm_ip_unregister(struct tegra_soc_hwpm_ip_ops *hwpm_ip_ops)
 		tegra_hwpm_dbg(hwpm, hwpm_info | hwpm_dbg_ip_register,
 		"Unregister IP 0x%llx", hwpm_ip_ops->ip_base_address);
 
-		ret = tegra_hwpm_record_ip_ops(hwpm, hwpm_ip_ops);
+		ret = tegra_hwpm_record_ip_ops(hwpm, hwpm_ip_ops, UNREGISTER_IP);
 		if (ret < 0) {
 			tegra_hwpm_err(hwpm, "Failed to reset IP ops for IP %d",
 				hwpm_ip_ops->resource_enum);
