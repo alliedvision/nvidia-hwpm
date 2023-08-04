@@ -37,12 +37,13 @@ ccflags-y += -I$(srctree.hwpm)/drivers/tegra/hwpm
 
 endif
 
-ifeq ($(NV_BUILD_CONFIGURATION_IS_SAFETY),1)
-obj-${NVHWPM_OBJ} += tegra_hwpm_mock.o
+ifeq ($(or $(NV_BUILD_CONFIGURATION_IS_SAFETY),$(CONFIG_TEGRA_LINUX_PROD)),1)
+nvhwpm-y := tegra_hwpm_mock.o
+
 else
 # Add required objects to nvhwpm object variable
 include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.sources
 
-obj-${NVHWPM_OBJ} += nvhwpm.o
-
 endif
+
+obj-${NVHWPM_OBJ} += nvhwpm.o
