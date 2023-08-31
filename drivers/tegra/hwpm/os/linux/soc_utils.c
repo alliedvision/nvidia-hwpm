@@ -31,9 +31,6 @@
 #if defined(CONFIG_TEGRA_NEXT1_HWPM)
 #include <os/linux/next1_soc_utils.h>
 #endif
-#if defined(CONFIG_TEGRA_NEXT2_HWPM)
-#include <os/linux/next2_soc_utils.h>
-#endif
 #if defined(CONFIG_TEGRA_NEXT3_HWPM)
 #include <os/linux/next3_soc_utils.h>
 #endif
@@ -51,11 +48,19 @@ static const struct hwpm_soc_chip_info t234_soc_chip_info = {
 	.platform = PLAT_SI,
 };
 
+#if !defined(CONFIG_ACPI)
+const struct hwpm_soc_chip_info th500_chip_info = {
+	.chip_id = 0x50,
+	.chip_id_rev = 0x0,
+	.platform = PLAT_SI,
+};
+#endif
+
 /* This function should be invoked only once before retrieving soc chip info */
 int tegra_hwpm_init_chip_info(struct tegra_hwpm_os_linux *hwpm_linux)
 {
-	struct device *dev = hwpm_linux->dev;
 #if defined(CONFIG_ACPI)
+	struct device *dev = hwpm_linux->dev;
 	const struct acpi_device_id *id;
 #endif
 
@@ -82,13 +87,17 @@ int tegra_hwpm_init_chip_info(struct tegra_hwpm_os_linux *hwpm_linux)
 
 		goto complete;
 	}
-#if defined(CONFIG_TEGRA_NEXT1_HWPM)
-	if (tegra_hwpm_next1_get_chip_compatible(&chip_info) == 0) {
+#if !defined(CONFIG_ACPI)
+	if (of_machine_is_compatible("nvidia,tegra500")) {
+		chip_info.chip_id = th500_chip_info.chip_id;
+		chip_info.chip_id_rev = th500_chip_info.chip_id_rev;
+		chip_info.platform = th500_chip_info.platform;
+
 		goto complete;
 	}
-#endif
-#if defined(CONFIG_TEGRA_NEXT2_HWPM)
-	if (tegra_hwpm_next2_get_chip_compatible(&chip_info) == 0) {
+#endif /* CONFIG_ACPI */
+#if defined(CONFIG_TEGRA_NEXT1_HWPM)
+	if (tegra_hwpm_next1_get_chip_compatible(&chip_info) == 0) {
 		goto complete;
 	}
 #endif

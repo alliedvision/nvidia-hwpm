@@ -17,6 +17,8 @@
 #ifndef TEGRA_HWPM_OS_LINUX_LOG_H
 #define TEGRA_HWPM_OS_LINUX_LOG_H
 
+#include <linux/types.h>
+
 struct tegra_soc_hwpm;
 
 void tegra_hwpm_err_impl(struct tegra_soc_hwpm *hwpm,

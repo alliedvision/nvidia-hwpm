@@ -1,0 +1,46 @@
+#
+# Tegra SOC HWPM TH500 sources
+#
+
+ifeq ($(CONFIG_TEGRA_TH500_HWPM),y)
+nvhwpm-th500-soc-objs += hal/th500/soc/th500_soc_aperture.o
+nvhwpm-th500-soc-objs += hal/th500/soc/th500_soc_mem_mgmt.o
+nvhwpm-th500-soc-objs += hal/th500/soc/th500_soc_regops_allowlist.o
+nvhwpm-th500-soc-objs += hal/th500/soc/th500_soc_resource.o
+
+#
+# Control IP config
+# To disable an IP config in compilation, add condition for both
+# IP config flag and IP specific .o file.
+#
+
+#
+# RTR/PMA are HWPM IPs and can be enabled by default
+#
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/rtr/th500_rtr.o
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/pma/th500_pma.o
+
+#
+# One of the HWPM components is a perfmux. Perfmux registers belong to the
+# IP domain. There are 2 ways of accessing perfmux registers
+# - option 1: implement HWPM <-> IP interface. IP drivers register with HWPM
+#             driver and share required function pointers
+# - option 2: map perfmux register address in HWPM driver
+# Option 1 is a preferred solution. However, IP drivers have yet to
+# implement the interface. Such IPs can be force enabled from HWPM driver
+# perspective. However, forcing an IP will enable all instances of the IP.
+# Hence, IP force enable should only be done on full chip config.
+# Note as power management API is not available, unpowergating the IP via
+# command line is required.
+#
+# Enable CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE as required
+#
+ccflags-y += -DCONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE
+
+ccflags-y += -DCONFIG_TH500_HWPM_IP_MSS_CHANNEL
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/mss_channel/th500_mss_channel.o
+
+ccflags-y += -DCONFIG_TH500_HWPM_IP_C2C
+nvhwpm-th500-objs += hal/th500/soc/ip/c2c/th500_c2c.o
+
+endif

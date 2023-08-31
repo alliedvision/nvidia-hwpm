@@ -1,0 +1,19 @@
+#
+# Tegra SOC HWPM TH500 sources
+#
+
+ifeq ($(CONFIG_TEGRA_TH500_HWPM),y)
+nvhwpm-th500-objs += hal/th500/th500_interface.o
+nvhwpm-th500-objs += hal/th500/th500_ip.o
+
+# Include TH500 SOC files
+include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.th500.soc.sources
+nvhwpm-th500-objs += $(nvhwpm-th500-soc-objs)
+
+# Include TH500 CCPLEX files
+ifneq ($(wildcard $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.th500.ccplex.sources),)
+$(info "--------------Makefile.th500.ccplex.sources available")
+include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.th500.ccplex.sources
+nvhwpm-th500-objs += $(nvhwpm-th500-ccplex-objs)
+endif
+endif

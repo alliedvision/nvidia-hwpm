@@ -32,19 +32,17 @@
 #include <tegra_hwpm_clk_rst.h>
 #include <os/linux/debugfs.h>
 #include <os/linux/driver.h>
-#if defined(CONFIG_TEGRA_NEXT2_HWPM)
-#include <os/linux/next2_hwpm_acpi.h>
-#endif
+#include <os/linux/acpi.h>
 
 static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 	{
 		.compatible     = "nvidia,t234-soc-hwpm",
 	},
+	{
+		.compatible     = "nvidia,th500-soc-hwpm",
+	},
 #ifdef CONFIG_TEGRA_NEXT1_HWPM
 #include <os/linux/next1_driver.h>
-#endif
-#ifdef CONFIG_TEGRA_NEXT2_HWPM
-#include <os/linux/next2_driver.h>
 #endif
 #ifdef CONFIG_TEGRA_NEXT3_HWPM
 #include <os/linux/next3_driver.h>
@@ -262,7 +260,7 @@ static struct platform_driver tegra_soc_hwpm_pdrv = {
 	.driver		= {
 		.name	= TEGRA_SOC_HWPM_MODULE_NAME,
 		.of_match_table = of_match_ptr(tegra_soc_hwpm_of_match),
-#if defined(CONFIG_TEGRA_NEXT2_HWPM) && defined(CONFIG_ACPI)
+#if defined(CONFIG_ACPI)
 		.acpi_match_table = ACPI_PTR(tegra_hwpm_acpi_match),
 #endif
 	},
