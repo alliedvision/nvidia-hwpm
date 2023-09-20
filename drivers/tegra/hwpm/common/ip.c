@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -585,7 +585,7 @@ static bool tegra_hwpm_addr_in_all_ip(struct tegra_soc_hwpm *hwpm,
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	for (idx = 0U; idx < active_chip->get_ip_max_idx(hwpm); idx++) {
+	for (idx = 0U; idx < active_chip->get_ip_max_idx(); idx++) {
 		struct hwpm_ip *chip_ip = active_chip->chip_ips[idx];
 
 		if (chip_ip == NULL) {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -46,6 +46,7 @@ static struct tegra_soc_hwpm_chip t234_chip_info = {
 
 	.get_rtr_int_idx = t234_get_rtr_int_idx,
 	.get_ip_max_idx = t234_get_ip_max_idx,
+	.get_rtr_pma_perfmux_ptr = t234_hwpm_get_rtr_pma_perfmux_ptr,
 
 	.extract_ip_ops = t234_hwpm_extract_ip_ops,
 	.force_enable_ips = t234_hwpm_force_enable_ips,
@@ -307,12 +308,12 @@ bool t234_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 	return (config_ip != TEGRA_HWPM_IP_INACTIVE);
 }
 
-u32 t234_get_rtr_int_idx(struct tegra_soc_hwpm *hwpm)
+u32 t234_get_rtr_int_idx(void)
 {
 	return T234_HWPM_IP_RTR;
 }
 
-u32 t234_get_ip_max_idx(struct tegra_soc_hwpm *hwpm)
+u32 t234_get_ip_max_idx(void)
 {
 	return T234_HWPM_IP_MAX;
 }

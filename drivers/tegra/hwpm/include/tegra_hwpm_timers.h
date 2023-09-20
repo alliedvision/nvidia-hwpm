@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,6 +25,7 @@
 #define TEGRA_HWPM_TIMERS_H
 
 #include <tegra_hwpm_types.h>
+#include <tegra_hwpm_log.h>
 
 #ifdef __KERNEL__
 #include <os/linux/timers.h>
@@ -38,5 +39,22 @@
 	tegra_hwpm_timeout_expired_impl(hwpm, timeout)
 #define tegra_hwpm_msleep(msecs)	\
 	tegra_hwpm_msleep_impl(msecs)
+
+#define tegra_hwpm_timeout_print(hwpm, retries, sleep_ms,		\
+	aperture, reg, reg_val, check, fmt, arg...) ({			\
+	int err = 0;							\
+	struct tegra_hwpm_timeout timeout;				\
+									\
+	err = tegra_hwpm_timeout_init(hwpm, &timeout, retries);		\
+	hwpm_assert_print(hwpm, err == 0, return err,			\
+		"hwpm timeout init failed");				\
+									\
+	do {								\
+		tegra_hwpm_readl(hwpm, aperture, reg, reg_val);		\
+		tegra_hwpm_msleep(sleep_msecs);				\
+	} while ((check) && (tegra_hwpm_timeout_expired(hwpm, &timeout) == 0));	\
+									\
+	hwpm_assert_print(hwpm, !(check), return -ETIMEDOUT, fmt, ##arg);	\
+})
 
 #endif /* TEGRA_HWPM_TIMERS_H */

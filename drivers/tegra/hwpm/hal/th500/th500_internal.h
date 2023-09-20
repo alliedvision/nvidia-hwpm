@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MIT */
-/* Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -52,7 +52,7 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 	u32 res_index, u32 *config_ip_index);
 
-u32 th500_get_rtr_int_idx(struct tegra_soc_hwpm *hwpm);
-u32 th500_get_ip_max_idx(struct tegra_soc_hwpm *hwpm);
+u32 th500_get_rtr_int_idx(void);
+u32 th500_get_ip_max_idx(void);
 
 #endif /* TH500_HWPM_INTERNAL_H */

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -360,7 +360,8 @@ fail:
 int tegra_hwpm_update_mem_bytes(struct tegra_soc_hwpm *hwpm,
 	struct tegra_soc_hwpm_update_get_put *update_get_put)
 {
-	int ret;
+	int ret = 0;
+	u32 overflowed_status = 0U;
 
 	tegra_hwpm_fn(hwpm, " ");
 
@@ -382,7 +383,7 @@ int tegra_hwpm_update_mem_bytes(struct tegra_soc_hwpm *hwpm,
 		update_get_put->mem_bump);
 	if (ret != 0) {
 		tegra_hwpm_err(hwpm, "Failed to update mem_bytes get ptr");
-		return -EINVAL;
+		return ret;
 	}
 
 	/* Stream MEM_BYTES value to MEM_BYTES buffer */
@@ -396,16 +397,25 @@ int tegra_hwpm_update_mem_bytes(struct tegra_soc_hwpm *hwpm,
 
 	/* Read HW put pointer */
 	if (update_get_put->b_read_mem_head) {
-		update_get_put->mem_head =
-			hwpm->active_chip->get_mem_bytes_put_ptr(hwpm);
+		ret = hwpm->active_chip->get_mem_bytes_put_ptr(hwpm,
+			&update_get_put->mem_head);
+		if (ret != 0) {
+			tegra_hwpm_err(hwpm, "Failed to get mem_bytes put ptr");
+			return ret;
+		}
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_update_get_put,
 			"MEM_HEAD = 0x%llx", update_get_put->mem_head);
 	}
 
 	/* Check overflow error status */
 	if (update_get_put->b_check_overflow) {
-		update_get_put->b_overflowed =
-			(u8) hwpm->active_chip->membuf_overflow_status(hwpm);
+		ret = hwpm->active_chip->membuf_overflow_status(hwpm,
+			&overflowed_status);
+		if (ret != 0) {
+			tegra_hwpm_err(hwpm, "Failed to get overflow status");
+			return ret;
+		}
+		update_get_put->b_overflowed = (u8) overflowed_status;
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_update_get_put, "OVERFLOWED = %u",
 			update_get_put->b_overflowed);
 	}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -17,7 +17,9 @@
 #ifndef TEGRA_HWPM_OS_LINUX_MEM_MGMT_UTILS_H
 #define TEGRA_HWPM_OS_LINUX_MEM_MGMT_UTILS_H
 
+#ifdef CONFIG_TEGRA_HWPM_OOT
 #include <nvidia/conftest.h>
+#endif
 
 #include <linux/types.h>
 #include <linux/version.h>

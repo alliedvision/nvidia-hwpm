@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -275,6 +275,11 @@ bool tegra_hwpm_validate_primary_hals(struct tegra_soc_hwpm *hwpm)
 
 	if (hwpm->active_chip->get_ip_max_idx == NULL) {
 		tegra_hwpm_err(hwpm, "get_ip_max_idx HAL uninitialized");
+		return false;
+	}
+
+	if (hwpm->active_chip->get_rtr_pma_perfmux_ptr == NULL) {
+		tegra_hwpm_err(hwpm, "get_rtr_pma_perfmux_ptr HAL uninitialized");
 		return false;
 	}
 

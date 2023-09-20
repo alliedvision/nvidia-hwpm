@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-/* Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -343,7 +343,7 @@ int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm)
 		return 0;
 	}
 
-	for (idx = 0U; idx < active_chip->get_ip_max_idx(hwpm); idx++) {
+	for (idx = 0U; idx < active_chip->get_ip_max_idx(); idx++) {
 		chip_ip = active_chip->chip_ips[idx];
 
 		if ((hwpm_global_disable !=

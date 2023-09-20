@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -92,5 +92,13 @@ enum tegra_soc_hwpm_log_type {
 #define tegra_hwpm_fn(hwpm, fmt, arg...)                                \
         tegra_hwpm_dbg_impl(hwpm, hwpm_fn, fmt, ##arg)
 #endif
+
+#define hwpm_assert_print(hwpm, cond, bail_out_code, fmt, arg...)	\
+	do {								\
+		if (!(cond)) {						\
+			tegra_hwpm_err(hwpm, fmt, ##arg);		\
+			bail_out_code;					\
+		}							\
+	} while (0)
 
 #endif /* TEGRA_HWPM_LOG_H */

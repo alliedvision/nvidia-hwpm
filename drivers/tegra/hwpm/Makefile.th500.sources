@@ -12,7 +12,6 @@ nvhwpm-th500-objs += $(nvhwpm-th500-soc-objs)
 
 # Include TH500 CCPLEX files
 ifneq ($(wildcard $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.th500.ccplex.sources),)
-$(info "--------------Makefile.th500.ccplex.sources available")
 include $(srctree.hwpm)/drivers/tegra/hwpm/Makefile.th500.ccplex.sources
 nvhwpm-th500-objs += $(nvhwpm-th500-ccplex-objs)
 endif

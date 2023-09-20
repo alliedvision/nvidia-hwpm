@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -190,7 +190,8 @@ static int hwpm_readl(struct tegra_soc_hwpm *hwpm,
 	} else {
 		if (aperture->dt_mmio == NULL) {
 			tegra_hwpm_err(hwpm,
-				"aperture is not iomapped as expected");
+				"aperture (0x%llx-0x%llx) not iomapped",
+				aperture->start_abs_pa, aperture->end_abs_pa);
 			return -ENODEV;
 		}
 

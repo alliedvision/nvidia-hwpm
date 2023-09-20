@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -44,10 +44,10 @@ int tegra_hwpm_reserve_rtr(struct tegra_soc_hwpm *hwpm)
 
 	err = tegra_hwpm_func_single_ip(hwpm, NULL,
 		TEGRA_HWPM_RESERVE_GIVEN_RESOURCE,
-		active_chip->get_rtr_int_idx(hwpm));
+		active_chip->get_rtr_int_idx());
 	if (err != 0) {
 		tegra_hwpm_err(hwpm, "failed to reserve IP %d",
-			active_chip->get_rtr_int_idx(hwpm));
+			active_chip->get_rtr_int_idx());
 		return err;
 	}
 	return err;
@@ -62,10 +62,10 @@ int tegra_hwpm_release_rtr(struct tegra_soc_hwpm *hwpm)
 
 	err = tegra_hwpm_func_single_ip(hwpm, NULL,
 		TEGRA_HWPM_RELEASE_ROUTER,
-		active_chip->get_rtr_int_idx(hwpm));
+		active_chip->get_rtr_int_idx());
 	if (err != 0) {
 		tegra_hwpm_err(hwpm, "failed to release IP %d",
-			active_chip->get_rtr_int_idx(hwpm));
+			active_chip->get_rtr_int_idx());
 		return err;
 	}
 	return err;

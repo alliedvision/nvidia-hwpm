@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,8 +34,9 @@
 #define T234_HWPM_IP_RTR_NUM_BROADCAST_PER_INST		0U
 
 #define T234_HWPM_IP_RTR_STATIC_RTR_INST		0U
+#define T234_HWPM_IP_RTR_STATIC_RTR_PERFMUX_INDEX	0U
 #define T234_HWPM_IP_RTR_STATIC_PMA_INST		1U
-#define T234_HWPM_IP_RTR_PERMUX_INDEX			0U
+#define T234_HWPM_IP_RTR_STATIC_PMA_PERFMUX_INDEX	0U
 
 extern struct hwpm_ip t234_hwpm_ip_rtr;
 

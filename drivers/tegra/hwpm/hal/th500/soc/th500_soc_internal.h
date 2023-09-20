@@ -34,6 +34,10 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm);
 int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm);
 
+int th500_hwpm_soc_get_rtr_pma_perfmux_ptr(struct tegra_soc_hwpm *hwpm,
+	struct hwpm_ip_aperture **rtr_perfmux_ptr,
+	struct hwpm_ip_aperture **pma_perfmux_ptr);
+
 int th500_hwpm_soc_init_prod_values(struct tegra_soc_hwpm *hwpm);
 int th500_hwpm_soc_disable_cg(struct tegra_soc_hwpm *hwpm);
 int th500_hwpm_soc_enable_cg(struct tegra_soc_hwpm *hwpm);
@@ -52,7 +56,9 @@ int th500_hwpm_soc_stream_mem_bytes(struct tegra_soc_hwpm *hwpm);
 int th500_hwpm_soc_disable_pma_streaming(struct tegra_soc_hwpm *hwpm);
 int th500_hwpm_soc_update_mem_bytes_get_ptr(struct tegra_soc_hwpm *hwpm,
 	u64 mem_bump);
-u64 th500_hwpm_soc_get_mem_bytes_put_ptr(struct tegra_soc_hwpm *hwpm);
-bool th500_hwpm_soc_membuf_overflow_status(struct tegra_soc_hwpm *hwpm);
+int th500_hwpm_soc_get_mem_bytes_put_ptr(struct tegra_soc_hwpm *hwpm,
+	u64 *mem_head_ptr);
+int th500_hwpm_soc_membuf_overflow_status(struct tegra_soc_hwpm *hwpm,
+	u32 *overflow_status);
 
 #endif /* TH500_HWPM_SOC_INTERNAL_H */

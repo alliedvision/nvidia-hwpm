@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -841,7 +841,7 @@ int tegra_hwpm_func_single_ip(struct tegra_soc_hwpm *hwpm,
 		}
 		break;
 	case TEGRA_HWPM_RELEASE_RESOURCES:
-		if (ip_idx == active_chip->get_rtr_int_idx(hwpm)) {
+		if (ip_idx == active_chip->get_rtr_int_idx()) {
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_release_resource,
 				"Router will be released later");
 			return 0;
@@ -933,7 +933,7 @@ int tegra_hwpm_func_all_ip(struct tegra_soc_hwpm *hwpm,
 		func_args->full_alist_idx = 0ULL;
 	}
 
-	for (ip_idx = 0U; ip_idx < active_chip->get_ip_max_idx(hwpm);
+	for (ip_idx = 0U; ip_idx < active_chip->get_ip_max_idx();
 		ip_idx++) {
 
 		err = tegra_hwpm_func_single_ip(

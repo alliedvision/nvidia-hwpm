@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -451,8 +451,11 @@ struct tegra_soc_hwpm_chip {
 	bool (*is_resource_active)(struct tegra_soc_hwpm *hwpm,
 	u32 res_enum, u32 *config_ip_index);
 
-	u32 (*get_rtr_int_idx)(struct tegra_soc_hwpm *hwpm);
-	u32 (*get_ip_max_idx)(struct tegra_soc_hwpm *hwpm);
+	int (*get_rtr_pma_perfmux_ptr)(struct tegra_soc_hwpm *hwpm,
+		struct hwpm_ip_aperture **rtr_perfmux_ptr,
+		struct hwpm_ip_aperture **pma_perfmux_ptr);
+	u32 (*get_rtr_int_idx)(void);
+	u32 (*get_ip_max_idx)(void);
 
 	int (*extract_ip_ops)(struct tegra_soc_hwpm *hwpm,
 	u32 resource_enum, u64 base_address,
@@ -487,8 +490,10 @@ struct tegra_soc_hwpm_chip {
 	int (*disable_pma_streaming)(struct tegra_soc_hwpm *hwpm);
 	int (*update_mem_bytes_get_ptr)(struct tegra_soc_hwpm *hwpm,
 		u64 mem_bump);
-	u64 (*get_mem_bytes_put_ptr)(struct tegra_soc_hwpm *hwpm);
-	bool (*membuf_overflow_status)(struct tegra_soc_hwpm *hwpm);
+	int (*get_mem_bytes_put_ptr)(struct tegra_soc_hwpm *hwpm,
+		u64 *mem_head_ptr);
+	int (*membuf_overflow_status)(struct tegra_soc_hwpm *hwpm,
+		u32 *overflow_status);
 
 	size_t (*get_alist_buf_size)(struct tegra_soc_hwpm *hwpm);
 	int (*zero_alist_regs)(struct tegra_soc_hwpm *hwpm,

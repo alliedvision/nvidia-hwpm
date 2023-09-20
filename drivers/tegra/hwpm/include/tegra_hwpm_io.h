@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,7 +24,8 @@
 #ifndef TEGRA_HWPM_IO_H
 #define TEGRA_HWPM_IO_H
 
-#include "tegra_hwpm_types.h"
+#include <tegra_hwpm_types.h>
+#include <tegra_hwpm_log.h>
 
 /**
  * Sets a particular field value in input data.
@@ -76,11 +77,17 @@ static inline u32 get_field(u32 input_data, u32 mask)
 #define tegra_hwpm_fake_writel(hwpm, aperture, addr, val)	\
 	tegra_hwpm_fake_writel_impl(hwpm, aperture, addr, val)
 
-#define tegra_hwpm_readl(hwpm, aperture, addr, val)	\
-	tegra_hwpm_readl_impl(hwpm, aperture, addr, val)
+#define tegra_hwpm_readl(hwpm, aperture, addr, val) ({			\
+	int err = tegra_hwpm_readl_impl(hwpm, aperture, addr, val);	\
+	hwpm_assert_print(hwpm, err == 0, return err,			\
+		"hwpm read addr 0x%lx failed", (u64)addr);			\
+	})
 
-#define tegra_hwpm_writel(hwpm, aperture, addr, val)	\
-	tegra_hwpm_writel_impl(hwpm, aperture, addr, val)
+#define tegra_hwpm_writel(hwpm, aperture, addr, val)({			\
+	int err = tegra_hwpm_writel_impl(hwpm, aperture, addr, val);	\
+	hwpm_assert_print(hwpm, err == 0, return err,			\
+		"hwpm write addr 0x%lx failed", (u64)addr); 		\
+	})
 
 #define tegra_hwpm_regops_readl(hwpm, ip_inst, aperture, addr, val)	\
 	tegra_hwpm_regops_readl_impl(hwpm, ip_inst, aperture, addr, val)

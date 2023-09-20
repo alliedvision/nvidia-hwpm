@@ -32,41 +32,23 @@
 int th500_hwpm_soc_disable_mem_mgmt(struct tegra_soc_hwpm *hwpm)
 {
 	int err = 0;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outbase_r(0), 0);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outbaseupper_r(0), 0);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outsize_r(0), 0);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_mem_bytes_addr_r(0), 0);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
@@ -78,65 +60,44 @@ int th500_hwpm_soc_enable_mem_mgmt(struct tegra_soc_hwpm *hwpm)
 	u32 outbase_hi = 0;
 	u32 outsize = 0;
 	u32 mem_bytes_addr = 0;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
 	struct tegra_hwpm_mem_mgmt *mem_mgmt = hwpm->mem_mgmt;
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
 	outbase_lo = mem_mgmt->stream_buf_va & pmasys_channel_outbase_ptr_m();
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outbase_r(0), outbase_lo);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 	tegra_hwpm_dbg(hwpm, hwpm_verbose, "OUTBASE = 0x%x", outbase_lo);
 
 	outbase_hi = (mem_mgmt->stream_buf_va >> 32) &
 			pmasys_channel_outbaseupper_ptr_m();
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outbaseupper_r(0), outbase_hi);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 	tegra_hwpm_dbg(hwpm, hwpm_verbose, "OUTBASEUPPER = 0x%x", outbase_hi);
 
 	outsize = mem_mgmt->stream_buf_size &
 			pmasys_channel_outsize_numbytes_m();
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_outsize_r(0), outsize);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 	tegra_hwpm_dbg(hwpm, hwpm_verbose, "OUTSIZE = 0x%x", outsize);
 
 	mem_bytes_addr = mem_mgmt->mem_bytes_buf_va &
 			pmasys_channel_mem_bytes_addr_ptr_m();
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_mem_bytes_addr_r(0), mem_bytes_addr);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 	tegra_hwpm_dbg(hwpm, hwpm_verbose,
 		"MEM_BYTES_ADDR = 0x%x", mem_bytes_addr);
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_mem_block_r(0),
 		pmasys_channel_mem_blockupper_valid_f(
 			pmasys_channel_mem_blockupper_valid_true_v()));
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
@@ -144,23 +105,18 @@ int th500_hwpm_soc_enable_mem_mgmt(struct tegra_soc_hwpm *hwpm)
 int th500_hwpm_soc_invalidate_mem_config(struct tegra_soc_hwpm *hwpm)
 {
 	int err = 0;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
-	err = tegra_hwpm_writel(hwpm, pma_perfmux, pmasys_channel_mem_block_r(0),
+
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
+	tegra_hwpm_writel(hwpm, pma_perfmux, pmasys_channel_mem_block_r(0),
 		pmasys_channel_mem_blockupper_valid_f(
 			pmasys_channel_mem_blockupper_valid_false_v()));
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
@@ -171,34 +127,24 @@ int th500_hwpm_soc_stream_mem_bytes(struct tegra_soc_hwpm *hwpm)
 	u32 reg_val = 0U;
 	u32 *mem_bytes_kernel_u32 =
 		(u32 *)(hwpm->mem_mgmt->mem_bytes_kernel);
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
 	*mem_bytes_kernel_u32 = TEGRA_HWPM_MEM_BYTES_INVALID;
 
-	err = tegra_hwpm_readl(hwpm, pma_perfmux,
+	tegra_hwpm_readl(hwpm, pma_perfmux,
 		pmasys_channel_control_user_r(0), &reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm read failed");
-		return err;
-	}
 	reg_val = set_field(reg_val,
 		pmasys_channel_control_user_update_bytes_m(),
 		pmasys_channel_control_user_update_bytes_doit_f());
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_control_user_r(0), reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
@@ -207,49 +153,31 @@ int th500_hwpm_soc_disable_pma_streaming(struct tegra_soc_hwpm *hwpm)
 {
 	int err = 0;
 	u32 reg_val = 0U;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
 	/* Disable PMA streaming */
-	err = tegra_hwpm_readl(hwpm, pma_perfmux,
+	tegra_hwpm_readl(hwpm, pma_perfmux,
 		pmasys_command_slice_trigger_config_user_r(0), &reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm read failed");
-		return err;
-	}
 	reg_val = set_field(reg_val,
 		pmasys_command_slice_trigger_config_user_record_stream_m(),
 		pmasys_command_slice_trigger_config_user_record_stream_disable_f());
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_command_slice_trigger_config_user_r(0), reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
-	err = tegra_hwpm_readl(hwpm, pma_perfmux,
+	tegra_hwpm_readl(hwpm, pma_perfmux,
 		pmasys_channel_control_user_r(0), &reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm read failed");
-		return err;
-	}
 	reg_val = set_field(reg_val,
 		pmasys_channel_config_user_stream_m(),
 		pmasys_channel_config_user_stream_disable_f());
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_control_user_r(0), reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
@@ -258,81 +186,69 @@ int th500_hwpm_soc_update_mem_bytes_get_ptr(struct tegra_soc_hwpm *hwpm,
 	u64 mem_bump)
 {
 	int err = 0;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
+
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
 
 	if (mem_bump > (u64)U32_MAX) {
 		tegra_hwpm_err(hwpm, "mem_bump is out of bounds");
 		return -EINVAL;
 	}
 
-	err = tegra_hwpm_writel(hwpm, pma_perfmux,
+	tegra_hwpm_writel(hwpm, pma_perfmux,
 		pmasys_channel_mem_bump_r(0), mem_bump);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm write failed");
-		return err;
-	}
 
 	return 0;
 }
 
-u64 th500_hwpm_soc_get_mem_bytes_put_ptr(struct tegra_soc_hwpm *hwpm)
+int th500_hwpm_soc_get_mem_bytes_put_ptr(struct tegra_soc_hwpm *hwpm,
+	u64 *mem_head_ptr)
 {
 	int err = 0;
 	u32 reg_val = 0U;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	err = tegra_hwpm_readl(hwpm, pma_perfmux,
-			pmasys_channel_mem_head_r(0), &reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm read failed");
-		return 0ULL;
-	}
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
 
-	return (u64)reg_val;
+	tegra_hwpm_readl(hwpm, pma_perfmux,
+		pmasys_channel_mem_head_r(0), &reg_val);
+	*mem_head_ptr = (u64)reg_val;
+
+	return err;
 }
 
-bool th500_hwpm_soc_membuf_overflow_status(struct tegra_soc_hwpm *hwpm)
+int th500_hwpm_soc_membuf_overflow_status(struct tegra_soc_hwpm *hwpm,
+	u32 *overflow_status)
 {
 	int err = 0;
 	u32 reg_val, field_val;
-	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
-	struct hwpm_ip *chip_ip = active_chip->chip_ips[
-		active_chip->get_rtr_int_idx(hwpm)];
-	struct hwpm_ip_inst *ip_inst_pma = &chip_ip->ip_inst_static_array[
-		TH500_HWPM_IP_RTR_STATIC_PMA_INST];
-	struct hwpm_ip_aperture *pma_perfmux = &ip_inst_pma->element_info[
-		TEGRA_HWPM_APERTURE_TYPE_PERFMUX].element_static_array[
-			TH500_HWPM_IP_RTR_PERFMUX_INDEX];
+	struct hwpm_ip_aperture *pma_perfmux = NULL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	err = tegra_hwpm_readl(hwpm, pma_perfmux,
+	err = hwpm->active_chip->get_rtr_pma_perfmux_ptr(hwpm, NULL,
+		&pma_perfmux);
+	hwpm_assert_print(hwpm, err == 0, return err,
+		"get rtr pma perfmux failed");
+
+	tegra_hwpm_readl(hwpm, pma_perfmux,
 		pmasys_channel_status_r(0), &reg_val);
-	if (err != 0) {
-		tegra_hwpm_err(hwpm, "hwpm read failed");
-		return err;
-	}
 	field_val = pmasys_channel_status_membuf_status_v(
 		reg_val);
 
-	return (field_val ==
-		pmasys_channel_status_membuf_status_overflowed_v());
+	*overflow_status = (field_val ==
+		pmasys_channel_status_membuf_status_overflowed_v()) ?
+		TEGRA_HWPM_MEMBUF_OVERFLOWED : TEGRA_HWPM_MEMBUF_NOT_OVERFLOWED;
+
+	return err;
 }
