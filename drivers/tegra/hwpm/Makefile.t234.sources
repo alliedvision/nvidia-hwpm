@@ -70,6 +70,9 @@ nvhwpm-t234-objs += hal/t234/ip/ofa/t234_ofa.o
 ccflags-y += -DCONFIG_T234_HWPM_IP_VIC
 nvhwpm-t234-objs += hal/t234/ip/vic/t234_vic.o
 
+ccflags-y += -DCONFIG_T234_HWPM_IP_NVDEC
+nvhwpm-t234-objs += hal/t234/ip/nvdec/t234_nvdec.o
+
 # Include other IPs if minimal build is not enabled.
 ifneq ($(CONFIG_TEGRA_HWPM_MINIMAL_IP_ENABLE),y)
 ccflags-y += -DCONFIG_T234_HWPM_IP_DISPLAY
