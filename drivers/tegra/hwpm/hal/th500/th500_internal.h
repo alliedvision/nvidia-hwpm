@@ -36,6 +36,7 @@
 #include <hal/th500/soc/ip/mcf_ocu/th500_mcf_ocu.h>
 #include <hal/th500/soc/ip/mcf_iobhx/th500_mcf_iobhx.h>
 #include <hal/th500/soc/ip/mcf_c2c/th500_mcf_c2c.h>
+#include <hal/th500/soc/ip/mcf_clink/th500_mcf_clink.h>
 
 #define TH500_HWPM_ACTIVE_IP_MAX		TH500_HWPM_IP_MAX
 
@@ -53,6 +54,7 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MSS_HUB)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_OCU)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_IOBHX)	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_CLINK)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MAX)
 
 #undef DEFINE_SOC_HWPM_ACTIVE_IP
