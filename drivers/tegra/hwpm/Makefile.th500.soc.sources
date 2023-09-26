@@ -69,4 +69,7 @@ nvhwpm-th500-soc-objs += hal/th500/soc/ip/mcf_c2c/th500_mcf_c2c.o
 ccflags-y += -DCONFIG_TH500_HWPM_IP_MCF_CLINK
 nvhwpm-th500-soc-objs += hal/th500/soc/ip/mcf_clink/th500_mcf_clink.o
 
+ccflags-y += -DCONFIG_TH500_HWPM_IP_MCF_CORE
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/mcf_core/th500_mcf_core.o
+
 endif
