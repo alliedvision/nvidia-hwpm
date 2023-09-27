@@ -250,7 +250,11 @@ struct allowlist th500_mcf_c2c_alist[2] = {
 	{0x0000d60c, false},
 };
 
-struct allowlist th500_mcf_soc_alist[2] = {
+struct allowlist th500_mcf_ocu_alist[1] = {
+	{0x0000d620, false},
+};
+
+struct allowlist th500_mcf_iobhx_alist[2] = {
 	{0x0000d618, false},
 	{0x0000d61c, false},
 };

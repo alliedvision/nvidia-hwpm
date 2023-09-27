@@ -106,8 +106,11 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_TH500_HWPM_IP_MCF_C2C)
     case TH500_HWPM_IP_MCF_C2C:
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
-    case TH500_HWPM_IP_MCF_SOC:
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+    case TH500_HWPM_IP_MCF_OCU:
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+	case TH500_HWPM_IP_MCF_IOBHX:
 #endif
 		/*
 		 * MSS channel, MCF CORE, MCF CLINK, MCF C2C, MCF SOC,
@@ -206,9 +209,32 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 			ret = 0;
 		}
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
-		/* Check base address in TH500_HWPM_IP_MCF_SOC */
-		ip_idx = TH500_HWPM_IP_MCF_SOC;
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+		/* Check base address in TH500_HWPM_IP_MCF_OCU */
+		ip_idx = TH500_HWPM_IP_MCF_OCU;
+		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
+			base_address, ip_idx, available);
+		if (ret != 0) {
+			/*
+			 * Return value of ENODEV will indicate that the base
+			 * address doesn't belong to this IP.
+			 * This case is valid, as not all base addresses are
+			 * shared between MSS IPs.
+			 * In this case, reset return value to 0.
+			 */
+			if (ret != -ENODEV) {
+				tegra_hwpm_err(hwpm,
+					"IP %d base 0x%llx:Failed to %s fs/ops",
+					ip_idx, base_address,
+					available == true ? "set" : "reset");
+				goto fail;
+			}
+			ret = 0;
+		}
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+		/* Check base address in TH500_HWPM_IP_MCF_IOBHX */
+		ip_idx = TH500_HWPM_IP_MCF_IOBHX;
 		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
 			base_address, ip_idx, available);
 		if (ret != 0) {

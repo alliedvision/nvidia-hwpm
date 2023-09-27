@@ -33,6 +33,8 @@
 #include <hal/th500/soc/ip/c_nvlink/th500_nvltx.h>
 #include <hal/th500/soc/ip/c_nvlink/th500_nvlctrl.h>
 #include <hal/th500/soc/ip/mss_hub/th500_mss_hub.h>
+#include <hal/th500/soc/ip/mcf_ocu/th500_mcf_ocu.h>
+#include <hal/th500/soc/ip/mcf_iobhx/th500_mcf_iobhx.h>
 
 #define TH500_HWPM_ACTIVE_IP_MAX		TH500_HWPM_IP_MAX
 
@@ -47,6 +49,8 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLRX)   	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLTX)   	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MSS_HUB)		\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_OCU)		\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_IOBHX)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MAX)
 
 #undef DEFINE_SOC_HWPM_ACTIVE_IP

@@ -148,9 +148,14 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = TH500_HWPM_IP_MCF_C2C;
 		break;
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
-	case TEGRA_HWPM_IP_MCF_SOC:
-		config_ip = TH500_HWPM_IP_MCF_SOC;
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+	case TEGRA_HWPM_IP_MCF_OCU:
+		config_ip = TH500_HWPM_IP_MCF_OCU;
+		break;
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+	case TEGRA_HWPM_IP_MCF_IOBHX:
+		config_ip = TH500_HWPM_IP_MCF_IOBHX;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_SMMU)
@@ -225,9 +230,14 @@ bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = TH500_HWPM_IP_MCF_C2C;
 		break;
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
-	case TEGRA_HWPM_RESOURCE_MCF_SOC:
-		config_ip = TH500_HWPM_IP_MCF_SOC;
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+	case TEGRA_HWPM_RESOURCE_MCF_OCU:
+		config_ip = TH500_HWPM_IP_MCF_OCU;
+		break;
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+	case TEGRA_HWPM_RESOURCE_MCF_IOBHX:
+		config_ip = TH500_HWPM_IP_MCF_IOBHX;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_SMMU)
@@ -321,9 +331,13 @@ int th500_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 	th500_active_ip_info[TH500_HWPM_IP_MCF_C2C] =
 		&th500_hwpm_ip_mcf_c2c;
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
-	th500_active_ip_info[TH500_HWPM_IP_MCF_SOC] =
-		&th500_hwpm_ip_mcf_soc;
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+	th500_active_ip_info[TH500_HWPM_IP_MCF_OCU] =
+		&th500_hwpm_ip_mcf_ocu;
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+	th500_active_ip_info[TH500_HWPM_IP_MCF_IOBHX] =
+		&th500_hwpm_ip_mcf_iobhx;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_SMMU)
 	th500_active_ip_info[TH500_HWPM_IP_SMMU] = &th500_hwpm_ip_smmu;
