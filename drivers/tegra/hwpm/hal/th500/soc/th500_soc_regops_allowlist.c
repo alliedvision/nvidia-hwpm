@@ -255,7 +255,7 @@ struct allowlist th500_mcf_soc_alist[2] = {
 	{0x0000d61c, false},
 };
 
-struct allowlist th500_soc_hub_alist[3] = {
+struct allowlist th500_mss_hub_alist[3] = {
 	{0x00006f34, false},
 	{0x00006f38, false},
 	{0x00006f3c, false},

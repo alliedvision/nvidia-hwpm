@@ -94,6 +94,9 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_TH500_HWPM_IP_MSS_CHANNEL)
 	case TH500_HWPM_IP_MSS_CHANNEL:
 #endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+	case TH500_HWPM_IP_MSS_HUB:
+#endif
 #if defined(CONFIG_TH500_HWPM_IP_MCF_CORE)
 	case TH500_HWPM_IP_MCF_CORE:
 #endif
@@ -106,12 +109,9 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
     case TH500_HWPM_IP_MCF_SOC:
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
-    case TH500_HWPM_IP_SOC_HUB:
-#endif
 		/*
 		 * MSS channel, MCF CORE, MCF CLINK, MCF C2C, MCF SOC,
-		 * and SOC HUB share MC channels
+		 * and MSS HUB share MC channels
 		 */
 
 		/* Check base address in TH500_HWPM_IP_MSS_CHANNEL */
@@ -229,9 +229,9 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 			ret = 0;
 		}
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
-		/* Check base address in TH500_HWPM_IP_SOC_HUB */
-		ip_idx = TH500_HWPM_IP_SOC_HUB;
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+		/* Check base address in TH500_HWPM_IP_MSS_HUB */
+		ip_idx = TH500_HWPM_IP_MSS_HUB;
 		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
 			base_address, ip_idx, available);
 		if (ret != 0) {

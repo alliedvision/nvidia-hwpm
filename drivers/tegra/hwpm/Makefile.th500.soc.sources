@@ -54,4 +54,7 @@ nvhwpm-th500-soc-objs += hal/th500/soc/ip/c_nvlink/th500_nvlrx.o
 nvhwpm-th500-soc-objs += hal/th500/soc/ip/c_nvlink/th500_nvltx.o
 nvhwpm-th500-soc-objs += hal/th500/soc/ip/c_nvlink/th500_nvlctrl.o
 
+ccflags-y += -DCONFIG_TH500_HWPM_IP_MSS_HUB
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/mss_hub/th500_mss_hub.o
+
 endif

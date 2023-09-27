@@ -38,5 +38,6 @@ extern struct allowlist th500_mcf_c2c_alist[2];
 extern struct allowlist th500_mcf_soc_alist[2];
 extern struct allowlist th500_soc_hub_alist[3];
 extern struct allowlist th500_cl2_alist[4];
+extern struct allowlist th500_mss_hub_alist[3];
 
 #endif /* TH500_HWPM_REGOPS_ALLOWLIST_H */

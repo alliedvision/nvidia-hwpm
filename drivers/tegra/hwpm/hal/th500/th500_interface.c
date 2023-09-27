@@ -123,6 +123,11 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = TH500_HWPM_IP_MSS_CHANNEL;
 		break;
 #endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+	case TEGRA_HWPM_IP_MSS_HUB:
+		config_ip = TH500_HWPM_IP_MSS_HUB;
+		break;
+#endif
 #if defined(CONFIG_TH500_HWPM_IP_CL2)
 	case TEGRA_HWPM_IP_CL2:
 		config_ip = TH500_HWPM_IP_CL2;
@@ -151,11 +156,6 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_TH500_HWPM_IP_SMMU)
 	case TEGRA_HWPM_IP_SMMU:
 		config_ip = TH500_HWPM_IP_SMMU;
-		break;
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
-	case TEGRA_HWPM_IP_SOC_HUB:
-		config_ip = TH500_HWPM_IP_SOC_HUB;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
@@ -200,6 +200,11 @@ bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = TH500_HWPM_IP_MSS_CHANNEL;
 		break;
 #endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+	case TEGRA_HWPM_RESOURCE_MSS_HUB:
+		config_ip = TH500_HWPM_IP_MSS_HUB;
+		break;
+#endif
 #if defined(CONFIG_TH500_HWPM_IP_CL2)
 	case TEGRA_HWPM_RESOURCE_CL2:
 		config_ip = TH500_HWPM_IP_CL2;
@@ -228,11 +233,6 @@ bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_TH500_HWPM_IP_SMMU)
 	case TEGRA_HWPM_RESOURCE_SMMU:
 		config_ip = TH500_HWPM_IP_SMMU;
-		break;
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
-	case TEGRA_HWPM_RESOURCE_SOC_HUB:
-		config_ip = TH500_HWPM_IP_SOC_HUB;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
@@ -303,6 +303,10 @@ int th500_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 	th500_active_ip_info[TH500_HWPM_IP_MSS_CHANNEL] =
 		&th500_hwpm_ip_mss_channel;
 #endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+	th500_active_ip_info[TH500_HWPM_IP_MSS_HUB] =
+		&th500_hwpm_ip_mss_hub;
+#endif
 #if defined(CONFIG_TH500_HWPM_IP_CL2)
 	th500_active_ip_info[TH500_HWPM_IP_CL2] = &th500_hwpm_ip_cl2;
 #endif
@@ -328,9 +332,6 @@ int th500_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 	th500_active_ip_info[TH500_HWPM_IP_NVLCTRL] = &th500_hwpm_ip_nvlctrl;
 	th500_active_ip_info[TH500_HWPM_IP_NVLRX] = &th500_hwpm_ip_nvlrx;
 	th500_active_ip_info[TH500_HWPM_IP_NVLTX] = &th500_hwpm_ip_nvltx;
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
-	th500_active_ip_info[TH500_HWPM_IP_SOC_HUB] = &th500_hwpm_ip_soc_hub;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
 	th500_active_ip_info[TH500_HWPM_IP_PCIE] = &th500_hwpm_ip_pcie;
