@@ -43,4 +43,7 @@ nvhwpm-th500-soc-objs += hal/th500/soc/ip/mss_channel/th500_mss_channel.o
 ccflags-y += -DCONFIG_TH500_HWPM_IP_C2C
 nvhwpm-th500-objs += hal/th500/soc/ip/c2c/th500_c2c.o
 
+ccflags-y += -DCONFIG_TH500_HWPM_IP_SMMU
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/smmu/th500_smmu.o
+
 endif
