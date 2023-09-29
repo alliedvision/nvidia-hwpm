@@ -244,3 +244,10 @@ struct allowlist th500_soc_hub_alist[3] = {
 	{0x00006f38, false},
 	{0x00006f3c, false},
 };
+
+struct allowlist th500_cl2_alist[4] = {
+	{0x00000550, false},
+	{0x00000578, false},
+	{0x00000750, false},
+	{0x00000778, false},
+};
