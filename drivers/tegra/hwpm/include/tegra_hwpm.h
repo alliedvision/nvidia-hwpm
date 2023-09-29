@@ -40,6 +40,10 @@
 #define TEGRA_HWPM_FUSE_SECURITY_MODE_MASK		BIT(1)
 #define TEGRA_HWPM_FUSE_HWPM_GLOBAL_DISABLE_MASK	BIT(2)
 
+/* Indicate the prescence of HWPM-IP debug interface for devctl calls */
+#define TEGRA_HWPM_IP_DEBUG_FD_INVALID          -1
+#define TEGRA_HWPM_IP_DEBUG_FD_VALID            1U
+
 #ifdef __KERNEL__
 struct tegra_hwpm_os_linux;
 #else

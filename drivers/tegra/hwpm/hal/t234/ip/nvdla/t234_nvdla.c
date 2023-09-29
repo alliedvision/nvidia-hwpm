@@ -166,7 +166,7 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
-			.fd = 1,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_VALID,
 		},
 
 		.element_fs_mask = 0U,
@@ -229,7 +229,7 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
-			.fd = 1,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_VALID,
 		},
 
 		.element_fs_mask = 0U,
