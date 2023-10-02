@@ -70,7 +70,9 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 	case TH500_HWPM_IP_NVLTX:
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
-	case TH500_HWPM_IP_PCIE:
+	case TH500_HWPM_IP_PCIE_XTLQ:
+	case TH500_HWPM_IP_PCIE_XTLRC:
+	case TH500_HWPM_IP_PCIE_XALRC:
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C2C)
 	case TH500_HWPM_IP_C2C:

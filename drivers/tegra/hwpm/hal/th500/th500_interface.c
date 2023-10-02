@@ -175,8 +175,14 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
-	case TEGRA_HWPM_IP_PCIE:
-		config_ip = TH500_HWPM_IP_PCIE;
+	case TEGRA_HWPM_IP_PCIE_XTLQ:
+		config_ip = TH500_HWPM_IP_PCIE_XTLQ;
+		break;
+	case TEGRA_HWPM_IP_PCIE_XTLRC:
+		config_ip = TH500_HWPM_IP_PCIE_XTLRC;
+		break;
+	case TEGRA_HWPM_IP_PCIE_XALRC:
+		config_ip = TH500_HWPM_IP_PCIE_XALRC;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C2C)
@@ -257,8 +263,14 @@ bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
-	case TEGRA_HWPM_RESOURCE_PCIE:
-		config_ip = TH500_HWPM_IP_PCIE;
+	case TEGRA_HWPM_RESOURCE_PCIE_XTLQ:
+		config_ip = TH500_HWPM_IP_PCIE_XTLQ;
+		break;
+	case TEGRA_HWPM_RESOURCE_PCIE_XTLRC:
+		config_ip = TH500_HWPM_IP_PCIE_XTLRC;
+		break;
+	case TEGRA_HWPM_RESOURCE_PCIE_XALRC:
+		config_ip = TH500_HWPM_IP_PCIE_XALRC;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C2C)
@@ -348,7 +360,9 @@ int th500_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 	th500_active_ip_info[TH500_HWPM_IP_NVLTX] = &th500_hwpm_ip_nvltx;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
-	th500_active_ip_info[TH500_HWPM_IP_PCIE] = &th500_hwpm_ip_pcie;
+	th500_active_ip_info[TH500_HWPM_IP_PCIE_XTLQ] = &th500_hwpm_ip_pcie_xtlq;
+	th500_active_ip_info[TH500_HWPM_IP_PCIE_XTLRC] = &th500_hwpm_ip_pcie_xtlrc;
+	th500_active_ip_info[TH500_HWPM_IP_PCIE_XALRC] = &th500_hwpm_ip_pcie_xalrc;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C2C)
 	th500_active_ip_info[TH500_HWPM_IP_C2C] = &th500_hwpm_ip_c2c;

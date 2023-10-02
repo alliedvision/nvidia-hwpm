@@ -72,4 +72,9 @@ nvhwpm-th500-soc-objs += hal/th500/soc/ip/mcf_clink/th500_mcf_clink.o
 ccflags-y += -DCONFIG_TH500_HWPM_IP_MCF_CORE
 nvhwpm-th500-soc-objs += hal/th500/soc/ip/mcf_core/th500_mcf_core.o
 
+ccflags-y += -DCONFIG_TH500_HWPM_IP_PCIE
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/pcie/th500_pcie_xalrc.o
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/pcie/th500_pcie_xtlrc.o
+nvhwpm-th500-soc-objs += hal/th500/soc/ip/pcie/th500_pcie_xtlq.o
+
 endif

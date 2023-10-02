@@ -38,6 +38,9 @@
 #include <hal/th500/soc/ip/mcf_c2c/th500_mcf_c2c.h>
 #include <hal/th500/soc/ip/mcf_clink/th500_mcf_clink.h>
 #include <hal/th500/soc/ip/mcf_core/th500_mcf_core.h>
+#include <hal/th500/soc/ip/pcie/th500_pcie_xtlq.h>
+#include <hal/th500/soc/ip/pcie/th500_pcie_xtlrc.h>
+#include <hal/th500/soc/ip/pcie/th500_pcie_xalrc.h>
 
 #define TH500_HWPM_ACTIVE_IP_MAX		TH500_HWPM_IP_MAX
 
@@ -57,6 +60,9 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_IOBHX)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_CLINK)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_CORE)	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_PCIE_XTLQ)	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_PCIE_XTLRC)	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_PCIE_XALRC)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MAX)
 
 #undef DEFINE_SOC_HWPM_ACTIVE_IP

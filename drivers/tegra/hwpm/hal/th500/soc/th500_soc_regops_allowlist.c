@@ -225,7 +225,15 @@ struct allowlist th500_c2c_alist[52] = {
 	{0x0000b0fc, false},
 };
 
-struct allowlist th500_pcie_alist[1] = {
+struct allowlist th500_pcie_xtlq_alist[1] = {
+	{0x000039e0, true},
+};
+
+struct allowlist th500_pcie_xtlrc_alist[1] = {
+	{0x000004e0, true},
+};
+
+struct allowlist th500_pcie_xalrc_alist[1] = {
 	{0x00000470, true},
 };
 
