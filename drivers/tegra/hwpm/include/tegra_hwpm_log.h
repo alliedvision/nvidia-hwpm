@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -75,6 +75,8 @@ enum tegra_soc_hwpm_log_type {
 #define hwpm_dbg_driver_release		BIT(16)
 /* Kmem debug prints */
 #define hwpm_dbg_kmem			BIT(17)
+/* Active debug prints */
+#define hwpm_dbg_active			BIT(18)
 
 #ifdef __KERNEL__
 
