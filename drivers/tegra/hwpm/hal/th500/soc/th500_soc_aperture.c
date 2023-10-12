@@ -130,7 +130,7 @@ int th500_hwpm_soc_disable_triggers(struct tegra_soc_hwpm *hwpm)
 		"PMMSYS_SYS0ROUTER_ENGINESTATUS_STATUS timed out");
 
 	/* Wait for PMA to idle */
-	tegra_hwpm_timeout_print(hwpm, retries, sleep_msecs, rtr_perfmux,
+	tegra_hwpm_timeout_print(hwpm, retries, sleep_msecs, pma_perfmux,
 		pmasys_channel_status_r(0), &reg_val,
 		((reg_val & pmasys_channel_status_engine_status_m()) !=
 			pmasys_channel_status_engine_status_empty_f()),
