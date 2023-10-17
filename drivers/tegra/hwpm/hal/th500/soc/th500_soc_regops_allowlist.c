@@ -147,7 +147,23 @@ struct allowlist th500_rtr_alist[5] = {
 	{0x0000004c, false},
 };
 
-struct allowlist th500_nvlink_alist[0] = {
+struct allowlist th500_nvlrx_alist[5] = {
+	{0x00003340, false},
+	{0x00000d00, false},
+	{0x00000d04, false},
+	{0x00001d00, false},
+	{0x00001d04, false},
+};
+
+struct allowlist th500_nvltx_alist[3] = {
+	{0x00000180, false},
+	{0x00001500, false},
+	{0x00001504, false},
+};
+
+struct allowlist th500_nvlctrl_alist[2] = {
+	{0x00000804, false},
+	{0x00000808, false},
 };
 
 struct allowlist th500_smmu_alist[1] = {

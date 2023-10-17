@@ -29,6 +29,9 @@
 #include <hal/th500/soc/ip/c2c/th500_c2c.h>
 #include <hal/th500/soc/ip/smmu/th500_smmu.h>
 #include <hal/th500/soc/ip/cl2/th500_cl2.h>
+#include <hal/th500/soc/ip/c_nvlink/th500_nvlrx.h>
+#include <hal/th500/soc/ip/c_nvlink/th500_nvltx.h>
+#include <hal/th500/soc/ip/c_nvlink/th500_nvlctrl.h>
 
 #define TH500_HWPM_ACTIVE_IP_MAX		TH500_HWPM_IP_MAX
 
@@ -39,6 +42,9 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_C2C)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_SMMU)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_CL2)		\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLCTRL)		\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLRX)   	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLTX)   	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MAX)
 
 #undef DEFINE_SOC_HWPM_ACTIVE_IP

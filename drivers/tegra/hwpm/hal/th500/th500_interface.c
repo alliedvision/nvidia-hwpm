@@ -159,8 +159,14 @@ bool th500_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
-	case TEGRA_HWPM_IP_C_NVLINK:
-		config_ip = TH500_HWPM_IP_C_NVLINK;
+	case TEGRA_HWPM_IP_NVLCTRL:
+		config_ip = TH500_HWPM_IP_NVLCTRL;
+		break;
+	case TEGRA_HWPM_IP_NVLRX:
+		config_ip = TH500_HWPM_IP_NVLRX;
+		break;
+	case TEGRA_HWPM_IP_NVLTX:
+		config_ip = TH500_HWPM_IP_NVLTX;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
@@ -230,8 +236,14 @@ bool th500_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
-	case TEGRA_HWPM_RESOURCE_C_NVLINK:
-		config_ip = TH500_HWPM_IP_C_NVLINK;
+	case TEGRA_HWPM_RESOURCE_NVLCTRL:
+		config_ip = TH500_HWPM_IP_NVLCTRL;
+		break;
+	case TEGRA_HWPM_RESOURCE_NVLRX:
+		config_ip = TH500_HWPM_IP_NVLRX;
+		break;
+	case TEGRA_HWPM_RESOURCE_NVLTX:
+		config_ip = TH500_HWPM_IP_NVLTX;
 		break;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_PCIE)
@@ -313,7 +325,9 @@ int th500_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 	th500_active_ip_info[TH500_HWPM_IP_SMMU] = &th500_hwpm_ip_smmu;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
-	th500_active_ip_info[TH500_HWPM_IP_C_NVLINK] = &th500_hwpm_ip_c_nvlink;
+	th500_active_ip_info[TH500_HWPM_IP_NVLCTRL] = &th500_hwpm_ip_nvlctrl;
+	th500_active_ip_info[TH500_HWPM_IP_NVLRX] = &th500_hwpm_ip_nvlrx;
+	th500_active_ip_info[TH500_HWPM_IP_NVLTX] = &th500_hwpm_ip_nvltx;
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_SOC_HUB)
 	th500_active_ip_info[TH500_HWPM_IP_SOC_HUB] = &th500_hwpm_ip_soc_hub;
