@@ -1,14 +1,29 @@
+// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms and conditions of the GNU General Public License,
- * version 2, as published by the Free Software Foundation.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
 #include "th500_c2c.h"
@@ -214,7 +229,6 @@ static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_c2c_alist),
 		.fake_registers = NULL,
 	},
-
 };
 
 static struct hwpm_ip_aperture th500_c2c_inst0_broadcast_element_static_array[
@@ -236,12 +250,12 @@ static struct hwpm_ip_aperture th500_c2c_inst0_broadcast_element_static_array[
 	},
 };
 
-struct hwpm_ip_aperture th500_c2c_inst1_broadcast_element_static_array[
+static struct hwpm_ip_aperture th500_c2c_inst1_broadcast_element_static_array[
 	TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
-		.element_index_mask = BIT(1),
-		.element_index = 1U,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2cs1_base_r(),
@@ -272,6 +286,7 @@ static struct hwpm_ip_inst th500_c2c_inst_static_array[
 					TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST,
 				.element_static_array =
 					th500_c2c_inst0_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_c2c0_base_r(),
 				.range_end = addr_map_c2c4_limit_r(),
 				.element_stride = addr_map_c2c0_limit_r() -
@@ -312,13 +327,16 @@ static struct hwpm_ip_inst th500_c2c_inst_static_array[
 				.element_arr = NULL,
 			},
 		},
+
 		.ip_ops = {
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
 		},
 
 		.element_fs_mask = 0U,
+		.dev_name = "",
 	},
 	{
 		.hw_inst_mask = BIT(1),
@@ -334,6 +352,7 @@ static struct hwpm_ip_inst th500_c2c_inst_static_array[
 					TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST,
 				.element_static_array =
 					th500_c2c_inst1_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_c2c5_base_r(),
 				.range_end = addr_map_c2c9_limit_r(),
 				.element_stride = addr_map_c2c5_limit_r() -
@@ -374,13 +393,16 @@ static struct hwpm_ip_inst th500_c2c_inst_static_array[
 				.element_arr = NULL,
 			},
 		},
+
 		.ip_ops = {
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
 		},
 
 		.element_fs_mask = 0U,
+		.dev_name = "",
 	},
 };
 
@@ -395,6 +417,7 @@ struct hwpm_ip th500_hwpm_ip_c2c = {
 		 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
 		 */
 		{
+			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_c2c0_base_r(),
 			.range_end = addr_map_c2c9_limit_r(),
 			.inst_stride = addr_map_c2c4_limit_r() -
@@ -427,8 +450,8 @@ struct hwpm_ip th500_hwpm_ip_c2c = {
 			.inst_arr = NULL,
 		},
 	},
-	.dependent_fuse_mask = TEGRA_HWPM_FUSE_SECURITY_MODE_MASK |
-		TEGRA_HWPM_FUSE_HWPM_GLOBAL_DISABLE_MASK,
+
+	.dependent_fuse_mask = TEGRA_HWPM_FUSE_SECURITY_MODE_MASK | TEGRA_HWPM_FUSE_HWPM_GLOBAL_DISABLE_MASK,
 	.override_enable = false,
 	.inst_fs_mask = 0U,
 	.resource_status = TEGRA_HWPM_RESOURCE_STATUS_INVALID,
