@@ -26,22 +26,48 @@
 #include <tegra_hwpm_log.h>
 #include <tegra_hwpm_static_analysis.h>
 
-int tegra_hwpm_read_sticky_bits_impl(struct tegra_soc_hwpm *hwpm,
-	u64 reg_base, u64 reg_offset, u32 *val)
+static int hwpm_remap_readl(struct tegra_soc_hwpm *hwpm, u64 addr, u32 *val)
 {
-	void __iomem *ptr = NULL;
-	u64 reg_addr = tegra_hwpm_safe_add_u64(reg_base, reg_offset);
+	void __iomem *ptr = ioremap(addr, 0x4);
 
-	ptr = ioremap(reg_addr, 0x4);
 	if (!ptr) {
-		tegra_hwpm_err(hwpm, "Failed to map register(0x%llx)",
-			reg_addr);
+		tegra_hwpm_err(hwpm, "Failed to map address(0x%llx)", addr);
 		return -ENODEV;
 	}
 	*val = __raw_readl(ptr);
 	iounmap(ptr);
 
 	return 0;
+}
+
+static int hwpm_remap_writel(struct tegra_soc_hwpm *hwpm, u64 addr, u32 val)
+{
+	void __iomem *ptr = ioremap(addr, 0x4);
+
+	if (!ptr) {
+		tegra_hwpm_err(hwpm, "Failed to map address(0x%llx)", addr);
+		return -ENODEV;
+	}
+	__raw_writel(val, ptr);
+	iounmap(ptr);
+
+	return 0;
+}
+
+int tegra_hwpm_read_sticky_bits_impl(struct tegra_soc_hwpm *hwpm,
+	u64 reg_base, u64 reg_offset, u32 *val)
+{
+	u64 reg_addr = tegra_hwpm_safe_add_u64(reg_base, reg_offset);
+
+	return hwpm_remap_readl(hwpm, reg_addr, val);
+}
+
+int tegra_hwpm_write_sticky_bits_impl(struct tegra_soc_hwpm *hwpm,
+	u64 reg_base, u64 reg_offset, u32 val)
+{
+	u64 reg_addr = tegra_hwpm_safe_add_u64(reg_base, reg_offset);
+
+	return hwpm_remap_writel(hwpm, reg_addr, val);
 }
 
 int tegra_hwpm_fake_readl_impl(struct tegra_soc_hwpm *hwpm,
@@ -179,7 +205,7 @@ static int ip_writel(struct tegra_soc_hwpm *hwpm, struct hwpm_ip_inst *ip_inst,
  * PERFMONs, PMA and RTR registers fall in this category
  */
 static int hwpm_readl(struct tegra_soc_hwpm *hwpm,
-	struct hwpm_ip_aperture *aperture,  u64 offset, u32 *val)
+	struct hwpm_ip_aperture *aperture, u64 offset, u32 *val)
 {
 	tegra_hwpm_dbg(hwpm, hwpm_register,
 		"Aperture (0x%llx-0x%llx) offset(0x%llx)",
