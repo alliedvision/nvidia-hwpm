@@ -19,11 +19,13 @@
 
 #include <linux/of.h>
 #include <linux/of_address.h>
+#include <linux/moduleparam.h>
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/dma-buf.h>
 #include <linux/debugfs.h>
+#include <linux/stat.h>
 
 #include <tegra_hwpm.h>
 #include <tegra_hwpm_ip.h>
@@ -35,6 +37,68 @@
 #include <os/linux/debugfs.h>
 #include <os/linux/driver.h>
 #include <os/linux/acpi.h>
+
+/*
+ * Optional module parameters
+ */
+#define S_IRWUG        (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP)
+
+/* Debug mask at driver load time. Can be overridden via debugfs later */
+int dbg_mask = 0;
+module_param(dbg_mask, int, S_IRWUG);
+
+/* This is a WAR on TH500 */
+int validate_current_config = 1;
+module_param(validate_current_config, int, S_IRWUG);
+
+/*
+ * IP software masks to be used for force-enablement.
+ * 0x0 means "do not force-enable"
+ */
+long int nvlctrl_mask = 0x0;
+module_param(nvlctrl_mask, long, S_IRWUG);
+
+long int nvlrx_mask = 0x0;
+module_param(nvlrx_mask, long, S_IRWUG);
+
+long int nvltx_mask = 0x0;
+module_param(nvltx_mask, long, S_IRWUG);
+
+long int c2c_mask = 0x0;
+module_param(c2c_mask, long, S_IRWUG);
+
+long int cl2_mask = 0x0;
+module_param(cl2_mask, long, S_IRWUG);
+
+long int mcf_c2c_mask = 0x0;
+module_param(mcf_c2c_mask, long, S_IRWUG);
+
+long int mcf_clink_mask = 0x0;
+module_param(mcf_clink_mask, long, S_IRWUG);
+
+long int mcf_core_mask = 0x0;
+module_param(mcf_core_mask, long, S_IRWUG);
+
+long int mcf_iobhx_mask = 0x0;
+module_param(mcf_iobhx_mask, long, S_IRWUG);
+
+long int mcf_ocu_mask = 0x0;
+module_param(mcf_ocu_mask, long, S_IRWUG);
+
+long int mss_channel_mask = 0x0;
+module_param(mss_channel_mask, long, S_IRWUG);
+
+long int mss_hub_mask = 0x0;
+module_param(mss_hub_mask, long, S_IRWUG);
+
+long int pcie_mask = 0x0;
+module_param(pcie_mask, long, S_IRWUG);
+
+long int smmu_mask = 0x0;
+module_param(smmu_mask, long, S_IRWUG);
+
+/* Socket number */
+int socket_number = 0x0;
 
 static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 	{
@@ -52,6 +116,26 @@ static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 	{ },
 };
 MODULE_DEVICE_TABLE(of, tegra_soc_hwpm_of_match);
+
+/*
+ * The socket number must be 0, 1, 2, or 3.
+ */
+static int set_socket_number(const char *val, const struct kernel_param *kp)
+{
+	int socket_num = 0, ret;
+
+	ret = kstrtoint(val, 10, &socket_num);
+	if (ret != 0 || socket_num < 0 || socket_num > 3)
+		return -EINVAL;
+
+	return param_set_int(val, kp);
+}
+
+static const struct kernel_param_ops param_ops = {
+	.set	= set_socket_number,
+	.get	= param_get_int,
+};
+module_param_cb(socket, &param_ops, &socket_number, S_IRWUG | S_IROTH);
 
 #if defined(NV_CLASS_STRUCT_DEVNODE_HAS_CONST_DEV_ARG)
 static char *tegra_hwpm_get_devnode(const struct device *dev, umode_t *mode)

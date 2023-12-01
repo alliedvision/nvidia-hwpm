@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -424,7 +424,7 @@ static struct hwpm_ip_aperture th500_pcie_xalrc_inst9_perfmux_element_static_arr
 };
 
 /* IP instance array */
-static struct hwpm_ip_inst th500_pcie_xalrc_inst_static_array[
+struct hwpm_ip_inst th500_pcie_xalrc_inst_static_array[
 	TH500_HWPM_IP_PCIE_XALRC_NUM_INSTANCES] = {
 	{
 		.hw_inst_mask = BIT(0),

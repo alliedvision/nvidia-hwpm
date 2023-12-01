@@ -78,6 +78,16 @@ enum tegra_soc_hwpm_log_type {
 /* Active debug prints */
 #define hwpm_dbg_active			BIT(18)
 
+/* All debug bits */
+#define hwpm_dbg_all_bits \
+	(hwpm_info | hwpm_fn | hwpm_register | hwpm_verbose | \
+	 hwpm_dbg_driver_init | hwpm_dbg_ip_register | hwpm_dbg_device_info | \
+	 hwpm_dbg_floorsweep_info | hwpm_dbg_resource_info | \
+	 hwpm_dbg_reserve_resource | hwpm_dbg_release_resource | \
+	 hwpm_dbg_alloc_pma_stream | hwpm_dbg_bind | hwpm_dbg_allowlist | \
+	 hwpm_dbg_regops | hwpm_dbg_update_get_put | hwpm_dbg_driver_release | \
+	 hwpm_dbg_kmem)
+
 #ifdef __KERNEL__
 
 #define tegra_hwpm_err(hwpm, fmt, arg...)				\

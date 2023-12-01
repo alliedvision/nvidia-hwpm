@@ -384,10 +384,11 @@ int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm)
 	int err;
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = NULL;
+	extern int validate_current_config;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	if (!tegra_hwpm_is_platform_silicon()) {
+	if (!tegra_hwpm_is_platform_silicon() || validate_current_config == 0) {
 		return 0;
 	}
 
@@ -494,39 +495,137 @@ int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm)
 
 int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 {
-	int ret = 0, err = 0;
+#if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
+	extern int socket_number;
+
+	extern long int nvlctrl_mask;
+	extern long int nvlrx_mask;
+	extern long int nvltx_mask;
+	extern long int c2c_mask;
+	extern long int cl2_mask;
+	extern long int mcf_c2c_mask;
+	extern long int mcf_clink_mask;
+	extern long int mcf_core_mask;
+	extern long int mcf_iobhx_mask;
+	extern long int mcf_ocu_mask;
+	extern long int mss_hub_mask;
+	extern long int mss_channel_mask;
+	extern long int pcie_mask;
+	extern long int smmu_mask;
+
+	extern struct hwpm_ip_inst th500_nvlctrl_inst_static_array[];
+	extern struct hwpm_ip_inst th500_nvlrx_inst_static_array[];
+	extern struct hwpm_ip_inst th500_nvltx_inst_static_array[];
+	extern struct hwpm_ip_inst th500_c2c_inst_static_array[];
+	extern struct hwpm_ip_inst th500_cl2_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_c2c_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_clink_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_core_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_iobhx_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mss_hub_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mss_channel_inst_static_array[];
+	extern struct hwpm_ip_inst th500_pcie_xalrc_inst_static_array[];
+	extern struct hwpm_ip_inst th500_pcie_xtlrc_inst_static_array[];
+	extern struct hwpm_ip_inst th500_pcie_xtlq_inst_static_array[];
+	extern struct hwpm_ip_inst th500_smmu_inst_static_array[];
+#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
+
+	int err = 0;
+
+#if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
+	int ret = 0;
+	int ip, inst;
+	const u32 socket_shift = 44; /* bits */
+	u64 socket_offset, base_addr;
+	struct hwpm_ip_inst *ip_inst = NULL;
+	struct hwpm_ip_element_info *elem_info = NULL;
+
+	struct hwpm_force_enable_ip {
+		char name[16];
+		long int mask;
+		int id;
+		int instances;
+		struct hwpm_ip_inst *inst_static_array;
+	};
+	struct hwpm_force_enable_ip force_enable_ips[] = {
+		{"none", 0, 0, 0, NULL},
+#if defined(CONFIG_TH500_HWPM_IP_C_NVLINK)
+		{"nvlctrl", nvlctrl_mask, TH500_HWPM_IP_NVLCTRL, TH500_HWPM_IP_NVLCTRL_NUM_INSTANCES, th500_nvlctrl_inst_static_array},
+		{"nvlrx", nvlrx_mask, TH500_HWPM_IP_NVLRX, TH500_HWPM_IP_NVLRX_NUM_INSTANCES, th500_nvlrx_inst_static_array},
+		{"nvltx", nvltx_mask, TH500_HWPM_IP_NVLTX, TH500_HWPM_IP_NVLTX_NUM_INSTANCES, th500_nvltx_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_C2C)
+		{"c2c", c2c_mask, TH500_HWPM_IP_C2C, TH500_HWPM_IP_C2C_NUM_INSTANCES, th500_c2c_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_CL2)
+		{"cl2", cl2_mask, TH500_HWPM_IP_CL2, TH500_HWPM_IP_CL2_NUM_INSTANCES, th500_cl2_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_C2C)
+		{"mcf_c2c", mcf_c2c_mask, TH500_HWPM_IP_MCF_C2C, TH500_HWPM_IP_MCF_C2C_NUM_INSTANCES, th500_mcf_c2c_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_CLINK)
+		{"mcf_clink", mcf_clink_mask, TH500_HWPM_IP_MCF_CLINK, TH500_HWPM_IP_MCF_CLINK_NUM_INSTANCES, th500_mcf_clink_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_CORE)
+		{"mcf_core", mcf_core_mask, TH500_HWPM_IP_MCF_CORE, TH500_HWPM_IP_MCF_CORE_NUM_INSTANCES, th500_mcf_core_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
+		{"mcf_iobhx", mcf_iobhx_mask, TH500_HWPM_IP_MCF_IOBHX, TH500_HWPM_IP_MCF_IOBHX_NUM_INSTANCES, th500_mcf_iobhx_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
+		{"mcf_ocu", mcf_ocu_mask, TH500_HWPM_IP_MCF_OCU, TH500_HWPM_IP_MCF_OCU_NUM_INSTANCES, th500_mcf_ocu_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
+		{"mss_hub", mss_hub_mask, TH500_HWPM_IP_MSS_HUB, TH500_HWPM_IP_MSS_HUB_NUM_INSTANCES, th500_mss_hub_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_MSS_CHANNEL)
+		{"mss_channel", mss_channel_mask, TH500_HWPM_IP_MSS_CHANNEL, TH500_HWPM_IP_MSS_CHANNEL_NUM_INSTANCES, th500_mss_channel_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_PCIE)
+		{"pcie_xalrc", pcie_mask, TH500_HWPM_IP_PCIE_XALRC, TH500_HWPM_IP_PCIE_XALRC_NUM_INSTANCES, th500_pcie_xalrc_inst_static_array},
+		{"pcie_xtlrc", pcie_mask, TH500_HWPM_IP_PCIE_XTLRC, TH500_HWPM_IP_PCIE_XTLRC_NUM_INSTANCES, th500_pcie_xtlrc_inst_static_array},
+		{"pcie_xtlq", pcie_mask, TH500_HWPM_IP_PCIE_XTLQ, TH500_HWPM_IP_PCIE_XTLQ_NUM_INSTANCES, th500_pcie_xtlq_inst_static_array},
+#endif
+#if defined(CONFIG_TH500_HWPM_IP_SMMU)
+		{"smmu", smmu_mask, TH500_HWPM_IP_SMMU, TH500_HWPM_IP_SMMU_NUM_INSTANCES, th500_smmu_inst_static_array},
+#endif
+	};
+	int force_enable_ips_size = sizeof(force_enable_ips)/sizeof(force_enable_ips[0]);
+#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
 
 	tegra_hwpm_fn(hwpm, " ");
 
 #if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
-	/* MSS CHANNEL */
-#if defined(CONFIG_TH500_HWPM_IP_MSS_CHANNEL)
-	ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-		addr_map_mc0_base_r(), TH500_HWPM_IP_MSS_CHANNEL, true);
-	if (ret != 0) {
-		tegra_hwpm_err(hwpm,
-			"TH500_HWPM_IP_MSS_CHANNEL force enable failed");
-		err = ret;
-	}
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_C2C)
-	/* CTC Link */
-	ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-		addr_map_c2c0_base_r(), TH500_HWPM_IP_C2C, true);
-	if (ret != 0) {
-		tegra_hwpm_err(hwpm,
-			"TH500_HWPM_IP_C2C force enable failed");
-		return ret;
-	}
+	socket_offset = (u64)socket_number << socket_shift;
 
-	ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-		addr_map_c2c5_base_r(), TH500_HWPM_IP_C2C, true);
-	if (ret != 0) {
-		tegra_hwpm_err(hwpm,
-			"TH500_HWPM_IP_C2C force enable failed");
-		return ret;
+	for (ip = 1; ip < force_enable_ips_size; ip++) {
+		struct hwpm_force_enable_ip *current_ip = &force_enable_ips[ip];
+
+		tegra_hwpm_err(hwpm, "Force enabling %s on socket %d", current_ip->name,
+			socket_number);
+
+		for (inst = 0; inst < current_ip->instances; inst++) {
+			if (!(current_ip->mask & (1ULL << inst))) {
+				continue;
+			}
+
+			tegra_hwpm_err(hwpm, "\tenabling instance %d...", inst);
+
+			ip_inst = &current_ip->inst_static_array[inst];
+			elem_info = &ip_inst->element_info[TEGRA_HWPM_APERTURE_TYPE_PERFMUX];
+			base_addr = socket_offset + elem_info->range_start;
+			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+				base_addr, current_ip->id, true);
+			if (ret != 0) {
+				tegra_hwpm_err(hwpm,
+					"%s force enable failed for instance %d",
+					current_ip->name, inst);
+				err = ret;
+			}
+		}
 	}
-#endif
-#endif
+#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
+
 	return err;
 }
