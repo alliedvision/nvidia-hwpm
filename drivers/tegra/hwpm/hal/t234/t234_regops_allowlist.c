@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -252,11 +252,8 @@ struct allowlist t234_pva0_pm_alist[9] = {
 	{0x00008020, true},
 };
 
-struct allowlist t234_nvdla_alist[37] = {
-	{0x00001088, false},
+struct allowlist t234_nvdla_alist[31] = {
 	{0x000010a8, false},
-	{0x0001a000, false},
-	{0x0001a004, false},
 	{0x0001a008, true},
 	{0x0001a00c, true},
 	{0x0001a010, true},
@@ -287,9 +284,6 @@ struct allowlist t234_nvdla_alist[37] = {
 	{0x0001a074, true},
 	{0x0001a078, true},
 	{0x0001a07c, true},
-	{0x00000008, true},
-	{0x00000a00, true},
-	{0x00000a20, true},
 };
 
 struct allowlist t234_mgbe_alist[2] = {
