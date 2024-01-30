@@ -29,6 +29,10 @@ ifeq ($(origin srctree.hwpm), undefined)
 srctree.hwpm := $(abspath $(shell dirname $(lastword $(MAKEFILE_LIST))))/../../..
 endif
 
+ifdef CONFIG_TEGRA_KLEAF_BUILD
+srctree.nvconftest := $(abspath $(NV_BUILD_KERNEL_NVCONFTEST_OUT))
+endif
+
 # For OOT builds, set required config flags
 ifeq ($(CONFIG_TEGRA_OOT_MODULE),m)
 NVHWPM_OBJ = m
@@ -64,9 +68,19 @@ endif
 
 obj-${NVHWPM_OBJ} += nvhwpm.o
 
+ifdef CONFIG_TEGRA_KLEAF_BUILD
+KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
+M ?= $(shell pwd)
+
+modules modules_install:
+	make -C $(KERNEL_SRC) M=$(M) $(ccflags) CONFIG_TEGRA_OOT_MODULE=m $(@)
+
+clean:
+	make -C $(KERNEL_SRC) M=$(M) CONFIG_TEGRA_OOT_MODULE=m clean
+else
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) $(ccflags) CONFIG_TEGRA_OOT_MODULE=m modules
 
 clean:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) CONFIG_TEGRA_OOT_MODULE=m clean
-
+endif
