@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -236,7 +236,7 @@ static int t234_hwpm_validate_emc_config(struct tegra_soc_hwpm *hwpm)
 	 * Convert floorsweep fuse value to available EMC elements.
 	 */
 	do {
-		if (emc_disable_fuse_val & (0x1U << emc_disable_fuse_bit_idx)) {
+		if (!(emc_disable_fuse_val & (0x1U << emc_disable_fuse_bit_idx))) {
 			emc_element_floorsweep_mask |=
 				(0xFU << (emc_disable_fuse_bit_idx * 4U));
 		}
