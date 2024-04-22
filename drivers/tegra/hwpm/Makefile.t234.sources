@@ -1,10 +1,29 @@
+# -*- mode: makefile -*-
+#
+# Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
 #
 # Tegra SOC HWPM T234 sources
 #
 
-# SPDX-License-Identifier: GPL-2.0
-
-ifeq ($(CONFIG_TEGRA_T234_HWPM),y)
+ifeq ($(CONFIG_TEGRA_HWPM_T234),y)
 nvhwpm-t234-objs += hal/t234/t234_aperture.o
 nvhwpm-t234-objs += hal/t234/t234_interface.o
 nvhwpm-t234-objs += hal/t234/t234_ip.o
@@ -31,50 +50,18 @@ nvhwpm-t234-objs += hal/t234/ip/pma/t234_pma.o
 #             driver and share required function pointers
 # - option 2: map perfmux register address in HWPM driver
 # Option 1 is the preferred solution. However, IP drivers have yet to
-# implement the interface. Such IPs can be force enabled from HWPM driver
-# perspective (option 2). Marking an IP available forcefully requires the user
-# to unpowergate the IP before running any HWPM experiments.
+# implement the interface. HWPM driver implements option 2 for validation of suc IPs.
+# If an IP is forced to available status from HWPM driver perspective, it is user's
+# responsibility to ensure that the IP is infact present on the SOC config and
+# unpowergated before running any HWPM experiments.
 #
 # Enable CONFIG_T234_HWPM_ALLOW_FORCE_ENABLE for internal builds.
-# Note: We should work towards removing force enable flag dependency.
+# Note: We should work towards removing force enabling IP.
 #
-ifeq ($(NV_BUILD_CONFIGURATION_IS_EXTERNAL),0)
+ifeq ($(CONFIG_HWPM_BUILD_INTERNAL),y)
 ccflags-y += -DCONFIG_T234_HWPM_ALLOW_FORCE_ENABLE
-endif
 
-#
-# Currently, PVA, DLA and MSS channel are the IPs supported
-# for performance metrics in external builds.
-# Define CONFIG_TEGRA_HWPM_MINIMAL_IP_ENABLE flag.
-#
-ifeq ($(NV_BUILD_CONFIGURATION_IS_EXTERNAL),1)
-CONFIG_TEGRA_HWPM_MINIMAL_IP_ENABLE=y
-ccflags-y += -DCONFIG_TEGRA_HWPM_MINIMAL_IP_ENABLE
-endif
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_NVDLA
-nvhwpm-t234-objs += hal/t234/ip/nvdla/t234_nvdla.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_PVA
-nvhwpm-t234-objs += hal/t234/ip/pva/t234_pva.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_MSS_CHANNEL
-nvhwpm-t234-objs += hal/t234/ip/mss_channel/t234_mss_channel.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_NVENC
-nvhwpm-t234-objs += hal/t234/ip/nvenc/t234_nvenc.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_OFA
-nvhwpm-t234-objs += hal/t234/ip/ofa/t234_ofa.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_VIC
-nvhwpm-t234-objs += hal/t234/ip/vic/t234_vic.o
-
-ccflags-y += -DCONFIG_T234_HWPM_IP_NVDEC
-nvhwpm-t234-objs += hal/t234/ip/nvdec/t234_nvdec.o
-
-# Include other IPs if minimal build is not enabled.
-ifneq ($(CONFIG_TEGRA_HWPM_MINIMAL_IP_ENABLE),y)
+# Include non-prod IPs if minimal build is not enabled for validation
 ccflags-y += -DCONFIG_T234_HWPM_IP_DISPLAY
 nvhwpm-t234-objs += hal/t234/ip/display/t234_display.o
 
@@ -104,7 +91,29 @@ nvhwpm-t234-objs += hal/t234/ip/scf/t234_scf.o
 
 ccflags-y += -DCONFIG_T234_HWPM_IP_VI
 nvhwpm-t234-objs += hal/t234/ip/vi/t234_vi.o
-
 endif
+
+# Below IPs are enabled for all builds
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_NVDLA
+nvhwpm-t234-objs += hal/t234/ip/nvdla/t234_nvdla.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_PVA
+nvhwpm-t234-objs += hal/t234/ip/pva/t234_pva.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_MSS_CHANNEL
+nvhwpm-t234-objs += hal/t234/ip/mss_channel/t234_mss_channel.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_NVENC
+nvhwpm-t234-objs += hal/t234/ip/nvenc/t234_nvenc.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_OFA
+nvhwpm-t234-objs += hal/t234/ip/ofa/t234_ofa.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_VIC
+nvhwpm-t234-objs += hal/t234/ip/vic/t234_vic.o
+
+ccflags-y += -DCONFIG_T234_HWPM_IP_NVDEC
+nvhwpm-t234-objs += hal/t234/ip/nvdec/t234_nvdec.o
 
 endif

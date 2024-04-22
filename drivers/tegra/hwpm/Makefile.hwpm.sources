@@ -23,7 +23,24 @@
 # Tegra SOC HWPM Sources
 #
 
-ifeq ($(CONFIG_TEGRA_OOT_MODULE),m)
+# Based on build config, set HWPM flags
+# Flag indicates internal build config
+ifeq ($(NV_BUILD_CONFIGURATION_IS_EXTERNAL), 0)
+CONFIG_HWPM_BUILD_INTERNAL := y
+endif
+
+# T234 supported on all valid platforms
+CONFIG_TEGRA_HWPM_T234 := y
+
+# TH500 supported only on OOT config
+ifeq ($(CONFIG_TEGRA_HWPM_OOT),y)
+ifeq ($(NV_BUILD_CONFIGURATION_EXPOSING_TH50X), 1)
+CONFIG_TEGRA_HWPM_TH500 := y
+endif
+endif
+
+# Set HWPM next path and include sources as per build config
+ifeq ($(CONFIG_TEGRA_HWPM_OOT),y)
 
 srctree.hwpm-next := ${srctree.hwpm}
 # Include next sources only if Makefile.hwpm-next.sources exists
@@ -44,13 +61,13 @@ else
 srctree.hwpm-next := ${NV_SOURCE}/kernel/hwpm-next
 endif
 ifneq ($(origin srctree.hwpm-next), undefined)
-ifneq ($(wildcard ${srctree.hwpm-next}/drivers/tegra/Makefile.hwpm-next.sources),)
-include ${srctree.hwpm-next}/drivers/tegra/Makefile.hwpm-next.sources
+ifneq ($(wildcard ${srctree.hwpm-next}/drivers/tegra/hwpm/Makefile.hwpm-next.sources),)
+include ${srctree.hwpm-next}/drivers/tegra/hwpm/Makefile.hwpm-next.sources
 nvhwpm-objs += ${nvhwpm-next-objs}
 endif
 endif
 
-endif # CONFIG_TEGRA_OOT_MODULE
+endif # CONFIG_TEGRA_HWPM_OOT
 
 # Include common files
 include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.common.sources
@@ -60,23 +77,15 @@ nvhwpm-objs += ${nvhwpm-common-objs}
 include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.linux.sources
 nvhwpm-objs += ${nvhwpm-linux-objs}
 
-CONFIG_TEGRA_SOC_HWPM := y
-ccflags-y += -DCONFIG_TEGRA_SOC_HWPM
-
-CONFIG_TEGRA_T234_HWPM := y
-ccflags-y += -DCONFIG_TEGRA_T234_HWPM
-
-ifeq ($(CONFIG_TEGRA_T234_HWPM),y)
+ifeq ($(CONFIG_TEGRA_HWPM_T234),y)
+ccflags-y += -DCONFIG_TEGRA_HWPM_T234
 # Include T234 files
 include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.t234.sources
 nvhwpm-objs += ${nvhwpm-t234-objs}
 endif
 
-# TH500 HWPM is only supported with BaseOS as an OOT module.
-# Check for TH500 HWPM config flag defined in BaseOS
-ifeq ($(CONFIG_TEGRA_TH500_HWPM),y)
-ccflags-y += -DCONFIG_TEGRA_TH500_HWPM
-
+ifeq ($(CONFIG_TEGRA_HWPM_TH500),y)
+ccflags-y += -DCONFIG_TEGRA_HWPM_TH500
 # Include TH500 files
 include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.th500.sources
 nvhwpm-objs += ${nvhwpm-th500-objs}

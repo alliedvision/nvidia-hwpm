@@ -33,7 +33,6 @@ endif
 ifeq ($(CONFIG_TEGRA_OOT_MODULE),m)
 NVHWPM_OBJ = m
 
-# For OOT builds, set required config flags
 CONFIG_TEGRA_HWPM_OOT := y
 ccflags-y += -DCONFIG_TEGRA_HWPM_OOT
 
@@ -42,17 +41,19 @@ ccflags-y += -DCONFIG_TEGRA_FUSE_UPSTREAM
 
 ccflags-y += -I$(srctree.nvconftest)
 
-else
+else # CONFIG_TEGRA_OOT_MODULE != m
 NVHWPM_OBJ = y
-endif
+endif # CONFIG_TEGRA_OOT_MODULE
 
+# Include paths
 ccflags-y += -I$(srctree.hwpm)/include
 ccflags-y += -I$(srctree.hwpm)/drivers/tegra/hwpm/include
 ccflags-y += -I$(srctree.hwpm)/drivers/tegra/hwpm
 
-ifeq ($(CONFIG_TEGRA_LINUX_PROD),1)
+# Validate build config to add HWPM module support
+ifeq ($(NV_BUILD_CONFIGURATION_IS_SAFETY),1)
 nvhwpm-objs := tegra_hwpm_mock.o
-else ifeq ($(NV_BUILD_CONFIGURATION_IS_SAFETY),1)
+else ifeq ($(CONFIG_TEGRA_LINUX_PROD),1)
 nvhwpm-objs := tegra_hwpm_mock.o
 else ifneq ($(CONFIG_ARCH_TEGRA),y)
 nvhwpm-objs := tegra_hwpm_mock.o
