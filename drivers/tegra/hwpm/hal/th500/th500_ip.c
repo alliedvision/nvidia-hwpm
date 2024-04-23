@@ -328,7 +328,7 @@ static int th500_hwpm_validate_emc_config(struct tegra_soc_hwpm *hwpm)
 	 * Convert floorsweep fuse value to available EMC elements.
 	 */
 	do {
-		if (emc_disable_fuse_val & (0x1U << emc_disable_fuse_bit_idx)) {
+		if (!(emc_disable_fuse_val & (0x1U << emc_disable_fuse_bit_idx))) {
 			emc_element_floorsweep_mask |=
 				(0xFU << (emc_disable_fuse_bit_idx * 4U));
 		}
