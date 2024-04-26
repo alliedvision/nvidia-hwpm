@@ -56,6 +56,7 @@ struct tegra_hwpm_os_qnx;
 #endif
 struct tegra_hwpm_mem_mgmt;
 struct tegra_hwpm_allowlist_map;
+struct tegra_soc_hwpm_exec_credit_program;
 enum tegra_soc_hwpm_ip_reg_op;
 
 /*
@@ -138,6 +139,15 @@ enum tegra_hwpm_resource_enum {
 	TEGRA_HWPM_RESOURCE_PCIE_XTLRC,
 	TEGRA_HWPM_RESOURCE_PCIE_XALRC,
 	TERGA_HWPM_NUM_RESOURCES
+};
+
+/* Used in Credit Programming */
+enum tegra_hwpm_credit_cmd {
+	TEGRA_HWPM_CMD_SET_HS_CREDITS,
+	TEGRA_HWPM_CMD_GET_HS_CREDITS,
+	TEGRA_HWPM_CMD_GET_TOTAL_HS_CREDITS,
+	TEGRA_HWPM_CMD_GET_CHIPLET_HS_CREDITS_POOL,
+	TEGRA_HWPM_CMD_GET_HS_CREDITS_MAPPING
 };
 
 /*
@@ -536,7 +546,9 @@ struct tegra_soc_hwpm_chip {
 	int (*init_prod_values)(struct tegra_soc_hwpm *hwpm);
 	int (*disable_cg)(struct tegra_soc_hwpm *hwpm);
 	int (*enable_cg)(struct tegra_soc_hwpm *hwpm);
-
+	int (*credit_program)(struct tegra_soc_hwpm *hwpm,
+		u32 *num_credits, u8 cblock_idx,
+		u8 pma_channel_idx, uint16_t credit_cmd);
 	int (*reserve_rtr)(struct tegra_soc_hwpm *hwpm);
 	int (*release_rtr)(struct tegra_soc_hwpm *hwpm);
 
