@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -10,8 +9,6 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <linux/slab.h>
@@ -147,6 +144,10 @@ static int ip_readl(struct tegra_soc_hwpm *hwpm, struct hwpm_ip_inst *ip_inst,
 			}
 			*val = __raw_readl(ptr);
 			iounmap(ptr);
+
+			/* If all F's received, it's a failure */
+			if (*val == 0xFFFFFFFFU)
+				return -ENODEV;
 		}
 	}
 	return 0;

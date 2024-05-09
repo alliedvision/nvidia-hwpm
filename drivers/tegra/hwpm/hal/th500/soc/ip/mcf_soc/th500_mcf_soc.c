@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,21 +26,21 @@
  *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
-#include "th500_mcf_ocu.h"
+#include "th500_mcf_soc.h"
 
 #include <tegra_hwpm.h>
 #include <hal/th500/soc/th500_soc_perfmon_device_index.h>
 #include <hal/th500/soc/th500_soc_regops_allowlist.h>
 #include <hal/th500/soc/hw/th500_addr_map_soc_hwpm.h>
 
-static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmon_element_static_array[
-	TH500_HWPM_IP_MCF_OCU_NUM_PERFMON_PER_INST] = {
+static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmon_element_static_array[
+	TH500_HWPM_IP_MCF_SOC_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
 		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index = 1U,
 		.dt_mmio = NULL,
-		.name = "permon_mcfsoc0_ocu",
+		.name = "permon_mcfsoc0_soc",
 		.device_index = TH500_MCFSOC0_PERFMON_DEVICE_NODE_INDEX,
 		.start_abs_pa = addr_map_rpg_pm_mcfsoc0_base_r(),
 		.end_abs_pa = addr_map_rpg_pm_mcfsoc0_limit_r(),
@@ -53,8 +53,8 @@ static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmon_element_static_array[
 	},
 };
 
-static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmux_element_static_array[
-	TH500_HWPM_IP_MCF_OCU_NUM_PERFMUX_PER_INST] = {
+static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmux_element_static_array[
+	TH500_HWPM_IP_MCF_SOC_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
 		.element_index_mask = BIT(0),
@@ -66,8 +66,8 @@ static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmux_element_static_array[
 		.start_pa = addr_map_mc0_base_r(),
 		.end_pa = addr_map_mc0_limit_r(),
 		.base_pa = 0ULL,
-		.alist = th500_mcf_ocu_alist,
-		.alist_size = ARRAY_SIZE(th500_mcf_ocu_alist),
+		.alist = th500_mcf_soc_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_soc_alist),
 		.fake_registers = NULL,
 	},
 	{
@@ -81,8 +81,8 @@ static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmux_element_static_array[
 		.start_pa = addr_map_mc1_base_r(),
 		.end_pa = addr_map_mc1_limit_r(),
 		.base_pa = 0ULL,
-		.alist = th500_mcf_ocu_alist,
-		.alist_size = ARRAY_SIZE(th500_mcf_ocu_alist),
+		.alist = th500_mcf_soc_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_soc_alist),
 		.fake_registers = NULL,
 	},
 	{
@@ -96,14 +96,29 @@ static struct hwpm_ip_aperture th500_mcf_ocu_inst0_perfmux_element_static_array[
 		.start_pa = addr_map_mc2_base_r(),
 		.end_pa = addr_map_mc2_limit_r(),
 		.base_pa = 0ULL,
-		.alist = th500_mcf_ocu_alist,
-		.alist_size = ARRAY_SIZE(th500_mcf_ocu_alist),
+		.alist = th500_mcf_soc_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_soc_alist),
+		.fake_registers = NULL,
+	},
+	{
+		.element_type = IP_ELEMENT_PERFMUX,
+		.element_index_mask = BIT(3),
+		.element_index = 4U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mc16_base_r(),
+		.end_abs_pa = addr_map_mc16_limit_r(),
+		.start_pa = addr_map_mc16_base_r(),
+		.end_pa = addr_map_mc16_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mcf_soc_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_soc_alist),
 		.fake_registers = NULL,
 	},
 };
 
-static struct hwpm_ip_aperture th500_mcf_ocu_inst0_broadcast_element_static_array[
-	TH500_HWPM_IP_MCF_OCU_NUM_BROADCAST_PER_INST] = {
+static struct hwpm_ip_aperture th500_mcf_soc_inst0_broadcast_element_static_array[
+	TH500_HWPM_IP_MCF_SOC_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
 		.element_index_mask = BIT(0),
@@ -115,19 +130,19 @@ static struct hwpm_ip_aperture th500_mcf_ocu_inst0_broadcast_element_static_arra
 		.start_pa = addr_map_mcb_base_r(),
 		.end_pa = addr_map_mcb_limit_r(),
 		.base_pa = 0ULL,
-		.alist = th500_mcf_ocu_alist,
-		.alist_size = ARRAY_SIZE(th500_mcf_ocu_alist),
+		.alist = th500_mcf_soc_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_soc_alist),
 		.fake_registers = NULL,
 	},
 };
 
 /* IP instance array */
-struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[
-	TH500_HWPM_IP_MCF_OCU_NUM_INSTANCES] = {
+struct hwpm_ip_inst th500_mcf_soc_inst_static_array[
+	TH500_HWPM_IP_MCF_SOC_NUM_INSTANCES] = {
 	{
 		.hw_inst_mask = BIT(0),
 		.num_core_elements_per_inst =
-			TH500_HWPM_IP_MCF_OCU_NUM_CORE_ELEMENT_PER_INST,
+			TH500_HWPM_IP_MCF_SOC_NUM_CORE_ELEMENT_PER_INST,
 		.element_info = {
 			/*
 			 * Instance info corresponding to
@@ -135,12 +150,12 @@ struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[
 			 */
 			{
 				.num_element_per_inst =
-					TH500_HWPM_IP_MCF_OCU_NUM_PERFMUX_PER_INST,
+					TH500_HWPM_IP_MCF_SOC_NUM_PERFMUX_PER_INST,
 				.element_static_array =
-					th500_mcf_ocu_inst0_perfmux_element_static_array,
+					th500_mcf_soc_inst0_perfmux_element_static_array,
 				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_mc0_base_r(),
-				.range_end = addr_map_mc2_limit_r(),
+				.range_end = addr_map_mc16_limit_r(),
 				.element_stride = addr_map_mc0_limit_r() -
 					addr_map_mc0_base_r() + 1ULL,
 				.element_slots = 0U,
@@ -152,9 +167,9 @@ struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[
 			 */
 			{
 				.num_element_per_inst =
-					TH500_HWPM_IP_MCF_OCU_NUM_BROADCAST_PER_INST,
+					TH500_HWPM_IP_MCF_SOC_NUM_BROADCAST_PER_INST,
 				.element_static_array =
-					th500_mcf_ocu_inst0_broadcast_element_static_array,
+					th500_mcf_soc_inst0_broadcast_element_static_array,
 				.range_start = addr_map_mcb_base_r(),
 				.range_end = addr_map_mcb_limit_r(),
 				.element_stride = addr_map_mcb_limit_r() -
@@ -168,9 +183,9 @@ struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[
 			 */
 			{
 				.num_element_per_inst =
-					TH500_HWPM_IP_MCF_OCU_NUM_PERFMON_PER_INST,
+					TH500_HWPM_IP_MCF_SOC_NUM_PERFMON_PER_INST,
 				.element_static_array =
-					th500_mcf_ocu_inst0_perfmon_element_static_array,
+					th500_mcf_soc_inst0_perfmon_element_static_array,
 				.range_start = addr_map_rpg_pm_mcfsoc0_base_r(),
 				.range_end = addr_map_rpg_pm_mcfsoc0_limit_r(),
 				.element_stride = addr_map_rpg_pm_mcfsoc0_limit_r() -
@@ -193,9 +208,9 @@ struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[
 };
 
 /* IP structure */
-struct hwpm_ip th500_hwpm_ip_mcf_ocu = {
-	.num_instances = TH500_HWPM_IP_MCF_OCU_NUM_INSTANCES,
-	.ip_inst_static_array = th500_mcf_ocu_inst_static_array,
+struct hwpm_ip th500_hwpm_ip_mcf_soc = {
+	.num_instances = TH500_HWPM_IP_MCF_SOC_NUM_INSTANCES,
+	.ip_inst_static_array = th500_mcf_soc_inst_static_array,
 
 	.inst_aperture_info = {
 		/*
@@ -205,8 +220,8 @@ struct hwpm_ip th500_hwpm_ip_mcf_ocu = {
 		{
 			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_mc0_base_r(),
-			.range_end = addr_map_mc2_limit_r(),
-			.inst_stride = addr_map_mc2_limit_r() -
+			.range_end = addr_map_mc16_limit_r(),
+			.inst_stride = addr_map_mc16_limit_r() -
 				addr_map_mc0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,

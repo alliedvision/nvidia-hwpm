@@ -20,6 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <linux/stat.h>
+#include <linux/moduleparam.h>
 #include <tegra_hwpm.h>
 #include <tegra_hwpm_io.h>
 #include <tegra_hwpm_log.h>
@@ -30,6 +32,82 @@
 #include <hal/th500/th500_internal.h>
 #include <hal/th500/soc/th500_soc_internal.h>
 #include <hal/th500/soc/hw/th500_addr_map_soc_hwpm.h>
+
+/*
+ * Optional module parameters
+ */
+#ifdef CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE
+/* This is a WAR on TH500 */
+int validate_current_config = 1;
+module_param(validate_current_config, int, 0660);
+
+/*
+ * IP software masks to be used for force-enablement.
+ * 0x0 means "do not force-enable". These are meant to be
+ * a stop-gap measure until either we have ability to
+ * decide these based on fuses or they have IP drivers.
+ */
+long nvlctrl_mask;
+module_param(nvlctrl_mask, long, 0660);
+
+long nvlrx_mask;
+module_param(nvlrx_mask, long, 0660);
+
+long nvltx_mask;
+module_param(nvltx_mask, long, 0660);
+
+long c2c_mask;
+module_param(c2c_mask, long, 0660);
+
+long cl2_mask;
+module_param(cl2_mask, long, 0660);
+
+long mcf_c2c_mask;
+module_param(mcf_c2c_mask, long, 0660);
+
+long mcf_clink_mask;
+module_param(mcf_clink_mask, long, 0660);
+
+long mcf_core_mask;
+module_param(mcf_core_mask, long, 0660);
+
+long mcf_soc_mask;
+module_param(mcf_soc_mask, long, 0660);
+
+long mss_channel_mask;
+module_param(mss_channel_mask, long, 0660);
+
+long mss_hub_mask;
+module_param(mss_hub_mask, long, 0660);
+
+long pcie_mask;
+module_param(pcie_mask, long, 0660);
+
+long smmu_mask;
+module_param(smmu_mask, long, 0660);
+
+/* Socket number */
+int socket_number;
+/*
+ * The socket number must be 0, 1, 2, or 3.
+ */
+static int set_socket_number(const char *val, const struct kernel_param *kp)
+{
+	int socket_num = 0, ret;
+
+	ret = kstrtoint(val, 10, &socket_num);
+	if (ret != 0 || socket_num < 0 || socket_num > 3)
+		return -EINVAL;
+
+	return param_set_int(val, kp);
+}
+
+static const struct kernel_param_ops param_ops = {
+	.set	= set_socket_number,
+	.get	= param_get_int,
+};
+module_param_cb(socket, &param_ops, &socket_number, 0664);
+#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
 
 /*
  * This function is invoked by register_ip API.
@@ -106,13 +184,10 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 	case TH500_HWPM_IP_MCF_CLINK:
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_MCF_C2C)
-    case TH500_HWPM_IP_MCF_C2C:
+	case TH500_HWPM_IP_MCF_C2C:
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
-    case TH500_HWPM_IP_MCF_OCU:
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
-	case TH500_HWPM_IP_MCF_IOBHX:
+#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
+	case TH500_HWPM_IP_MCF_SOC:
 #endif
 		/*
 		 * MSS channel, MCF CORE, MCF CLINK, MCF C2C, MCF SOC,
@@ -211,32 +286,9 @@ int th500_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 			ret = 0;
 		}
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
-		/* Check base address in TH500_HWPM_IP_MCF_OCU */
-		ip_idx = TH500_HWPM_IP_MCF_OCU;
-		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
-			base_address, ip_idx, available);
-		if (ret != 0) {
-			/*
-			 * Return value of ENODEV will indicate that the base
-			 * address doesn't belong to this IP.
-			 * This case is valid, as not all base addresses are
-			 * shared between MSS IPs.
-			 * In this case, reset return value to 0.
-			 */
-			if (ret != -ENODEV) {
-				tegra_hwpm_err(hwpm,
-					"IP %d base 0x%llx:Failed to %s fs/ops",
-					ip_idx, base_address,
-					available == true ? "set" : "reset");
-				goto fail;
-			}
-			ret = 0;
-		}
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
-		/* Check base address in TH500_HWPM_IP_MCF_IOBHX */
-		ip_idx = TH500_HWPM_IP_MCF_IOBHX;
+#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
+		/* Check base address in TH500_HWPM_IP_MCF_SOC */
+		ip_idx = TH500_HWPM_IP_MCF_SOC;
 		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
 			base_address, ip_idx, available);
 		if (ret != 0) {
@@ -384,13 +436,19 @@ int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm)
 	int err;
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = NULL;
-	extern int validate_current_config;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	if (!tegra_hwpm_is_platform_silicon() || validate_current_config == 0) {
+#ifdef CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE
+	extern int validate_current_config;
+
+
+	if (validate_current_config != 0)
 		return 0;
-	}
+#endif
+
+	if (!tegra_hwpm_is_platform_silicon())
+		return 0;
 
 	err = th500_hwpm_validate_emc_config(hwpm);
 	if (err != 0) {
@@ -493,26 +551,30 @@ int th500_hwpm_validate_current_config(struct tegra_soc_hwpm *hwpm)
 	return 0;
 }
 
+/*
+ * This routine force enables IPs in TH500 chip. Many of the IPs in TH500 do
+ * not have any IP drivers. Therefore, there is no natural way for them to be
+ * enabled for performance monitoring. The approach taken here is to provide
+ * module parameters for this driver, such that when the driver is loaded, the
+ * user can provide bitmasks for the IPs she wants to enable. For example, to
+ * enable PCI-E controllers 0 and 1, she could provide the module parameter
+ * pcie_mask=0x3. The valid range of mask values depends on each IP.
+ *
+ * Linux has two ways to provide module parameters: (1) On the command line at
+ * 'insmod' time, or (2) via /etc/modprobe.d/nvhwpm.conf file.
+ *
+ * The following routine simply examples each mask and force enables the IP by
+ * calling tegra_hwpm_set_fs_info_ip_ops(). The complicated looking data
+ * structures in this routine are just convenience structures that permit
+ * looping over all IPs vs. writing custom code for each IP separately.
+ */
 int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 {
+	int err = 0;
+
+	tegra_hwpm_fn(hwpm, " ");
+
 #if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
-	extern int socket_number;
-
-	extern long int nvlctrl_mask;
-	extern long int nvlrx_mask;
-	extern long int nvltx_mask;
-	extern long int c2c_mask;
-	extern long int cl2_mask;
-	extern long int mcf_c2c_mask;
-	extern long int mcf_clink_mask;
-	extern long int mcf_core_mask;
-	extern long int mcf_iobhx_mask;
-	extern long int mcf_ocu_mask;
-	extern long int mss_hub_mask;
-	extern long int mss_channel_mask;
-	extern long int pcie_mask;
-	extern long int smmu_mask;
-
 	extern struct hwpm_ip_inst th500_nvlctrl_inst_static_array[];
 	extern struct hwpm_ip_inst th500_nvlrx_inst_static_array[];
 	extern struct hwpm_ip_inst th500_nvltx_inst_static_array[];
@@ -521,23 +583,16 @@ int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 	extern struct hwpm_ip_inst th500_mcf_c2c_inst_static_array[];
 	extern struct hwpm_ip_inst th500_mcf_clink_inst_static_array[];
 	extern struct hwpm_ip_inst th500_mcf_core_inst_static_array[];
-	extern struct hwpm_ip_inst th500_mcf_iobhx_inst_static_array[];
-	extern struct hwpm_ip_inst th500_mcf_ocu_inst_static_array[];
+	extern struct hwpm_ip_inst th500_mcf_soc_inst_static_array[];
 	extern struct hwpm_ip_inst th500_mss_hub_inst_static_array[];
 	extern struct hwpm_ip_inst th500_mss_channel_inst_static_array[];
 	extern struct hwpm_ip_inst th500_pcie_xalrc_inst_static_array[];
 	extern struct hwpm_ip_inst th500_pcie_xtlrc_inst_static_array[];
 	extern struct hwpm_ip_inst th500_pcie_xtlq_inst_static_array[];
 	extern struct hwpm_ip_inst th500_smmu_inst_static_array[];
-#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
-
-	int err = 0;
-
-#if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
 	int ret = 0;
 	int ip, inst;
-	const u32 socket_shift = 44; /* bits */
-	u64 socket_offset, base_addr;
+	u64 base_addr;
 	struct hwpm_ip_inst *ip_inst = NULL;
 	struct hwpm_ip_element_info *elem_info = NULL;
 
@@ -570,11 +625,8 @@ int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 #if defined(CONFIG_TH500_HWPM_IP_MCF_CORE)
 		{"mcf_core", mcf_core_mask, TH500_HWPM_IP_MCF_CORE, TH500_HWPM_IP_MCF_CORE_NUM_INSTANCES, th500_mcf_core_inst_static_array},
 #endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_IOBHX)
-		{"mcf_iobhx", mcf_iobhx_mask, TH500_HWPM_IP_MCF_IOBHX, TH500_HWPM_IP_MCF_IOBHX_NUM_INSTANCES, th500_mcf_iobhx_inst_static_array},
-#endif
-#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
-		{"mcf_ocu", mcf_ocu_mask, TH500_HWPM_IP_MCF_OCU, TH500_HWPM_IP_MCF_OCU_NUM_INSTANCES, th500_mcf_ocu_inst_static_array},
+#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
+		{"mcf_soc", mcf_soc_mask, TH500_HWPM_IP_MCF_SOC, TH500_HWPM_IP_MCF_SOC_NUM_INSTANCES, th500_mcf_soc_inst_static_array},
 #endif
 #if defined(CONFIG_TH500_HWPM_IP_MSS_HUB)
 		{"mss_hub", mss_hub_mask, TH500_HWPM_IP_MSS_HUB, TH500_HWPM_IP_MSS_HUB_NUM_INSTANCES, th500_mss_hub_inst_static_array},
@@ -592,18 +644,11 @@ int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 #endif
 	};
 	int force_enable_ips_size = sizeof(force_enable_ips)/sizeof(force_enable_ips[0]);
-#endif /* CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE */
-
-	tegra_hwpm_fn(hwpm, " ");
-
-#if defined(CONFIG_TH500_HWPM_ALLOW_FORCE_ENABLE)
-	socket_offset = (u64)socket_number << socket_shift;
 
 	for (ip = 1; ip < force_enable_ips_size; ip++) {
 		struct hwpm_force_enable_ip *current_ip = &force_enable_ips[ip];
 
-		tegra_hwpm_err(hwpm, "Force enabling %s on socket %d", current_ip->name,
-			socket_number);
+		tegra_hwpm_dbg(hwpm, hwpm_info, "Force enabling %s on socket 0", current_ip->name);
 
 		for (inst = 0; inst < current_ip->instances; inst++) {
 			if (!(current_ip->mask & (1ULL << inst))) {
@@ -614,7 +659,7 @@ int th500_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 
 			ip_inst = &current_ip->inst_static_array[inst];
 			elem_info = &ip_inst->element_info[TEGRA_HWPM_APERTURE_TYPE_PERFMUX];
-			base_addr = socket_offset + elem_info->range_start;
+			base_addr = elem_info->range_start;
 			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
 				base_addr, current_ip->id, true);
 			if (ret != 0) {

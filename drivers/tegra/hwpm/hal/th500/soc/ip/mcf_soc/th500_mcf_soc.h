@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,23 +26,23 @@
  *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
-#ifndef TH500_HWPM_IP_MCF_OCU_H
-#define TH500_HWPM_IP_MCF_OCU_H
+#ifndef TH500_HWPM_IP_MCF_SOC_H
+#define TH500_HWPM_IP_MCF_SOC_H
 
-#if defined(CONFIG_TH500_HWPM_IP_MCF_OCU)
-#define TH500_HWPM_ACTIVE_IP_MCF_OCU	TH500_HWPM_IP_MCF_OCU,
+#if defined(CONFIG_TH500_HWPM_IP_MCF_SOC)
+#define TH500_HWPM_ACTIVE_IP_MCF_SOC	TH500_HWPM_IP_MCF_SOC,
 
 /* This data should ideally be available in HW headers */
-#define TH500_HWPM_IP_MCF_OCU_NUM_INSTANCES               1U
-#define TH500_HWPM_IP_MCF_OCU_NUM_CORE_ELEMENT_PER_INST   3U
-#define TH500_HWPM_IP_MCF_OCU_NUM_PERFMON_PER_INST        1U
-#define TH500_HWPM_IP_MCF_OCU_NUM_PERFMUX_PER_INST        3U
-#define TH500_HWPM_IP_MCF_OCU_NUM_BROADCAST_PER_INST      1U
+#define TH500_HWPM_IP_MCF_SOC_NUM_INSTANCES               1U
+#define TH500_HWPM_IP_MCF_SOC_NUM_CORE_ELEMENT_PER_INST   4U
+#define TH500_HWPM_IP_MCF_SOC_NUM_PERFMON_PER_INST        1U
+#define TH500_HWPM_IP_MCF_SOC_NUM_PERFMUX_PER_INST        4U
+#define TH500_HWPM_IP_MCF_SOC_NUM_BROADCAST_PER_INST      1U
 
-extern struct hwpm_ip th500_hwpm_ip_mcf_ocu;
+extern struct hwpm_ip th500_hwpm_ip_mcf_soc;
 
 #else
-#define TH500_HWPM_ACTIVE_IP_MCF_OCU
+#define TH500_HWPM_ACTIVE_IP_MCF_SOC
 #endif
 
-#endif /* TH500_HWPM_IP_MCF_OCU_H */
+#endif /* TH500_HWPM_IP_MCF_SOC_H */

@@ -25,7 +25,6 @@
 void tegra_hwpm_debugfs_init(struct tegra_hwpm_os_linux *hwpm_linux)
 {
 	struct tegra_soc_hwpm *hwpm = &hwpm_linux->hwpm;
-	extern int dbg_mask;
 
 	if (!hwpm_linux) {
 		tegra_hwpm_err(hwpm, "Invalid hwpm_linux struct");
@@ -42,8 +41,6 @@ void tegra_hwpm_debugfs_init(struct tegra_hwpm_os_linux *hwpm_linux)
 	/* Debug logs */
 	debugfs_create_u32("log_mask", S_IRUGO|S_IWUSR,
 		hwpm_linux->debugfs_root, &hwpm->dbg_mask);
-
-	hwpm->dbg_mask = ((u32)dbg_mask & hwpm_dbg_all_bits);
 
 	return;
 

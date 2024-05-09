@@ -33,8 +33,7 @@
 #include <hal/th500/soc/ip/c_nvlink/th500_nvltx.h>
 #include <hal/th500/soc/ip/c_nvlink/th500_nvlctrl.h>
 #include <hal/th500/soc/ip/mss_hub/th500_mss_hub.h>
-#include <hal/th500/soc/ip/mcf_ocu/th500_mcf_ocu.h>
-#include <hal/th500/soc/ip/mcf_iobhx/th500_mcf_iobhx.h>
+#include <hal/th500/soc/ip/mcf_soc/th500_mcf_soc.h>
 #include <hal/th500/soc/ip/mcf_c2c/th500_mcf_c2c.h>
 #include <hal/th500/soc/ip/mcf_clink/th500_mcf_clink.h>
 #include <hal/th500/soc/ip/mcf_core/th500_mcf_core.h>
@@ -56,8 +55,7 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLRX)   	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_NVLTX)   	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MSS_HUB)		\
-	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_OCU)		\
-	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_IOBHX)	\
+	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_SOC)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_CLINK)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_MCF_CORE)	\
 	DEFINE_SOC_HWPM_ACTIVE_IP(TH500_HWPM_ACTIVE_IP_PCIE_XTLQ)	\

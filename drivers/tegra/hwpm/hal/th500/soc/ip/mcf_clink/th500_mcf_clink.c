@@ -38,7 +38,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmon_element_static_arra
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
 		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_mcfsys0",
 		.device_index = TH500_MCFSYS0_PERFMON_DEVICE_NODE_INDEX,
@@ -54,7 +54,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmon_element_static_arra
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
 		.element_index_mask = BIT(1),
-		.element_index = 1U,
+		.element_index = 2U,
 		.dt_mmio = NULL,
 		.name = "perfmon_mcfsys1",
 		.device_index = TH500_MCFSYS1_PERFMON_DEVICE_NODE_INDEX,
@@ -74,6 +74,21 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
 		.element_index_mask = BIT(0),
+		.element_index = 1U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mc0_base_r(),
+		.end_abs_pa = addr_map_mc0_limit_r(),
+		.start_pa = addr_map_mc0_base_r(),
+		.end_pa = addr_map_mc0_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mcf_clink_alist,
+		.alist_size = ARRAY_SIZE(th500_mcf_clink_alist),
+		.fake_registers = NULL,
+	},
+	{
+		.element_type = IP_ELEMENT_PERFMUX,
+		.element_index_mask = BIT(1),
 		.element_index = 11U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -88,7 +103,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(1),
+		.element_index_mask = BIT(2),
 		.element_index = 12U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -103,7 +118,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(2),
+		.element_index_mask = BIT(3),
 		.element_index = 13U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -118,7 +133,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(3),
+		.element_index_mask = BIT(4),
 		.element_index = 14U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -133,7 +148,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(4),
+		.element_index_mask = BIT(5),
 		.element_index = 15U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -148,7 +163,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(5),
+		.element_index_mask = BIT(6),
 		.element_index = 16U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -163,7 +178,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(6),
+		.element_index_mask = BIT(7),
 		.element_index = 17U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -178,7 +193,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(7),
+		.element_index_mask = BIT(8),
 		.element_index = 18U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -193,7 +208,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(8),
+		.element_index_mask = BIT(9),
 		.element_index = 19U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -208,7 +223,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(9),
+		.element_index_mask = BIT(10),
 		.element_index = 20U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -223,7 +238,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(10),
+		.element_index_mask = BIT(11),
 		.element_index = 21U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -238,7 +253,7 @@ static struct hwpm_ip_aperture th500_mcf_clink_inst0_perfmux_element_static_arra
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(11),
+		.element_index_mask = BIT(12),
 		.element_index = 22U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
@@ -290,10 +305,10 @@ struct hwpm_ip_inst th500_mcf_clink_inst_static_array[
 				.element_static_array =
 					th500_mcf_clink_inst0_perfmux_element_static_array,
 				/* NOTE: range should be in ascending order */
-				.range_start = addr_map_mc10_base_r(),
+				.range_start = addr_map_mc0_base_r(),
 				.range_end = addr_map_mc21_limit_r(),
-				.element_stride = addr_map_mc10_limit_r() -
-					addr_map_mc10_base_r() + 1ULL,
+				.element_stride = addr_map_mc0_limit_r() -
+					addr_map_mc0_base_r() + 1ULL,
 				.element_slots = 0U,
 				.element_arr = NULL,
 			},
@@ -355,10 +370,10 @@ struct hwpm_ip th500_hwpm_ip_mcf_clink = {
 		 */
 		{
 			/* NOTE: range should be in ascending order */
-			.range_start = addr_map_mc10_base_r(),
+			.range_start = addr_map_mc0_base_r(),
 			.range_end = addr_map_mc21_limit_r(),
 			.inst_stride = addr_map_mc21_limit_r() -
-				addr_map_mc10_base_r() + 1ULL,
+				addr_map_mc0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,
 		},

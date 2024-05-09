@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -10,8 +9,6 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <linux/slab.h>
@@ -108,11 +105,8 @@ static u32 tegra_hwpm_translate_soc_hwpm_ip(struct tegra_soc_hwpm *hwpm,
 	case TEGRA_SOC_HWPM_IP_MSS_HUB:
 		ip_enum_idx = TEGRA_HWPM_IP_MSS_HUB;
 		break;
-	case TEGRA_SOC_HWPM_IP_MCF_OCU:
-		ip_enum_idx = TEGRA_HWPM_IP_MCF_OCU;
-		break;
-	case TEGRA_SOC_HWPM_IP_MCF_IOBHX:
-		ip_enum_idx = TEGRA_HWPM_IP_MCF_IOBHX;
+	case TEGRA_SOC_HWPM_IP_MCF_SOC:
+		ip_enum_idx = TEGRA_HWPM_IP_MCF_SOC;
 		break;
 	case TEGRA_SOC_HWPM_IP_MCF_C2C:
 		ip_enum_idx = TEGRA_HWPM_IP_MCF_C2C;
@@ -255,11 +249,8 @@ u32 tegra_hwpm_translate_soc_hwpm_resource(struct tegra_soc_hwpm *hwpm,
 	case TEGRA_SOC_HWPM_RESOURCE_MSS_HUB:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_MSS_HUB;
 		break;
-	case TEGRA_SOC_HWPM_RESOURCE_MCF_OCU:
-		res_enum_idx = TEGRA_HWPM_RESOURCE_MCF_OCU;
-		break;
-	case TEGRA_SOC_HWPM_RESOURCE_MCF_IOBHX:
-		res_enum_idx = TEGRA_HWPM_RESOURCE_MCF_IOBHX;
+	case TEGRA_SOC_HWPM_RESOURCE_MCF_SOC:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_MCF_SOC;
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_MCF_C2C:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_MCF_C2C;

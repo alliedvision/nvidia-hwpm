@@ -51,14 +51,10 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
-};
-
-static struct hwpm_ip_aperture th500_c2c_inst1_perfmon_element_static_array[
-	TH500_HWPM_IP_C2C_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index_mask = BIT(1),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_c2c1",
 		.device_index = TH500_CTC1_PERFMON_DEVICE_NODE_INDEX,
@@ -150,14 +146,10 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_c2c_alist),
 		.fake_registers = NULL,
 	},
-};
-
-static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
-	TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index_mask = BIT(5),
+		.element_index = 5U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2c5_base_r(),
@@ -171,8 +163,8 @@ static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(1),
-		.element_index = 1U,
+		.element_index_mask = BIT(6),
+		.element_index = 6U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2c6_base_r(),
@@ -186,8 +178,8 @@ static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(2),
-		.element_index = 2U,
+		.element_index_mask = BIT(7),
+		.element_index = 7U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2c7_base_r(),
@@ -201,8 +193,8 @@ static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(3),
-		.element_index = 3U,
+		.element_index_mask = BIT(8),
+		.element_index = 8U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2c8_base_r(),
@@ -216,52 +208,14 @@ static struct hwpm_ip_aperture th500_c2c_inst1_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(4),
-		.element_index = 4U,
+		.element_index_mask = BIT(9),
+		.element_index = 9U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_c2c9_base_r(),
 		.end_abs_pa = addr_map_c2c9_limit_r(),
 		.start_pa = addr_map_c2c9_base_r(),
 		.end_pa = addr_map_c2c9_limit_r(),
-		.base_pa = 0ULL,
-		.alist = th500_c2c_alist,
-		.alist_size = ARRAY_SIZE(th500_c2c_alist),
-		.fake_registers = NULL,
-	},
-};
-
-static struct hwpm_ip_aperture th500_c2c_inst0_broadcast_element_static_array[
-	TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST] = {
-	{
-		.element_type = IP_ELEMENT_BROADCAST,
-		.element_index_mask = BIT(0),
-		.element_index = 0U,
-		.dt_mmio = NULL,
-		.name = {'\0'},
-		.start_abs_pa = addr_map_c2cs0_base_r(),
-		.end_abs_pa = addr_map_c2cs0_limit_r(),
-		.start_pa = 0ULL,
-		.end_pa = 0ULL,
-		.base_pa = 0ULL,
-		.alist = th500_c2c_alist,
-		.alist_size = ARRAY_SIZE(th500_c2c_alist),
-		.fake_registers = NULL,
-	},
-};
-
-static struct hwpm_ip_aperture th500_c2c_inst1_broadcast_element_static_array[
-	TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST] = {
-	{
-		.element_type = IP_ELEMENT_BROADCAST,
-		.element_index_mask = BIT(0),
-		.element_index = 0U,
-		.dt_mmio = NULL,
-		.name = {'\0'},
-		.start_abs_pa = addr_map_c2cs1_base_r(),
-		.end_abs_pa = addr_map_c2cs1_limit_r(),
-		.start_pa = 0ULL,
-		.end_pa = 0ULL,
 		.base_pa = 0ULL,
 		.alist = th500_c2c_alist,
 		.alist_size = ARRAY_SIZE(th500_c2c_alist),
@@ -288,7 +242,7 @@ struct hwpm_ip_inst th500_c2c_inst_static_array[
 					th500_c2c_inst0_perfmux_element_static_array,
 				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_c2c0_base_r(),
-				.range_end = addr_map_c2c4_limit_r(),
+				.range_end = addr_map_c2c9_limit_r(),
 				.element_stride = addr_map_c2c0_limit_r() -
 					addr_map_c2c0_base_r() + 1ULL,
 				.element_slots = 0U,
@@ -298,15 +252,14 @@ struct hwpm_ip_inst th500_c2c_inst_static_array[
 			 * Instance info corresponding to
 			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
 			 */
+			/* Disable C2C Broadcast apertures for now -- See Bug 4411532 */
 			{
 				.num_element_per_inst =
 					TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST,
-				.element_static_array =
-					th500_c2c_inst0_broadcast_element_static_array,
-				.range_start = addr_map_c2cs0_base_r(),
-				.range_end = addr_map_c2cs0_limit_r(),
-				.element_stride = addr_map_c2cs0_limit_r() -
-					addr_map_c2cs0_base_r() + 1ULL,
+				.element_static_array = NULL,
+				.range_start = 0ULL,
+				.range_end = 0ULL,
+				.element_stride = 0ULL,
 				.element_slots = 0U,
 				.element_arr = NULL,
 			},
@@ -320,75 +273,9 @@ struct hwpm_ip_inst th500_c2c_inst_static_array[
 				.element_static_array =
 					th500_c2c_inst0_perfmon_element_static_array,
 				.range_start = addr_map_rpg_pm_ctc0_base_r(),
-				.range_end = addr_map_rpg_pm_ctc0_limit_r(),
+				.range_end = addr_map_rpg_pm_ctc1_limit_r(),
 				.element_stride = addr_map_rpg_pm_ctc0_limit_r() -
 					addr_map_rpg_pm_ctc0_base_r() + 1ULL,
-				.element_slots = 0U,
-				.element_arr = NULL,
-			},
-		},
-
-		.ip_ops = {
-			.ip_dev = NULL,
-			.hwpm_ip_pm = NULL,
-			.hwpm_ip_reg_op = NULL,
-			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
-		},
-
-		.element_fs_mask = 0U,
-		.dev_name = "",
-	},
-	{
-		.hw_inst_mask = BIT(1),
-		.num_core_elements_per_inst =
-			TH500_HWPM_IP_C2C_NUM_CORE_ELEMENT_PER_INST,
-		.element_info = {
-			/*
-			 * Instance info corresponding to
-			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
-			 */
-			{
-				.num_element_per_inst =
-					TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST,
-				.element_static_array =
-					th500_c2c_inst1_perfmux_element_static_array,
-				/* NOTE: range should be in ascending order */
-				.range_start = addr_map_c2c5_base_r(),
-				.range_end = addr_map_c2c9_limit_r(),
-				.element_stride = addr_map_c2c5_limit_r() -
-					addr_map_c2c5_base_r() + 1ULL,
-				.element_slots = 0U,
-				.element_arr = NULL,
-			},
-			/*
-			 * Instance info corresponding to
-			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
-			 */
-			{
-				.num_element_per_inst =
-					TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST,
-				.element_static_array =
-					th500_c2c_inst1_broadcast_element_static_array,
-				.range_start = addr_map_c2cs1_base_r(),
-				.range_end = addr_map_c2cs1_limit_r(),
-				.element_stride = addr_map_c2cs1_limit_r() -
-					addr_map_c2cs1_base_r() + 1ULL,
-				.element_slots = 0U,
-				.element_arr = NULL,
-			},
-			/*
-			 * Instance info corresponding to
-			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
-			 */
-			{
-				.num_element_per_inst =
-					TH500_HWPM_IP_C2C_NUM_PERFMON_PER_INST,
-				.element_static_array =
-					th500_c2c_inst1_perfmon_element_static_array,
-				.range_start = addr_map_rpg_pm_ctc1_base_r(),
-				.range_end = addr_map_rpg_pm_ctc1_limit_r(),
-				.element_stride = addr_map_rpg_pm_ctc1_limit_r() -
-					addr_map_rpg_pm_ctc1_base_r() + 1ULL,
 				.element_slots = 0U,
 				.element_arr = NULL,
 			},
@@ -420,7 +307,7 @@ struct hwpm_ip th500_hwpm_ip_c2c = {
 			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_c2c0_base_r(),
 			.range_end = addr_map_c2c9_limit_r(),
-			.inst_stride = addr_map_c2c4_limit_r() -
+			.inst_stride = addr_map_c2c9_limit_r() -
 				addr_map_c2c0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,
@@ -429,11 +316,11 @@ struct hwpm_ip th500_hwpm_ip_c2c = {
 		 * Instance info corresponding to
 		 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
 		 */
+		/* Disable C2C Broadcast apertures for now -- See Bug 4411532 */
 		{
-			.range_start = addr_map_c2cs0_base_r(),
-			.range_end = addr_map_c2cs1_limit_r(),
-			.inst_stride = addr_map_c2cs0_limit_r() -
-				addr_map_c2cs0_base_r() + 1ULL,
+			.range_start = 0ULL,
+			.range_end = 0ULL,
+			.inst_stride = 0ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,
 		},
@@ -444,7 +331,7 @@ struct hwpm_ip th500_hwpm_ip_c2c = {
 		{
 			.range_start = addr_map_rpg_pm_ctc0_base_r(),
 			.range_end = addr_map_rpg_pm_ctc1_limit_r(),
-			.inst_stride = addr_map_rpg_pm_ctc0_limit_r() -
+			.inst_stride = addr_map_rpg_pm_ctc1_limit_r() -
 				addr_map_rpg_pm_ctc0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,

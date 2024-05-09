@@ -33,11 +33,11 @@
 #define TH500_HWPM_ACTIVE_IP_C2C	TH500_HWPM_IP_C2C,
 
 /* This data should ideally be available in HW headers */
-#define TH500_HWPM_IP_C2C_NUM_INSTANCES               2U
+#define TH500_HWPM_IP_C2C_NUM_INSTANCES               1U
 #define TH500_HWPM_IP_C2C_NUM_CORE_ELEMENT_PER_INST   1U
-#define TH500_HWPM_IP_C2C_NUM_PERFMON_PER_INST        1U
-#define TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST        5U
-#define TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST      1U
+#define TH500_HWPM_IP_C2C_NUM_PERFMON_PER_INST        2U
+#define TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST        10U
+#define TH500_HWPM_IP_C2C_NUM_BROADCAST_PER_INST      0U
 
 extern struct hwpm_ip th500_hwpm_ip_c2c;
 

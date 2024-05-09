@@ -209,59 +209,14 @@ struct allowlist th500_smmu_alist[1] = {
 	{0x00005000, false},
 };
 
-struct allowlist th500_c2c_alist[52] = {
-	{0x00000028, false},
-	{0x00001028, false},
-	{0x000020ec, false},
-	{0x000020f0, false},
-	{0x000020f4, false},
-	{0x000020f8, false},
-	{0x000020fc, false},
-	{0x000030ec, false},
-	{0x000030f0, false},
-	{0x000030f4, false},
-	{0x000030f8, false},
-	{0x000030fc, false},
-	{0x000040ec, false},
-	{0x000040f0, false},
-	{0x000040f4, false},
-	{0x000040f8, false},
-	{0x000040fc, false},
-	{0x000050ec, false},
-	{0x000050f0, false},
-	{0x000050f4, false},
-	{0x000050f8, false},
-	{0x000050fc, false},
-	{0x000060ec, false},
-	{0x000060f0, false},
-	{0x000060f4, false},
-	{0x000060f8, false},
-	{0x000060fc, false},
-	{0x000070ec, false},
-	{0x000070f0, false},
-	{0x000070f4, false},
-	{0x000070f8, false},
-	{0x000070fc, false},
-	{0x000080ec, false},
-	{0x000080f0, false},
-	{0x000080f4, false},
-	{0x000080f8, false},
-	{0x000080fc, false},
-	{0x000090ec, false},
-	{0x000090f0, false},
-	{0x000090f4, false},
-	{0x000090f8, false},
-	{0x000090fc, false},
-	{0x0000a0ec, false},
-	{0x0000a0f0, false},
-	{0x0000a0f4, false},
-	{0x0000a0f8, false},
-	{0x0000a0fc, false},
-	{0x0000b0ec, false},
-	{0x0000b0f0, false},
-	{0x0000b0f4, false},
-	{0x0000b0f8, false},
-	{0x0000b0fc, false},
+struct allowlist th500_c2c_alist[5] = {
+	/* Disable C2CS0 and C2CS1 -- Broadcast apertures for now. See Bug 4411532 */
+	/* {0x00000028, false}, */
+	{0x000000ec, false},
+	{0x000000f0, false},
+	{0x000000f4, false},
+	{0x000000f8, false},
+	{0x000000fc, false},
 };
 
 struct allowlist th500_pcie_xtlq_alist[1] = {
@@ -292,16 +247,14 @@ struct allowlist th500_mcf_clink_alist[3] = {
 	{0x0000e430, false},
 };
 
-struct allowlist th500_mcf_c2c_alist[2] = {
+struct allowlist th500_mcf_c2c_alist[3] = {
 	{0x0000d608, false},
 	{0x0000d60c, false},
+	{0x0000e430, false},
 };
 
-struct allowlist th500_mcf_ocu_alist[1] = {
+struct allowlist th500_mcf_soc_alist[3] = {
 	{0x0000d620, false},
-};
-
-struct allowlist th500_mcf_iobhx_alist[2] = {
 	{0x0000d618, false},
 	{0x0000d61c, false},
 };

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,9 +34,9 @@
 
 /* This data should ideally be available in HW headers */
 #define TH500_HWPM_IP_MCF_CLINK_NUM_INSTANCES               1U
-#define TH500_HWPM_IP_MCF_CLINK_NUM_CORE_ELEMENT_PER_INST   12U
+#define TH500_HWPM_IP_MCF_CLINK_NUM_CORE_ELEMENT_PER_INST   13U
 #define TH500_HWPM_IP_MCF_CLINK_NUM_PERFMON_PER_INST        2U
-#define TH500_HWPM_IP_MCF_CLINK_NUM_PERFMUX_PER_INST        12U
+#define TH500_HWPM_IP_MCF_CLINK_NUM_PERFMUX_PER_INST        13U
 #define TH500_HWPM_IP_MCF_CLINK_NUM_BROADCAST_PER_INST      1U
 
 extern struct hwpm_ip th500_hwpm_ip_mcf_clink;

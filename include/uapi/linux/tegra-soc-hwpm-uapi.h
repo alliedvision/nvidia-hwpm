@@ -1,6 +1,5 @@
-/* SPDX-License-Identifier: GPL-2.0-only */
-/*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -10,8 +9,6 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  * tegra-soc-hwpm-uapi.h:
  * This is the userspace API header for the Tegra SOC HWPM driver.
@@ -51,8 +48,7 @@ enum tegra_soc_hwpm_ip {
 	TEGRA_SOC_HWPM_IP_NVLRX,
 	TEGRA_SOC_HWPM_IP_NVLTX,
 	TEGRA_SOC_HWPM_IP_MSS_HUB,
-	TEGRA_SOC_HWPM_IP_MCF_OCU,
-	TEGRA_SOC_HWPM_IP_MCF_IOBHX,
+	TEGRA_SOC_HWPM_IP_MCF_SOC,
 	TEGRA_SOC_HWPM_IP_MCF_C2C,
 	TEGRA_SOC_HWPM_IP_MCF_CLINK,
 	TEGRA_SOC_HWPM_IP_MCF_CORE,
@@ -132,8 +128,7 @@ enum tegra_soc_hwpm_resource {
 	TEGRA_SOC_HWPM_RESOURCE_NVLRX,
 	TEGRA_SOC_HWPM_RESOURCE_NVLTX,
 	TEGRA_SOC_HWPM_RESOURCE_MSS_HUB,
-	TEGRA_SOC_HWPM_RESOURCE_MCF_OCU,
-	TEGRA_SOC_HWPM_RESOURCE_MCF_IOBHX,
+	TEGRA_SOC_HWPM_RESOURCE_MCF_SOC,
 	TEGRA_SOC_HWPM_RESOURCE_MCF_C2C,
 	TEGRA_SOC_HWPM_RESOURCE_MCF_CLINK,
 	TEGRA_SOC_HWPM_RESOURCE_MCF_CORE,

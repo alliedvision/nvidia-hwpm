@@ -86,7 +86,7 @@ enum tegra_soc_hwpm_log_type {
 	 hwpm_dbg_reserve_resource | hwpm_dbg_release_resource | \
 	 hwpm_dbg_alloc_pma_stream | hwpm_dbg_bind | hwpm_dbg_allowlist | \
 	 hwpm_dbg_regops | hwpm_dbg_update_get_put | hwpm_dbg_driver_release | \
-	 hwpm_dbg_kmem)
+	 hwpm_dbg_kmem | hwpm_dbg_active)
 
 #ifdef __KERNEL__
 

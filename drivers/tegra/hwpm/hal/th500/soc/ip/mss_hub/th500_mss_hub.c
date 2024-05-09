@@ -38,7 +38,7 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
 		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub0",
 		.device_index = TH500_MSSHUB0_PERFMON_DEVICE_NODE_INDEX,
@@ -51,9 +51,13 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst1_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(1),
+		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub1",
@@ -67,10 +71,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst2_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(2),
-		.element_index = 2U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub2",
 		.device_index = TH500_MSSHUB2_PERFMON_DEVICE_NODE_INDEX,
@@ -83,10 +91,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst3_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(3),
-		.element_index = 3U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub3",
 		.device_index = TH500_MSSHUB3_PERFMON_DEVICE_NODE_INDEX,
@@ -99,10 +111,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst4_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(4),
-		.element_index = 4U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub4",
 		.device_index = TH500_MSSHUB4_PERFMON_DEVICE_NODE_INDEX,
@@ -115,10 +131,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst5_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(5),
-		.element_index = 5U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub5",
 		.device_index = TH500_MSSHUB5_PERFMON_DEVICE_NODE_INDEX,
@@ -131,10 +151,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst6_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(6),
-		.element_index = 6U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub6",
 		.device_index = TH500_MSSHUB6_PERFMON_DEVICE_NODE_INDEX,
@@ -147,10 +171,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmon_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_perfmon_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst7_perfmon_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(7),
-		.element_index = 7U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub7",
 		.device_index = TH500_MSSHUB7_PERFMON_DEVICE_NODE_INDEX,
@@ -182,10 +210,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst1_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(1),
-		.element_index = 2U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc1_base_r(),
@@ -197,10 +229,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst2_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(2),
-		.element_index = 3U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc2_base_r(),
@@ -212,10 +248,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst3_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(3),
-		.element_index = 4U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc3_base_r(),
@@ -227,10 +267,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst4_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(4),
-		.element_index = 5U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc4_base_r(),
@@ -242,10 +286,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst5_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(5),
-		.element_index = 6U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc5_base_r(),
@@ -257,10 +305,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst6_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(6),
-		.element_index = 7U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc6_base_r(),
@@ -272,10 +324,14 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
 		.fake_registers = NULL,
 	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst7_perfmux_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(7),
-		.element_index = 8U,
+		.element_index_mask = BIT(0),
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc7_base_r(),
@@ -290,6 +346,139 @@ static struct hwpm_ip_aperture th500_mss_hub_inst0_perfmux_element_static_array[
 };
 
 static struct hwpm_ip_aperture th500_mss_hub_inst0_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst1_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst2_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst3_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst4_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst5_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst6_broadcast_element_static_array[
+	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
+	{
+		.element_type = IP_ELEMENT_BROADCAST,
+		.element_index_mask = BIT(0),
+		.element_index = 0U,
+		.dt_mmio = NULL,
+		.name = {'\0'},
+		.start_abs_pa = addr_map_mcb_base_r(),
+		.end_abs_pa = addr_map_mcb_limit_r(),
+		.start_pa = addr_map_mcb_base_r(),
+		.end_pa = addr_map_mcb_limit_r(),
+		.base_pa = 0ULL,
+		.alist = th500_mss_hub_alist,
+		.alist_size = ARRAY_SIZE(th500_mss_hub_alist),
+		.fake_registers = NULL,
+	},
+};
+
+static struct hwpm_ip_aperture th500_mss_hub_inst7_broadcast_element_static_array[
 	TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
@@ -327,7 +516,7 @@ struct hwpm_ip_inst th500_mss_hub_inst_static_array[
 					th500_mss_hub_inst0_perfmux_element_static_array,
 				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_mc0_base_r(),
-				.range_end = addr_map_mc7_limit_r(),
+				.range_end = addr_map_mc0_limit_r(),
 				.element_stride = addr_map_mc0_limit_r() -
 					addr_map_mc0_base_r() + 1ULL,
 				.element_slots = 0U,
@@ -359,9 +548,471 @@ struct hwpm_ip_inst th500_mss_hub_inst_static_array[
 				.element_static_array =
 					th500_mss_hub_inst0_perfmon_element_static_array,
 				.range_start = addr_map_rpg_pm_msshub0_base_r(),
-				.range_end = addr_map_rpg_pm_msshub7_limit_r(),
+				.range_end = addr_map_rpg_pm_msshub0_limit_r(),
 				.element_stride = addr_map_rpg_pm_msshub0_limit_r() -
 					addr_map_rpg_pm_msshub0_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(1),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst1_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc1_base_r(),
+				.range_end = addr_map_mc1_limit_r(),
+				.element_stride = addr_map_mc1_limit_r() -
+					addr_map_mc1_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst1_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst1_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub1_base_r(),
+				.range_end = addr_map_rpg_pm_msshub1_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub1_limit_r() -
+					addr_map_rpg_pm_msshub1_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(2),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst2_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc2_base_r(),
+				.range_end = addr_map_mc2_limit_r(),
+				.element_stride = addr_map_mc2_limit_r() -
+					addr_map_mc2_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst2_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst2_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub2_base_r(),
+				.range_end = addr_map_rpg_pm_msshub2_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub2_limit_r() -
+					addr_map_rpg_pm_msshub2_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(3),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst3_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc3_base_r(),
+				.range_end = addr_map_mc3_limit_r(),
+				.element_stride = addr_map_mc3_limit_r() -
+					addr_map_mc3_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst3_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst3_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub3_base_r(),
+				.range_end = addr_map_rpg_pm_msshub3_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub3_limit_r() -
+					addr_map_rpg_pm_msshub3_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(4),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst4_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc4_base_r(),
+				.range_end = addr_map_mc4_limit_r(),
+				.element_stride = addr_map_mc4_limit_r() -
+					addr_map_mc4_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst4_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst4_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub4_base_r(),
+				.range_end = addr_map_rpg_pm_msshub4_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub4_limit_r() -
+					addr_map_rpg_pm_msshub4_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(5),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst5_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc5_base_r(),
+				.range_end = addr_map_mc5_limit_r(),
+				.element_stride = addr_map_mc5_limit_r() -
+					addr_map_mc5_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst5_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst5_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub5_base_r(),
+				.range_end = addr_map_rpg_pm_msshub5_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub5_limit_r() -
+					addr_map_rpg_pm_msshub5_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(6),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst6_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc6_base_r(),
+				.range_end = addr_map_mc6_limit_r(),
+				.element_stride = addr_map_mc6_limit_r() -
+					addr_map_mc6_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst6_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst6_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub6_base_r(),
+				.range_end = addr_map_rpg_pm_msshub6_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub6_limit_r() -
+					addr_map_rpg_pm_msshub6_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+		},
+
+		.ip_ops = {
+			.ip_dev = NULL,
+			.hwpm_ip_pm = NULL,
+			.hwpm_ip_reg_op = NULL,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
+		},
+
+		.element_fs_mask = 0U,
+		.dev_name = "",
+	},
+	{
+		.hw_inst_mask = BIT(7),
+		.num_core_elements_per_inst =
+			TH500_HWPM_IP_MSS_HUB_NUM_CORE_ELEMENT_PER_INST,
+		.element_info = {
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMUX_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst7_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
+				.range_start = addr_map_mc7_base_r(),
+				.range_end = addr_map_mc7_limit_r(),
+				.element_stride = addr_map_mc7_limit_r() -
+					addr_map_mc7_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_BROADCAST
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_BROADCAST_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst7_broadcast_element_static_array,
+				.range_start = addr_map_mcb_base_r(),
+				.range_end = addr_map_mcb_limit_r(),
+				.element_stride = addr_map_mcb_limit_r() -
+					addr_map_mcb_base_r() + 1ULL,
+				.element_slots = 0U,
+				.element_arr = NULL,
+			},
+			/*
+			 * Instance info corresponding to
+			 * TEGRA_HWPM_APERTURE_TYPE_PERFMON
+			 */
+			{
+				.num_element_per_inst =
+					TH500_HWPM_IP_MSS_HUB_NUM_PERFMON_PER_INST,
+				.element_static_array =
+					th500_mss_hub_inst7_perfmon_element_static_array,
+				.range_start = addr_map_rpg_pm_msshub7_base_r(),
+				.range_end = addr_map_rpg_pm_msshub7_limit_r(),
+				.element_stride = addr_map_rpg_pm_msshub7_limit_r() -
+					addr_map_rpg_pm_msshub7_base_r() + 1ULL,
 				.element_slots = 0U,
 				.element_arr = NULL,
 			},
@@ -393,7 +1044,7 @@ struct hwpm_ip th500_hwpm_ip_mss_hub = {
 			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_mc0_base_r(),
 			.range_end = addr_map_mc7_limit_r(),
-			.inst_stride = addr_map_mc7_limit_r() -
+			.inst_stride = addr_map_mc0_limit_r() -
 				addr_map_mc0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,
@@ -417,7 +1068,7 @@ struct hwpm_ip th500_hwpm_ip_mss_hub = {
 		{
 			.range_start = addr_map_rpg_pm_msshub0_base_r(),
 			.range_end = addr_map_rpg_pm_msshub7_limit_r(),
-			.inst_stride = addr_map_rpg_pm_msshub7_limit_r() -
+			.inst_stride = addr_map_rpg_pm_msshub0_limit_r() -
 				addr_map_rpg_pm_msshub0_base_r() + 1ULL,
 			.inst_slots = 0U,
 			.inst_arr = NULL,
