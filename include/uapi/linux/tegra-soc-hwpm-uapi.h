@@ -166,6 +166,45 @@ struct tegra_soc_hwpm_reserve_resource {
 	enum tegra_soc_hwpm_resource resource;
 };
 
+/* Enum for Credit programming states */
+enum tegra_soc_hwpm_credit_cmd {
+	TEGRA_SOC_HWPM_CMD_SET_HS_CREDITS,
+	TEGRA_SOC_HWPM_CMD_GET_HS_CREDITS,
+	TEGRA_SOC_HWPM_CMD_GET_TOTAL_HS_CREDITS,
+	TEGRA_SOC_HWPM_CMD_GET_CHIPLET_HS_CREDITS_POOL,
+	TEGRA_SOC_HWPM_CMD_GET_HS_CREDITS_MAPPING
+};
+
+struct tegra_soc_hwpm_credits_info {
+	/*
+	 * Input
+	 */
+	__u8 cblock_idx;	/* Cblock ID */
+
+	/*
+	 * Input/Output
+	 */
+	__u32 num_credits;	/* Number of credits per chiplet */
+};
+
+#define TEGRA_SOC_HWPM_MAX_CREDIT_INFO_ENTRIES		8
+
+/* TEGRA_CTRL_CMD_SOC_HWPM_CREDIT_PROGRAM */
+struct tegra_soc_hwpm_exec_credit_program {
+	/*
+	 * Inputs
+	 */
+	__u16 credit_cmd;	/* enum tegra_soc_hwpm_credit_cmd */
+	__u8 pma_channel_idx;	/* For multi-channel support */
+	__u8 num_entries;
+
+	struct tegra_soc_hwpm_credits_info credit_info[TEGRA_SOC_HWPM_MAX_CREDIT_INFO_ENTRIES];
+	/*
+	 *  Output
+	 */
+	__u8 status_info;	/* Return the status. To be used for future use*/
+};
+
 /* TEGRA_CTRL_CMD_SOC_HWPM_ALLOC_PMA_STREAM IOCTL */
 struct tegra_soc_hwpm_alloc_pma_stream {
 	/*
@@ -324,6 +363,7 @@ enum tegra_soc_hwpm_ioctl_num {
 	TEGRA_SOC_HWPM_IOCTL_QUERY_ALLOWLIST,
 	TEGRA_SOC_HWPM_IOCTL_EXEC_REG_OPS,
 	TEGRA_SOC_HWPM_IOCTL_UPDATE_GET_PUT,
+	TEGRA_SOC_HWPM_IOCTL_CREDIT_PROGRAM,
 	TERGA_SOC_HWPM_NUM_IOCTLS
 };
 
@@ -427,6 +467,17 @@ enum tegra_soc_hwpm_ioctl_num {
 			_IOWR(TEGRA_SOC_HWPM_IOC_MAGIC,			\
 				TEGRA_SOC_HWPM_IOCTL_UPDATE_GET_PUT,	\
 				struct tegra_soc_hwpm_update_get_put)
+
+/*
+ * IOCTl for initiating Credit Programming
+ *
+ * This IOCTL executes read-write access to SECURE REGISTERS
+ *
+ */
+#define TEGRA_CTRL_CMD_SOC_HWPM_CREDIT_PROGRAM				\
+			_IOWR(TEGRA_SOC_HWPM_IOC_MAGIC,			\
+				TEGRA_SOC_HWPM_IOCTL_CREDIT_PROGRAM,	\
+				struct tegra_soc_hwpm_exec_credit_program)
 
 #define TEGRA_SOC_HWPM_MAX_ARG_SIZE	\
 			sizeof(struct tegra_soc_hwpm_exec_reg_ops)

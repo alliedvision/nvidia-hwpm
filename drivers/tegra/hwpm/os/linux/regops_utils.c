@@ -21,6 +21,7 @@
 #include <tegra_hwpm_log.h>
 #include <tegra_hwpm_common.h>
 #include <tegra_hwpm_static_analysis.h>
+#include <os/linux/driver.h>
 #include <os/linux/regops_utils.h>
 
 static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
@@ -227,4 +228,34 @@ int tegra_hwpm_exec_regops(struct tegra_soc_hwpm *hwpm,
 	}
 
 	return 0;
+}
+
+int tegra_hwpm_credit_program(struct tegra_soc_hwpm *hwpm,
+	struct tegra_soc_hwpm_exec_credit_program *credit_prog)
+{
+	int idx = 0, ret = 0;
+	struct tegra_soc_hwpm_credits_info *creditInfo = NULL;
+
+	tegra_hwpm_fn(hwpm, " ");
+
+	/* Check if credit_programming is defined for this chip*/
+	if (hwpm->active_chip->credit_program == NULL) {
+		tegra_hwpm_err(hwpm, "Credit programming not defined");
+		return -EINVAL;
+	}
+
+	for (idx = 0; idx <= credit_prog->num_entries; idx++) {
+		//Extract the credit_info pointer for a given Credit packet.
+		//This contains the num_credits param
+		//which has to be updated in chip specific HALs.
+		creditInfo = &(credit_prog->credit_info[idx]);
+
+		/* Call chip specific credit programming API */
+		ret = hwpm->active_chip->credit_program(
+			hwpm, &(creditInfo->num_credits),
+			creditInfo->cblock_idx, credit_prog->pma_channel_idx,
+			credit_prog->credit_cmd);
+	}
+
+	return ret;
 }

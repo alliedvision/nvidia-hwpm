@@ -1,6 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0-only */
+// SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -19,8 +19,11 @@
 
 struct tegra_soc_hwpm;
 struct tegra_soc_hwpm_exec_reg_ops;
+struct tegra_soc_hwpm_exec_credit_program;
 
 int tegra_hwpm_exec_regops(struct tegra_soc_hwpm *hwpm,
 	struct tegra_soc_hwpm_exec_reg_ops *exec_reg_ops);
+int tegra_hwpm_credit_program(struct tegra_soc_hwpm *hwpm,
+	struct tegra_soc_hwpm_exec_credit_program *credit_prog);
 
 #endif /* TEGRA_HWPM_OS_LINUX_REGOPS_UTILS_H */
