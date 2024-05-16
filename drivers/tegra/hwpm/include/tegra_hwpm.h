@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -39,6 +39,7 @@
 #define TEGRA_HWPM_FUSE_PRODUCTION_MODE_MASK		BIT(0)
 #define TEGRA_HWPM_FUSE_SECURITY_MODE_MASK		BIT(1)
 #define TEGRA_HWPM_FUSE_HWPM_GLOBAL_DISABLE_MASK	BIT(2)
+#define TEGRA_HWPM_FUSE_OPT_HWPM_DISABLE_MASK		BIT(3)
 
 /* Indicate the prescence of HWPM-IP debug interface for devctl calls */
 #define TEGRA_HWPM_IP_DEBUG_FD_INVALID          -1
