@@ -31,6 +31,7 @@
 #include <hal/t234/t234_internal.h>
 
 static struct tegra_soc_hwpm_chip t234_chip_info = {
+	.la_clk_rate = 625000000,
 	.chip_ips = NULL,
 
 	/* HALs */

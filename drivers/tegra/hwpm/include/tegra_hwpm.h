@@ -463,6 +463,9 @@ struct hwpm_ip {
 struct tegra_soc_hwpm;
 
 struct tegra_soc_hwpm_chip {
+	/* Max LA Clock rate */
+	u64 la_clk_rate;
+
 	/* Array of pointers to active IP structures */
 	struct hwpm_ip **chip_ips;
 

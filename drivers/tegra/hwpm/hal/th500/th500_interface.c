@@ -30,6 +30,7 @@
 #include <hal/th500/soc/th500_soc_internal.h>
 
 static struct tegra_soc_hwpm_chip th500_chip_info = {
+	.la_clk_rate = 625000000,
 	.chip_ips = NULL,
 
 	/* HALs */

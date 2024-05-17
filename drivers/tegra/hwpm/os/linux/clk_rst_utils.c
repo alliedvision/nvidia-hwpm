@@ -23,8 +23,6 @@
 #include <tegra_hwpm_clk_rst.h>
 #include <os/linux/driver.h>
 
-#define LA_CLK_RATE 625000000UL
-
 int tegra_hwpm_clk_rst_prepare(struct tegra_hwpm_os_linux *hwpm_linux)
 {
 	int ret = 0;
@@ -93,8 +91,9 @@ int tegra_hwpm_clk_rst_set_rate_enable(struct tegra_hwpm_os_linux *hwpm_linux)
 				goto fail;
 			}
 		}
-		/* set la_clk rate to 625 MHZ */
-		ret = clk_set_rate(hwpm_linux->la_clk, LA_CLK_RATE);
+		/* set la_clk rate */
+		ret = clk_set_rate(hwpm_linux->la_clk,
+			hwpm->active_chip->la_clk_rate);
 		if (ret < 0) {
 			tegra_hwpm_err(hwpm, "la clock set rate failed");
 			goto fail;
