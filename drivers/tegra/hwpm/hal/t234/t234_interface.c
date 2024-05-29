@@ -59,6 +59,7 @@ static struct tegra_soc_hwpm_chip t234_chip_info = {
 	.disable_cg = t234_hwpm_disable_cg,
 	.enable_cg = t234_hwpm_enable_cg,
 	.credit_program = NULL,
+	.setup_trigger = NULL,
 
 	.reserve_rtr = tegra_hwpm_reserve_rtr,
 	.release_rtr = tegra_hwpm_release_rtr,

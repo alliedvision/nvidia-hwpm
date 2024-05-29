@@ -57,6 +57,7 @@ struct tegra_hwpm_os_qnx;
 struct tegra_hwpm_mem_mgmt;
 struct tegra_hwpm_allowlist_map;
 struct tegra_soc_hwpm_exec_credit_program;
+struct tegra_soc_hwpm_setup_trigger;
 enum tegra_soc_hwpm_ip_reg_op;
 
 /*
@@ -148,6 +149,13 @@ enum tegra_hwpm_credit_cmd {
 	TEGRA_HWPM_CMD_GET_TOTAL_HS_CREDITS,
 	TEGRA_HWPM_CMD_GET_CHIPLET_HS_CREDITS_POOL,
 	TEGRA_HWPM_CMD_GET_HS_CREDITS_MAPPING
+};
+
+/* Used in Setup Trigger Programming */
+enum tegra_hwpm_trigger_session_type {
+	TEGRA_HWPM_CMD_INVALID_SESSION,
+	TEGRA_HWPM_CMD_START_STOP_SESSION,
+	TEGRA_HWPM_CMD_PERIODIC_SESSION
 };
 
 /*
@@ -549,6 +557,8 @@ struct tegra_soc_hwpm_chip {
 	int (*credit_program)(struct tegra_soc_hwpm *hwpm,
 		u32 *num_credits, u8 cblock_idx,
 		u8 pma_channel_idx, uint16_t credit_cmd);
+	int (*setup_trigger)(struct tegra_soc_hwpm *hwpm,
+		u8 enable_cross_trigger, u8 session_type);
 	int (*reserve_rtr)(struct tegra_soc_hwpm *hwpm);
 	int (*release_rtr)(struct tegra_soc_hwpm *hwpm);
 

@@ -262,6 +262,21 @@ static int tegra_hwpm_credit_program_ioctl(struct tegra_soc_hwpm *hwpm,
 	return tegra_hwpm_credit_program(hwpm, credit_info);
 }
 
+static int tegra_hwpm_setup_trigger_ioctl(struct tegra_soc_hwpm *hwpm,
+	struct tegra_soc_hwpm_setup_trigger *setup_trigger)
+{
+	tegra_hwpm_fn(hwpm, " ");
+
+	if (!hwpm->bind_completed) {
+		tegra_hwpm_err(hwpm,
+			"Setup trigger programming can be called only"
+			" after completion of BIND IOCTL");
+		return -EPERM;
+	}
+
+	return tegra_hwpm_setup_trigger(hwpm, setup_trigger);
+}
+
 static long tegra_hwpm_ioctl(struct file *file,
 				 unsigned int cmd,
 				 unsigned long arg)
@@ -355,6 +370,10 @@ static long tegra_hwpm_ioctl(struct file *file,
 	case TEGRA_CTRL_CMD_SOC_HWPM_CREDIT_PROGRAM:
 		ret = tegra_hwpm_credit_program_ioctl(hwpm,
 			(struct tegra_soc_hwpm_exec_credit_program *)buf);
+		break;
+	case TEGRA_CTRL_CMD_SOC_HWPM_SETUP_TRIGGER:
+		ret = tegra_hwpm_setup_trigger_ioctl(hwpm,
+			(struct tegra_soc_hwpm_setup_trigger *)buf);
 		break;
 	default:
 		tegra_hwpm_err(hwpm, "Unknown IOCTL command");

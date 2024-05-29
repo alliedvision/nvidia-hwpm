@@ -20,10 +20,13 @@
 struct tegra_soc_hwpm;
 struct tegra_soc_hwpm_exec_reg_ops;
 struct tegra_soc_hwpm_exec_credit_program;
+struct tegra_soc_hwpm_setup_trigger;
 
 int tegra_hwpm_exec_regops(struct tegra_soc_hwpm *hwpm,
 	struct tegra_soc_hwpm_exec_reg_ops *exec_reg_ops);
 int tegra_hwpm_credit_program(struct tegra_soc_hwpm *hwpm,
 	struct tegra_soc_hwpm_exec_credit_program *credit_prog);
+int tegra_hwpm_setup_trigger(struct tegra_soc_hwpm *hwpm,
+	struct tegra_soc_hwpm_setup_trigger *setup_trigger);
 
 #endif /* TEGRA_HWPM_OS_LINUX_REGOPS_UTILS_H */

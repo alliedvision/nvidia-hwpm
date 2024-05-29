@@ -60,6 +60,7 @@ static struct tegra_soc_hwpm_chip th500_chip_info = {
 	.enable_cg = th500_hwpm_soc_enable_cg,
 
 	.credit_program = NULL,
+	.setup_trigger = NULL,
 
 	.reserve_rtr = tegra_hwpm_reserve_rtr,
 	.release_rtr = tegra_hwpm_release_rtr,

@@ -352,6 +352,24 @@ struct tegra_soc_hwpm_update_get_put {
 	__u8 b_overflowed;
 };
 
+/* Enum to indicate Periodic or Start Stop trigger session */
+enum tegra_soc_hwpm_trigger_session_type {
+	TEGRA_SOC_HWPM_INVALID,
+	TEGRA_SOC_HWPM_START_STOP_SESSION,
+	TEGRA_SOC_HWPM_PERIODIC_SESSION
+};
+
+/* TEGRA_CTRL_CMD_SOC_HWPM_SETUP_TRIGGER */
+struct tegra_soc_hwpm_setup_trigger {
+	/*
+	 * Inputs
+	 */
+	__u8 cblock_idx;		/* CBlockID Index */
+	__u8 pma_channel_idx;		/* For multi-channel support */
+	__u8 enable_cross_trigger;	/* To indicate range profiler or periodic sampler */
+	__u8 session_type;		/* Enum type tegra_soc_hwpm_trigger_session_type */
+};
+
 /* IOCTL enum */
 enum tegra_soc_hwpm_ioctl_num {
 	TEGRA_SOC_HWPM_IOCTL_DEVICE_INFO,
@@ -364,6 +382,7 @@ enum tegra_soc_hwpm_ioctl_num {
 	TEGRA_SOC_HWPM_IOCTL_EXEC_REG_OPS,
 	TEGRA_SOC_HWPM_IOCTL_UPDATE_GET_PUT,
 	TEGRA_SOC_HWPM_IOCTL_CREDIT_PROGRAM,
+	TEGRA_SOC_HWPM_IOCTL_SETUP_TRIGGER,
 	TERGA_SOC_HWPM_NUM_IOCTLS
 };
 
@@ -478,6 +497,17 @@ enum tegra_soc_hwpm_ioctl_num {
 			_IOWR(TEGRA_SOC_HWPM_IOC_MAGIC,			\
 				TEGRA_SOC_HWPM_IOCTL_CREDIT_PROGRAM,	\
 				struct tegra_soc_hwpm_exec_credit_program)
+
+/*
+ * IOCTl for initiating Cross Trigger Setup Programming
+ *
+ * This IOCTL executes read-write access to SECURE REGISTERS
+ *
+ */
+#define TEGRA_CTRL_CMD_SOC_HWPM_SETUP_TRIGGER				\
+			_IOWR(TEGRA_SOC_HWPM_IOC_MAGIC,			\
+				TEGRA_SOC_HWPM_IOCTL_SETUP_TRIGGER,	\
+				struct tegra_soc_hwpm_setup_trigger)
 
 #define TEGRA_SOC_HWPM_MAX_ARG_SIZE	\
 			sizeof(struct tegra_soc_hwpm_exec_reg_ops)

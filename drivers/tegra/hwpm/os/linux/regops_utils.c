@@ -259,3 +259,14 @@ int tegra_hwpm_credit_program(struct tegra_soc_hwpm *hwpm,
 
 	return ret;
 }
+
+int tegra_hwpm_setup_trigger(struct tegra_soc_hwpm *hwpm,
+	struct tegra_soc_hwpm_setup_trigger *setup_trigger)
+{
+	tegra_hwpm_fn(hwpm, " ");
+
+	/* Call chip specific setup trigger API */
+	return hwpm->active_chip->setup_trigger(hwpm,
+			setup_trigger->enable_cross_trigger,
+			setup_trigger->session_type);
+}
