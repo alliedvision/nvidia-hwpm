@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -25,13 +25,13 @@
  * bit 15:08 - chip id
  * bit 07:04 - chip id revision
  */
-#if defined(CONFIG_TEGRA_TH500_HWPM)
+#if defined(CONFIG_TEGRA_HWPM_TH500)
 static const unsigned long hwpm_th500_device_data =
 	(PLAT_SI << 20U) | (0x50U << 8U) | (0x0 << 4U);
 #endif
 
 static const struct acpi_device_id tegra_hwpm_acpi_match[] = {
-#if defined(CONFIG_TEGRA_TH500_HWPM)
+#if defined(CONFIG_TEGRA_HWPM_TH500)
         {
                 .id = "NVDA2006",
                 .driver_data = hwpm_th500_device_data,
