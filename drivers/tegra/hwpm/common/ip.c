@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,6 +26,7 @@
 #include <tegra_hwpm_ip.h>
 #include <tegra_hwpm_log.h>
 #include <tegra_hwpm_common.h>
+#include <tegra_hwpm_aperture.h>
 #include <tegra_hwpm_static_analysis.h>
 
 int tegra_hwpm_ip_handle_power_mgmt(struct tegra_soc_hwpm *hwpm,
@@ -56,13 +57,12 @@ int tegra_hwpm_ip_handle_power_mgmt(struct tegra_soc_hwpm *hwpm,
 }
 
 int tegra_hwpm_update_ip_inst_fs_mask(struct tegra_soc_hwpm *hwpm,
-	u32 ip_idx, u32 a_type, u32 inst_idx, bool available)
+	u32 ip_idx, u32 a_type, u32 s_inst_idx, bool available)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[ip_idx];
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
-		&chip_ip->inst_aperture_info[a_type];
-	struct hwpm_ip_inst *ip_inst = inst_a_info->inst_arr[inst_idx];
+	struct hwpm_ip_inst *ip_inst =
+		&chip_ip->ip_inst_static_array[s_inst_idx];
 	int ret = 0;
 
 	tegra_hwpm_fn(hwpm, " ");
@@ -100,13 +100,12 @@ int tegra_hwpm_update_ip_inst_fs_mask(struct tegra_soc_hwpm *hwpm,
 
 static int tegra_hwpm_update_ip_ops_info(struct tegra_soc_hwpm *hwpm,
 	struct tegra_hwpm_ip_ops *ip_ops,
-	u32 ip_idx, u32 a_type, u32 inst_idx, bool available)
+	u32 ip_idx, u32 a_type, u32 s_inst_idx, bool available)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[ip_idx];
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
-		&chip_ip->inst_aperture_info[a_type];
-	struct hwpm_ip_inst *ip_inst = inst_a_info->inst_arr[inst_idx];
+	struct hwpm_ip_inst *ip_inst =
+		&chip_ip->ip_inst_static_array[s_inst_idx];
 	/* Update IP ops info for the instance */
 	struct tegra_hwpm_ip_ops *ops = &ip_inst->ip_ops;
 
@@ -135,7 +134,7 @@ int tegra_hwpm_set_fs_info_ip_ops(struct tegra_soc_hwpm *hwpm,
 	int ret = 0;
 	bool found = false;
 	u32 idx = ip_idx;
-	u32 inst_idx = 0U, element_idx = 0U;
+	u32 s_inst_idx = 0U, s_element_idx = 0U;
 	u32 a_type = 0U;
 	enum tegra_hwpm_element_type element_type = HWPM_ELEMENT_INVALID;
 
@@ -144,7 +143,7 @@ int tegra_hwpm_set_fs_info_ip_ops(struct tegra_soc_hwpm *hwpm,
 	/* Find IP aperture containing phys_addr in allowlist */
 	found = tegra_hwpm_aperture_for_address(hwpm,
 		TEGRA_HWPM_MATCH_BASE_ADDRESS, base_address,
-		&idx, &inst_idx, &element_idx, &element_type);
+		&idx, &s_inst_idx, &s_element_idx, &element_type);
 	if (!found) {
 		tegra_hwpm_err(hwpm, "Base addr 0x%llx not in IP %d",
 			(unsigned long long)base_address, idx);
@@ -152,9 +151,10 @@ int tegra_hwpm_set_fs_info_ip_ops(struct tegra_soc_hwpm *hwpm,
 	}
 
 	tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
-		"Found addr 0x%llx IP %d inst_idx %d element_idx %d e_type %d",
-		(unsigned long long)base_address, idx, inst_idx,
-		element_idx, element_type);
+		"Found addr 0x%llx IP %d s_inst_idx %d "
+		"s_element_idx %d e_type %d",
+		(unsigned long long)base_address, idx, s_inst_idx,
+		s_element_idx, element_type);
 
 	switch (element_type) {
 	case HWPM_ELEMENT_PERFMON:
@@ -175,21 +175,21 @@ int tegra_hwpm_set_fs_info_ip_ops(struct tegra_soc_hwpm *hwpm,
 	if (ip_ops != NULL) {
 		/* Update IP ops */
 		ret = tegra_hwpm_update_ip_ops_info(hwpm, ip_ops,
-			ip_idx, a_type, inst_idx, available);
+			ip_idx, a_type, s_inst_idx, available);
 		if (ret != 0) {
 			tegra_hwpm_err(hwpm,
-				"IP %d inst_idx %d: Failed to update ip_ops",
-				ip_idx, inst_idx);
+				"IP %d s_inst_idx %d: Failed to update ip_ops",
+				ip_idx, s_inst_idx);
 			goto fail;
 		}
 	}
 
 	ret = tegra_hwpm_update_ip_inst_fs_mask(hwpm, ip_idx, a_type,
-		inst_idx, available);
+		s_inst_idx, available);
 	if (ret != 0) {
 		tegra_hwpm_err(hwpm,
-			"IP %d inst_idx %d: Failed to update fs_info",
-			ip_idx, inst_idx);
+			"IP %d s_inst_idx %d: Failed to update fs_info",
+			ip_idx, s_inst_idx);
 		goto fail;
 	}
 
@@ -200,7 +200,7 @@ fail:
 int tegra_hwpm_get_fs_info(struct tegra_soc_hwpm *hwpm,
 	u32 ip_enum, u64 *fs_mask, u8 *ip_status)
 {
-	u32 ip_idx = 0U, inst_idx = 0U, element_mask_shift = 0U;
+	u32 ip_idx = 0U, s_inst_idx = 0U, element_mask_shift = 0U;
 	u64 floorsweep = 0ULL;
 	struct tegra_soc_hwpm_chip *active_chip = NULL;
 	struct hwpm_ip *chip_ip = NULL;
@@ -213,11 +213,12 @@ int tegra_hwpm_get_fs_info(struct tegra_soc_hwpm *hwpm,
 		active_chip = hwpm->active_chip;
 		chip_ip = active_chip->chip_ips[ip_idx];
 		if (!(chip_ip->override_enable) && chip_ip->inst_fs_mask) {
-			for (inst_idx = 0U; inst_idx < chip_ip->num_instances;
-				inst_idx++) {
+			for (s_inst_idx = 0U;
+				s_inst_idx < chip_ip->num_instances;
+				s_inst_idx++) {
 				ip_inst = &chip_ip->ip_inst_static_array[
-					inst_idx];
-				element_mask_shift = (inst_idx == 0U ? 0U :
+					s_inst_idx];
+				element_mask_shift = (s_inst_idx == 0U ? 0U :
 					ip_inst->num_core_elements_per_inst);
 
 				if (ip_inst->hw_inst_mask &
@@ -229,6 +230,9 @@ int tegra_hwpm_get_fs_info(struct tegra_soc_hwpm *hwpm,
 			}
 			*fs_mask = floorsweep;
 			*ip_status = TEGRA_HWPM_IP_STATUS_VALID;
+
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_floorsweep_info,
+				"SOC hwpm IP %d is available", ip_enum);
 
 			return 0;
 		}
@@ -259,12 +263,17 @@ int tegra_hwpm_get_resource_info(struct tegra_soc_hwpm *hwpm,
 		if (!(chip_ip->override_enable)) {
 			*status = tegra_hwpm_safe_cast_u32_to_u8(
 				chip_ip->resource_status);
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_floorsweep_info,
+				"SOC hwpm Resource %d is %d",
+				resource_enum, chip_ip->resource_status);
 			return 0;
 		}
 	}
 
 	*status = tegra_hwpm_safe_cast_u32_to_u8(
 		TEGRA_HWPM_RESOURCE_STATUS_INVALID);
+	tegra_hwpm_dbg(hwpm, hwpm_dbg_floorsweep_info,
+		"SOC hwpm Resource %d is unavailable", resource_enum);
 
 	return 0;
 }
@@ -305,23 +314,25 @@ int tegra_hwpm_finalize_chip_info(struct tegra_soc_hwpm *hwpm)
 
 static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type, u32 a_type)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[*ip_idx];
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
-			&chip_ip->inst_aperture_info[a_type];
-	struct hwpm_ip_inst *ip_inst = inst_a_info->inst_arr[*inst_idx];
+	struct hwpm_ip_inst *ip_inst =
+		&chip_ip->ip_inst_static_array[*s_inst_idx];
 	struct hwpm_ip_element_info *e_info = &ip_inst->element_info[a_type];
-	struct hwpm_ip_aperture *element = e_info->element_arr[*element_idx];
+	struct hwpm_ip_aperture *element =
+		&e_info->element_static_array[*s_element_idx];
+
+	tegra_hwpm_fn(hwpm, " ");
 
 	if (element == NULL) {
 		tegra_hwpm_dbg(hwpm, hwpm_verbose,
-			"IP %d addr 0x%llx inst_idx %d "
-			"a_type %d: element_idx %d not populated",
-			*ip_idx, (unsigned long long)find_addr, *inst_idx,
-			a_type, *element_idx);
+			"IP %d addr 0x%llx s_inst_idx %d "
+			"a_type %d: s_element_idx %d not populated",
+			*ip_idx, (unsigned long long)find_addr, *s_inst_idx,
+			a_type, *s_element_idx);
 		return false;
 	}
 
@@ -330,20 +341,21 @@ static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 		if ((element->element_index_mask &
 			ip_inst->element_fs_mask) == 0U) {
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
-				"IP %d addr 0x%llx inst_idx %d "
-				"a_type %d: element_idx %d: not available",
+				"IP %d addr 0x%llx s_inst_idx %d "
+				"a_type %d: s_element_idx %d: not available",
 				*ip_idx, (unsigned long long)find_addr,
-				*inst_idx, a_type, *element_idx);
+				*s_inst_idx, a_type, *s_element_idx);
 			return false;
 		}
 
 		/* Make sure phys addr belongs to this element */
 		if ((find_addr < element->start_abs_pa) ||
 			(find_addr > element->end_abs_pa)) {
-			tegra_hwpm_err(hwpm, "IP %d addr 0x%llx inst_idx %d "
-				"a_type %d element_idx %d: out of bounds",
-				*ip_idx, (unsigned long long)find_addr, *inst_idx,
-				a_type, *element_idx);
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
+				"IP %d addr 0x%llx s_inst_idx %d "
+				"a_type %d s_element_idx %d: out of bounds",
+				*ip_idx, (unsigned long long)find_addr,
+				*s_inst_idx, a_type, *s_element_idx);
 			return false;
 		}
 
@@ -353,10 +365,10 @@ static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 		}
 
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
-			"IP %d addr 0x%llx inst_idx %d "
-			"a_type %d element_idx %d address not in alist",
+			"IP %d addr 0x%llx s_inst_idx %d "
+			"a_type %d s_element_idx %d address not in alist",
 			*ip_idx, (unsigned long long)find_addr,
-			*inst_idx, a_type, *element_idx);
+			*s_inst_idx, a_type, *s_element_idx);
 		return false;
 	}
 
@@ -364,10 +376,10 @@ static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 		/* Confirm that given addr is base address of this element */
 		if (find_addr != element->start_abs_pa) {
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
-				"IP %d addr 0x%llx inst_idx %d "
-				"a_type %d element_idx %d: addr != start addr",
-				*ip_idx, (unsigned long long)find_addr, *inst_idx,
-				a_type, *element_idx);
+				"IP %d addr 0x%llx s_inst_idx %d "
+				"a_type %d s_element_idx %d addr != start addr",
+				*ip_idx, (unsigned long long)find_addr,
+				*s_inst_idx, a_type, *s_element_idx);
 			return false;
 		}
 		*element_type = element->element_type;
@@ -380,73 +392,118 @@ static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 
 static bool tegra_hwpm_addr_in_all_elements(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type, u32 a_type)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[*ip_idx];
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
-			&chip_ip->inst_aperture_info[a_type];
-	struct hwpm_ip_inst *ip_inst = inst_a_info->inst_arr[*inst_idx];
+	struct hwpm_ip_inst *ip_inst =
+		&chip_ip->ip_inst_static_array[*s_inst_idx];
 	struct hwpm_ip_element_info *e_info = &ip_inst->element_info[a_type];
+	struct hwpm_ip_aperture *element = NULL;
 	u64 element_offset = 0ULL;
-	u32 idx;
+	u32 idx = 0U;
+	u32 dyn_idx = 0U;
+
+	tegra_hwpm_fn(hwpm, " ");
 
 	/* Make sure address falls in elements of a_type */
 	if (e_info->num_element_per_inst == 0U) {
 		tegra_hwpm_dbg(hwpm, hwpm_verbose,
-			"IP %d addr 0x%llx: inst_idx %d no type %d elements",
-			*ip_idx, (unsigned long long)find_addr, *inst_idx, a_type);
+			"IP %d addr 0x%llx: s_inst_idx %d no type %d elements",
+			*ip_idx, (unsigned long long)find_addr,
+			*s_inst_idx, a_type);
 		return false;
 	}
 
 	if ((find_addr < e_info->range_start) ||
 		(find_addr > e_info->range_end)) {
 		/* Address not in this instance corresponding to a_type */
-		tegra_hwpm_dbg(hwpm, hwpm_verbose, "IP %d inst_idx %d: "
+		tegra_hwpm_dbg(hwpm, hwpm_verbose, "IP %d s_inst_idx %d: "
 			"addr 0x%llx not in type %d elements",
-			*ip_idx, *inst_idx, (unsigned long long)find_addr, a_type);
+			*ip_idx, *s_inst_idx,
+			(unsigned long long)find_addr, a_type);
 		return false;
 	}
 
-	/* Find element index to which address belongs to */
-	element_offset = tegra_hwpm_safe_sub_u64(
-		find_addr, e_info->range_start);
-	idx = tegra_hwpm_safe_cast_u64_to_u32(
-		element_offset / e_info->element_stride);
+	if (e_info->eslots_overlimit) {
+		/* Use brute force approach to find element index */
+		for (idx = 0U; idx < e_info->num_element_per_inst; idx++) {
+			element = &e_info->element_static_array[idx];
+			if ((find_addr >= element->start_abs_pa) &&
+				(find_addr <= element->end_abs_pa)) {
+				/* Found element with given address */
+				break;
+			}
+		}
 
-	/* Make sure element index is valid */
-	if (idx >= e_info->element_slots) {
-		tegra_hwpm_err(hwpm, "IP %d addr 0x%llx inst_idx %d a_type %d: "
-			"element_idx %d out of bounds",
-			*ip_idx, (unsigned long long)find_addr, *inst_idx, a_type, idx);
-		return false;
+		/* Make sure element index is valid */
+		if (idx >= e_info->num_element_per_inst) {
+			tegra_hwpm_dbg(hwpm, hwpm_verbose,
+				"IP %d addr 0x%llx s_inst_idx %d a_type %d: "
+				"s_element_idx %d out of bounds",
+				*ip_idx, (unsigned long long)find_addr,
+				*s_inst_idx, a_type, idx);
+			return false;
+		}
+	} else {
+		/* Find element index to which address belongs to */
+		element_offset = tegra_hwpm_safe_sub_u64(
+			find_addr, e_info->range_start);
+		dyn_idx = tegra_hwpm_safe_cast_u64_to_u32(
+			element_offset / e_info->element_stride);
+
+		/* Make sure element index is valid */
+		if (dyn_idx >= e_info->element_slots) {
+			tegra_hwpm_dbg(hwpm, hwpm_verbose,
+				"IP %d addr 0x%llx s_inst_idx %d a_type %d: "
+				"dynamic element_idx %d out of bounds",
+				*ip_idx, (unsigned long long)find_addr,
+				*s_inst_idx, a_type, dyn_idx);
+			return false;
+		}
+
+		/* Convert dynamic index to static index */
+		element = e_info->element_arr[dyn_idx];
+		if (element == NULL) {
+			tegra_hwpm_dbg(hwpm, hwpm_verbose,
+				"IP %d addr 0x%llx s_inst_idx %d a_type %d: "
+				"dynamic element_idx %d not populated",
+				*ip_idx, (unsigned long long)find_addr,
+				*s_inst_idx, a_type, dyn_idx);
+			return false;
+		}
+		idx = element->aperture_index;
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
+			"find_addr 0x%llx element dyn_idx %u static idx %u",
+			find_addr, dyn_idx, idx);
 	}
 
-	*element_idx = idx;
+	*s_element_idx = idx;
 
 	/* Process further and return */
 	return tegra_hwpm_addr_in_single_element(hwpm, iia_func,
-		find_addr, ip_idx, inst_idx, element_idx, element_type, a_type);
+		find_addr, ip_idx, s_inst_idx, s_element_idx,
+		element_type, a_type);
 }
 
 static bool tegra_hwpm_addr_in_single_instance(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type, u32 a_type)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[*ip_idx];
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
-			&chip_ip->inst_aperture_info[a_type];
-	struct hwpm_ip_inst *ip_inst = inst_a_info->inst_arr[*inst_idx];
+	struct hwpm_ip_inst *ip_inst =
+		&chip_ip->ip_inst_static_array[*s_inst_idx];
 
 	tegra_hwpm_fn(hwpm, " ");
 
 	if (ip_inst == NULL) {
 		tegra_hwpm_dbg(hwpm, hwpm_verbose, "IP %d addr 0x%llx: "
-			"a_type %d inst_idx %d not populated",
-			*ip_idx, (unsigned long long)find_addr, a_type, *inst_idx);
+			"a_type %d s_inst_idx %d not populated",
+			*ip_idx, (unsigned long long)find_addr,
+			a_type, *s_inst_idx);
 		return false;
 	}
 
@@ -455,56 +512,103 @@ static bool tegra_hwpm_addr_in_single_instance(struct tegra_soc_hwpm *hwpm,
 		if ((chip_ip->inst_fs_mask & ip_inst->hw_inst_mask) == 0U) {
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
 				"IP %d addr 0x%llx: "
-				"a_type %d inst_idx %d not available",
-				*ip_idx, (unsigned long long)find_addr, a_type, *inst_idx);
+				"a_type %d s_inst_idx %d not available",
+				*ip_idx, (unsigned long long)find_addr,
+				a_type, *s_inst_idx);
 			return false;
 		}
 	}
 
 	/* Process further and return */
 	return tegra_hwpm_addr_in_all_elements(hwpm, iia_func,
-		find_addr, ip_idx, inst_idx, element_idx, element_type, a_type);
+		find_addr, ip_idx, s_inst_idx, s_element_idx,
+		element_type, a_type);
 }
 
 static bool tegra_hwpm_addr_in_all_instances(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type, u32 a_type)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = active_chip->chip_ips[*ip_idx];
 	struct hwpm_ip_inst_per_aperture_info *inst_a_info =
 			&chip_ip->inst_aperture_info[a_type];
+	struct hwpm_ip_inst *ip_inst = NULL;
+	struct hwpm_ip_element_info *e_info = NULL;
+	bool found = false;
 	u64 inst_offset = 0ULL;
 	u32 idx = 0U;
+	u32 dyn_idx = 0U;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	/* Find instance to which address belongs to */
-	inst_offset = tegra_hwpm_safe_sub_u64(
-		find_addr, inst_a_info->range_start);
-	idx = tegra_hwpm_safe_cast_u64_to_u32(
-		inst_offset / inst_a_info->inst_stride);
+	if (inst_a_info->islots_overlimit) {
+		/* Use brute force approach to find instance index */
+		for (idx = 0U; idx < chip_ip->num_instances; idx++) {
+			ip_inst = &chip_ip->ip_inst_static_array[idx];
+			e_info = &ip_inst->element_info[a_type];
+			if ((find_addr >= e_info->range_start) &&
+				(find_addr <= e_info->range_end)) {
+				*s_inst_idx = idx;
+				/* Found element with given address */
+				found = tegra_hwpm_addr_in_single_instance(
+					hwpm, iia_func, find_addr, ip_idx,
+					s_inst_idx, s_element_idx,
+					element_type, a_type);
+				if (found) {
+					return found;
+				}
+			}
+		}
 
-	/* Make sure instance index is valid */
-	if (idx >= inst_a_info->inst_slots) {
-		tegra_hwpm_err(hwpm, "IP %d addr 0x%llx a_type %d: "
-			"inst_idx %d out of bounds",
-			*ip_idx, (unsigned long long)find_addr, a_type, idx);
-		return false;
+		/* Make sure instance index is valid */
+		if (idx >= chip_ip->num_instances) {
+			tegra_hwpm_dbg(hwpm, hwpm_verbose,
+				"Addr 0x%llx not in IP %d a_type %d",
+				(unsigned long long)find_addr, *ip_idx, a_type);
+			return false;
+		}
+	} else {
+		/* Find instance to which address belongs to */
+		inst_offset = tegra_hwpm_safe_sub_u64(
+			find_addr, inst_a_info->range_start);
+		dyn_idx = tegra_hwpm_safe_cast_u64_to_u32(
+			inst_offset / inst_a_info->inst_stride);
+
+		/* Make sure instance index is valid */
+		if (dyn_idx >= inst_a_info->inst_slots) {
+			tegra_hwpm_dbg(hwpm, hwpm_verbose,
+				"IP %d addr 0x%llx a_type %d: "
+				"dynamic inst_idx %d out of bounds",
+				*ip_idx, (unsigned long long)find_addr,
+				a_type, dyn_idx);
+			return false;
+		}
+
+		/* Convert dynamic inst index to static inst index */
+		ip_inst = inst_a_info->inst_arr[dyn_idx];
+		idx = tegra_hwpm_ffs(hwpm, ip_inst->hw_inst_mask);
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
+			"IP %d find_addr 0x%llx inst dyn_idx %u static idx %u",
+			*ip_idx, find_addr, dyn_idx, idx);
+
+		*s_inst_idx = idx;
+
+		/* Process further and return */
+		return tegra_hwpm_addr_in_single_instance(hwpm, iia_func,
+			find_addr, ip_idx, s_inst_idx, s_element_idx,
+			element_type, a_type);
 	}
 
-	*inst_idx = idx;
-
-	/* Process further and return */
-	return tegra_hwpm_addr_in_single_instance(hwpm, iia_func,
-		find_addr, ip_idx, inst_idx, element_idx,
-		element_type, a_type);
+	/* Execution shouldn't reach here */
+	tegra_hwpm_err(hwpm, "Execution shouldn't reach here");
+	return false;
 }
 
 static bool tegra_hwpm_addr_in_single_ip(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type)
 {
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
@@ -515,7 +619,8 @@ static bool tegra_hwpm_addr_in_single_ip(struct tegra_soc_hwpm *hwpm,
 	tegra_hwpm_fn(hwpm, " ");
 
 	if (chip_ip == NULL) {
-		tegra_hwpm_err(hwpm, "IP %d not populated as expected", *ip_idx);
+		tegra_hwpm_err(hwpm,
+			"IP %d not populated as expected", *ip_idx);
 		return false;
 	}
 
@@ -549,6 +654,7 @@ static bool tegra_hwpm_addr_in_single_ip(struct tegra_soc_hwpm *hwpm,
 
 		if ((find_addr < inst_a_info->range_start) ||
 			(find_addr > inst_a_info->range_end)) {
+
 			/* Address not in this IP for this a_type */
 			tegra_hwpm_dbg(hwpm, hwpm_verbose,
 				"IP %d addr 0x%llx not in a_type %d elements",
@@ -558,7 +664,7 @@ static bool tegra_hwpm_addr_in_single_ip(struct tegra_soc_hwpm *hwpm,
 
 		/* Process further and return */
 		found = tegra_hwpm_addr_in_all_instances(hwpm, iia_func,
-			find_addr, ip_idx, inst_idx, element_idx,
+			find_addr, ip_idx, s_inst_idx, s_element_idx,
 			element_type, a_type);
 		if (found) {
 			break;
@@ -576,7 +682,7 @@ static bool tegra_hwpm_addr_in_single_ip(struct tegra_soc_hwpm *hwpm,
 
 static bool tegra_hwpm_addr_in_all_ip(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type)
 {
 	u32 idx;
@@ -601,7 +707,7 @@ static bool tegra_hwpm_addr_in_all_ip(struct tegra_soc_hwpm *hwpm,
 		}
 
 		found = tegra_hwpm_addr_in_single_ip(hwpm, iia_func, find_addr,
-			&idx, inst_idx, element_idx, element_type);
+			&idx, s_inst_idx, s_element_idx, element_type);
 		if (found) {
 			*ip_idx = idx;
 			return true;
@@ -613,15 +719,15 @@ static bool tegra_hwpm_addr_in_all_ip(struct tegra_soc_hwpm *hwpm,
 
 bool tegra_hwpm_aperture_for_address(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type)
 {
 	bool found = false;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	if ((ip_idx == NULL) || (inst_idx == NULL) ||
-		(element_idx == NULL) || (element_type == NULL)) {
+	if ((ip_idx == NULL) || (s_inst_idx == NULL) ||
+		(s_element_idx == NULL) || (element_type == NULL)) {
 		tegra_hwpm_err(hwpm, "NULL index pointer");
 		return false;
 	}
@@ -629,7 +735,7 @@ bool tegra_hwpm_aperture_for_address(struct tegra_soc_hwpm *hwpm,
 	if (iia_func == TEGRA_HWPM_FIND_GIVEN_ADDRESS) {
 		/* IP index is not known, search in all IPs */
 		found = tegra_hwpm_addr_in_all_ip(hwpm, iia_func, find_addr,
-			ip_idx, inst_idx, element_idx, element_type);
+			ip_idx, s_inst_idx, s_element_idx, element_type);
 		if (!found) {
 			tegra_hwpm_err(hwpm,
 				"Address 0x%llx not in any IP",
@@ -640,7 +746,7 @@ bool tegra_hwpm_aperture_for_address(struct tegra_soc_hwpm *hwpm,
 
 	if (iia_func == TEGRA_HWPM_MATCH_BASE_ADDRESS) {
 		found = tegra_hwpm_addr_in_single_ip(hwpm, iia_func, find_addr,
-			ip_idx, inst_idx, element_idx, element_type);
+			ip_idx, s_inst_idx, s_element_idx, element_type);
 		if (!found) {
 			tegra_hwpm_err(hwpm, "Address 0x%llx not in IP %d",
 				(unsigned long long)find_addr, *ip_idx);

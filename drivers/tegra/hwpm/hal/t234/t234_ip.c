@@ -206,7 +206,7 @@ static int t234_hwpm_validate_emc_config(struct tegra_soc_hwpm *hwpm)
 	defined(CONFIG_T234_HWPM_IP_MSS_MCF)
 	struct hwpm_ip *chip_ip = NULL;
 	struct hwpm_ip_inst *ip_inst = NULL;
-	u32 inst_idx = 0U;
+	u32 s_inst_idx = 0U;
 	u32 element_mask_max = 0U;
 #endif
 	u32 emc_disable_fuse_val = 0U;
@@ -260,10 +260,11 @@ static int t234_hwpm_validate_emc_config(struct tegra_soc_hwpm *hwpm)
 	defined(CONFIG_T234_HWPM_IP_MSS_ISO_NISO_HUBS) || \
 	defined(CONFIG_T234_HWPM_IP_MSS_MCF)
 			chip_ip = active_chip->chip_ips[idx];
-			for (inst_idx = 0U; inst_idx < chip_ip->num_instances;
-				inst_idx++) {
+			for (s_inst_idx = 0U;
+				s_inst_idx < chip_ip->num_instances;
+				s_inst_idx++) {
 				ip_inst = &chip_ip->ip_inst_static_array[
-					inst_idx];
+					s_inst_idx];
 
 				/*
 				 * Hence use max element mask to get correct

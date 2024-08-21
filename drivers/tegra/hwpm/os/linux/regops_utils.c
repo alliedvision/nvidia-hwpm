@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -28,7 +28,7 @@ static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
 {
 	bool found = false;
 	u32 ip_idx = TEGRA_HWPM_IP_INACTIVE;
-	u32 inst_idx = 0U, element_idx = 0U;
+	u32 s_inst_idx = 0U, s_element_idx = 0U;
 	u32 a_type = 0U;
 	u32 reg_val = 0U;
 	u64 addr_hi = 0ULL;
@@ -36,7 +36,6 @@ static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_element_type element_type = HWPM_ELEMENT_INVALID;
 	struct tegra_soc_hwpm_chip *active_chip = hwpm->active_chip;
 	struct hwpm_ip *chip_ip = NULL;
-	struct hwpm_ip_inst_per_aperture_info *inst_a_info = NULL;
 	struct hwpm_ip_inst *ip_inst = NULL;
 	struct hwpm_ip_element_info *e_info = NULL;
 	struct hwpm_ip_aperture *element = NULL;
@@ -46,7 +45,7 @@ static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
 	/* Find IP aperture containing phys_addr in allowlist */
 	found = tegra_hwpm_aperture_for_address(hwpm,
 		TEGRA_HWPM_FIND_GIVEN_ADDRESS, reg_op->phys_addr,
-		&ip_idx, &inst_idx, &element_idx, &element_type);
+		&ip_idx, &s_inst_idx, &s_element_idx, &element_type);
 	if (!found) {
 		/* Silent failure as regops can continue on error */
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
@@ -57,8 +56,10 @@ static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
 	}
 
 	tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
-		"Found addr 0x%llx IP %d inst_idx %d element_idx %d e_type %d",
-		reg_op->phys_addr, ip_idx, inst_idx, element_idx, element_type);
+		"Found addr 0x%llx IP %d s_inst_idx %d "
+		"s_element_idx %d e_type %d",
+		reg_op->phys_addr, ip_idx, s_inst_idx,
+		s_element_idx, element_type);
 
 	switch (element_type) {
 	case HWPM_ELEMENT_PERFMON:
@@ -78,10 +79,9 @@ static int tegra_hwpm_exec_reg_ops(struct tegra_soc_hwpm *hwpm,
 	}
 
 	chip_ip = active_chip->chip_ips[ip_idx];
-	inst_a_info = &chip_ip->inst_aperture_info[a_type];
-	ip_inst = inst_a_info->inst_arr[inst_idx];
+	ip_inst = &chip_ip->ip_inst_static_array[s_inst_idx];
 	e_info = &ip_inst->element_info[a_type];
-	element = e_info->element_arr[element_idx];
+	element = &e_info->element_static_array[s_element_idx];
 
 	switch (reg_op->cmd) {
 	case TEGRA_SOC_HWPM_REG_OP_CMD_RD32:
@@ -218,7 +218,6 @@ int tegra_hwpm_exec_regops(struct tegra_soc_hwpm *hwpm,
 
 		ret = tegra_hwpm_exec_reg_ops(hwpm, reg_op);
 		if (ret < 0) {
-			tegra_hwpm_err(hwpm, "exec_reg_ops %d failed", op_idx);
 			exec_reg_ops->b_all_reg_ops_passed = false;
 			if (exec_reg_ops->mode ==
 				TEGRA_SOC_HWPM_REG_OP_MODE_FAIL_ON_FIRST) {

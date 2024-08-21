@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -79,7 +79,7 @@ int tegra_hwpm_reserve_resource(struct tegra_soc_hwpm *hwpm, u32 resource)
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	tegra_hwpm_dbg(hwpm, hwpm_info,
+	tegra_hwpm_dbg(hwpm, hwpm_info | hwpm_dbg_reserve_resource,
 		"User requesting to reserve resource %d", resource);
 
 	/* Translate resource to ip_idx */

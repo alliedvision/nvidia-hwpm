@@ -1,6 +1,6 @@
-/* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,6 +29,9 @@
 #else
 #include <os/qnx/aperture_utils.h>
 #endif
+
+#define tegra_hwpm_ffs(hwpm, number)				\
+	tegra_hwpm_ffs_impl(hwpm, number)
 
 #define tegra_hwpm_perfmon_reserve(hwpm, ip_inst, perfmon)	\
 	tegra_hwpm_perfmon_reserve_impl(hwpm, ip_inst, perfmon)

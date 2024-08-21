@@ -45,6 +45,9 @@
 #define TEGRA_HWPM_IP_DEBUG_FD_INVALID          -1
 #define TEGRA_HWPM_IP_DEBUG_FD_VALID            1U
 
+/* Indicate max dynamic aperture slots accepted for binary search */
+#define TEGRA_HWPM_APERTURE_SLOTS_LIMIT		64U
+
 #ifdef __KERNEL__
 struct tegra_hwpm_os_linux;
 #else
@@ -247,8 +250,15 @@ struct hwpm_ip_aperture {
 	enum tegra_hwpm_element_type element_type;
 
 	/*
+	 * Index of the aperture within the instance.
+	 * Static structure for this element can be retrieved using this index.
+	 */
+	u32 aperture_index;
+
+	/*
 	 * Element index : Index of this aperture within the instance
 	 * This will be used to update element_fs_mask to indicate availability.
+	 * This mask also indicates corresponding core element.
 	 */
 	u32 element_index_mask;
 
@@ -340,6 +350,17 @@ struct hwpm_ip_element_info {
 	u32 element_slots;
 
 	/*
+	 * Flag that indicates if number of slots computed is over limit
+	 * If yes, usually, number of valid static slots will be small as
+	 * compared to computed dynamic slots. That means allocating huge
+	 * memory to store NULL pointers equal to computed element slots
+	 * will fail and/or be impractical. Hence, if this flag is set,
+	 * driver logic should fallback to brute force approach to match
+	 * regops address.
+	 */
+	bool eslots_overlimit;
+
+	/*
 	 * Dynamic elements array corresponding to this element
 	 * Array size: element_slots pointers
 	 */
@@ -413,6 +434,17 @@ struct hwpm_ip_inst_per_aperture_info {
 	 * This gives number of entries in inst_arr
 	 */
 	u32 inst_slots;
+
+	/*
+	 * Flag that indicates if number of slots computed is over limit
+	 * If yes, usually, number of valid static slots will be small as
+	 * compared to computed dynamic slots. That means allocating huge
+	 * memory to store NULL pointers equal to computed insyance slots
+	 * will fail and/or be impractical. Hence, if this flag is set,
+	 * driver logic should fallback to brute force approach to match
+	 *  regops address.
+	 */
+	bool islots_overlimit;
 
 	/* IP inst aperture array */
 	struct hwpm_ip_inst **inst_arr;

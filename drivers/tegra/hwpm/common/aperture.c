@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -219,6 +219,18 @@ static int tegra_hwpm_alloc_dynamic_inst_element_array(
 	inst_a_info->inst_slots = tegra_hwpm_safe_cast_u64_to_u32(
 		ip_element_range / inst_a_info->inst_stride);
 
+	if (inst_a_info->inst_slots > TEGRA_HWPM_APERTURE_SLOTS_LIMIT) {
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+			"IP inst range(0x%llx-0x%llx) a_type = %d inst_slots %d"
+			"over limit, skip allocating dynamic array",
+			(unsigned long long)inst_a_info->range_start,
+			(unsigned long long)inst_a_info->range_end,
+			a_type, inst_a_info->inst_slots);
+		inst_a_info->islots_overlimit = true;
+		/* This is a valid case */
+		return 0;
+	}
+
 	inst_a_info->inst_arr = tegra_hwpm_kcalloc(
 		hwpm, inst_a_info->inst_slots, sizeof(struct hwpm_ip_inst *));
 	if (inst_a_info->inst_arr == NULL) {
@@ -268,14 +280,14 @@ fail:
 static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 	struct tegra_hwpm_func_args *func_args,
 	enum tegra_hwpm_funcs iia_func, u32 ip_idx, struct hwpm_ip *chip_ip,
-	u32 static_inst_idx, u32 a_type, u32 static_aperture_idx)
+	u32 s_inst_idx, u32 a_type, u32 s_element_idx)
 {
 	int err = 0, ret = 0;
 	struct hwpm_ip_inst *ip_inst =
-		&chip_ip->ip_inst_static_array[static_inst_idx];
+		&chip_ip->ip_inst_static_array[s_inst_idx];
 	struct hwpm_ip_element_info *e_info = &ip_inst->element_info[a_type];
 	struct hwpm_ip_aperture *element =
-		&e_info->element_static_array[static_aperture_idx];
+		&e_info->element_static_array[s_element_idx];
 	u64 element_offset = 0ULL;
 	u32 idx = 0U;
 	u32 reg_val = 0U;
@@ -284,6 +296,14 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 
 	switch (iia_func) {
 	case TEGRA_HWPM_INIT_IP_STRUCTURES:
+		if (e_info->eslots_overlimit) {
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+				"IP %d s_inst_idx %d a_type %u s_element_idx %u"
+				"Skip using dynamic element array",
+				ip_idx, s_inst_idx, a_type, s_element_idx);
+			break;
+		}
+
 		/* Compute element offset from element range start */
 		element_offset = tegra_hwpm_safe_sub_u64(
 			element->start_abs_pa, e_info->range_start);
@@ -295,9 +315,10 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
 			"IP %d inst %d a_type %d element type %d"
 			" start_addr 0x%llx static idx %d == dynamic idx %d",
-			ip_idx, static_inst_idx, a_type,
-			element->element_type, (unsigned long long)element->start_abs_pa,
-			static_aperture_idx, idx);
+			ip_idx, s_inst_idx, a_type,
+			element->element_type,
+			(unsigned long long)element->start_abs_pa,
+			s_element_idx, idx);
 
 		/* Set element slot pointer */
 		e_info->element_arr[idx] = element;
@@ -363,7 +384,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_allowlist,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -376,7 +397,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		} else {
 			tegra_hwpm_err(hwpm, "IP %d"
 				" element type %d static_idx %d NULL alist",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 		}
 		break;
 	case TEGRA_HWPM_COMBINE_ALIST:
@@ -385,7 +406,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_allowlist,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -396,7 +417,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_err(hwpm,
 				"IP %d element type %d static_idx %d"
 				" alist copy failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 			return err;
 		}
 		break;
@@ -406,7 +427,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_reserve_resource,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reservable",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -415,7 +436,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
 				" type %d static_idx %d reserve failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 			goto fail;
 		}
 		break;
@@ -426,7 +447,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_release_resource,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -435,7 +456,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		if (ret != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
 				" type %d idx %d release failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 		}
 		break;
 	case TEGRA_HWPM_BIND_RESOURCES:
@@ -444,7 +465,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_bind,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -454,7 +475,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
 				" type %d idx %d zero regs failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 			goto fail;
 		}
 
@@ -462,7 +483,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
 				" type %d idx %d enable failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 			goto fail;
 		}
 		break;
@@ -472,7 +493,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_bind,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -481,8 +502,8 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		err = tegra_hwpm_element_disable(hwpm, element);
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
-				" type %d idx %d enable failed",
-				ip_idx, a_type, static_aperture_idx);
+				" type %d idx %d disable failed",
+				ip_idx, a_type, s_element_idx);
 			goto fail;
 		}
 
@@ -491,7 +512,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d element"
 				" type %d idx %d zero regs failed",
-				ip_idx, a_type, static_aperture_idx);
+				ip_idx, a_type, s_element_idx);
 			goto fail;
 		}
 		break;
@@ -501,7 +522,7 @@ static int tegra_hwpm_func_single_element(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_release,
 				"IP %d inst %d a_type %d element type %d"
 				" start_addr 0x%llx not reserved",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				element->element_type,
 				(unsigned long long)element->start_abs_pa);
 			return 0;
@@ -521,13 +542,13 @@ fail:
 static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 	struct tegra_hwpm_func_args *func_args,
 	enum tegra_hwpm_funcs iia_func, u32 ip_idx, struct hwpm_ip *chip_ip,
-	u32 static_inst_idx, u32 a_type)
+	u32 s_inst_idx, u32 a_type)
 {
 	u32 static_idx = 0U, idx = 0U;
 	u64 inst_element_range = 0ULL;
 	int err = 0;
 	struct hwpm_ip_inst *ip_inst =
-		&chip_ip->ip_inst_static_array[static_inst_idx];
+		&chip_ip->ip_inst_static_array[s_inst_idx];
 	struct hwpm_ip_element_info *e_info = &ip_inst->element_info[a_type];
 
 	tegra_hwpm_fn(hwpm, " ");
@@ -537,7 +558,7 @@ static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 			/* no a_type elements in this IP */
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
 				"No a_type = %d elements in IP %d stat inst %d",
-				a_type, ip_idx, static_inst_idx);
+				a_type, ip_idx, s_inst_idx);
 			return 0;
 		}
 
@@ -546,6 +567,20 @@ static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 				e_info->range_start), 1ULL);
 		e_info->element_slots = tegra_hwpm_safe_cast_u64_to_u32(
 			inst_element_range / e_info->element_stride);
+
+		if (e_info->element_slots > TEGRA_HWPM_APERTURE_SLOTS_LIMIT) {
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+				"iia_func %d IP %d static inst %d a_type %d"
+				" element range(0x%llx-0x%llx) element_slots %d "
+				"over limit, skip allocating dynamic array",
+				iia_func, ip_idx, s_inst_idx, a_type,
+				(unsigned long long)e_info->range_start,
+				(unsigned long long)e_info->range_end,
+				e_info->element_slots);
+			e_info->eslots_overlimit = true;
+			/* This is a valid case */
+			return 0;
+		}
 
 		e_info->element_arr = tegra_hwpm_kcalloc(
 			hwpm, e_info->element_slots,
@@ -564,7 +599,7 @@ static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 			"iia_func %d IP %d static inst %d a_type %d"
 			" element range(0x%llx-0x%llx) element_slots %d "
 			"num_element_per_inst %d",
-			iia_func, ip_idx, static_inst_idx, a_type,
+			iia_func, ip_idx, s_inst_idx, a_type,
 			(unsigned long long)e_info->range_start,
 			(unsigned long long)e_info->range_end,
 			e_info->element_slots, e_info->num_element_per_inst);
@@ -581,11 +616,11 @@ static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 		static_idx++) {
 		err = tegra_hwpm_func_single_element(
 			hwpm, func_args, iia_func, ip_idx,
-			chip_ip, static_inst_idx, a_type, static_idx);
+			chip_ip, s_inst_idx, a_type, static_idx);
 		if (err != 0) {
 			tegra_hwpm_err(hwpm,
 				"IP %d inst %d a_type %d idx %d func %d failed",
-				ip_idx, static_inst_idx, a_type,
+				ip_idx, s_inst_idx, a_type,
 				static_idx, iia_func);
 			goto fail;
 		}
@@ -605,7 +640,7 @@ fail:
 static int tegra_hwpm_func_all_elements(struct tegra_soc_hwpm *hwpm,
 	struct tegra_hwpm_func_args *func_args,
 	enum tegra_hwpm_funcs iia_func, u32 ip_idx, struct hwpm_ip *chip_ip,
-	u32 static_inst_idx)
+	u32 s_inst_idx)
 {
 	u32 a_type;
 	int err = 0;
@@ -614,11 +649,11 @@ static int tegra_hwpm_func_all_elements(struct tegra_soc_hwpm *hwpm,
 
 	for (a_type = 0U; a_type < TEGRA_HWPM_APERTURE_TYPE_MAX; a_type++) {
 		err = tegra_hwpm_func_all_elements_of_type(hwpm, func_args,
-			iia_func, ip_idx, chip_ip, static_inst_idx, a_type);
+			iia_func, ip_idx, chip_ip, s_inst_idx, a_type);
 		if (err != 0) {
 			tegra_hwpm_err(hwpm,
 				"IP %d inst %d a_type %d func %d failed",
-				ip_idx, static_inst_idx, a_type, iia_func);
+				ip_idx, s_inst_idx, a_type, iia_func);
 			goto fail;
 		}
 	}
@@ -631,13 +666,13 @@ fail:
 static int tegra_hwpm_func_single_inst(struct tegra_soc_hwpm *hwpm,
 	struct tegra_hwpm_func_args *func_args,
 	enum tegra_hwpm_funcs iia_func, u32 ip_idx, struct hwpm_ip *chip_ip,
-	u32 static_inst_idx)
+	u32 s_inst_idx)
 {
 	int err = 0;
 	u32 a_type, idx = 0U;
 	u64 inst_offset = 0ULL;
 	struct hwpm_ip_inst *ip_inst =
-		&chip_ip->ip_inst_static_array[static_inst_idx];
+		&chip_ip->ip_inst_static_array[s_inst_idx];
 	struct hwpm_ip_inst_per_aperture_info *inst_a_info = NULL;
 	struct hwpm_ip_element_info *e_info = NULL;
 
@@ -651,8 +686,15 @@ static int tegra_hwpm_func_single_inst(struct tegra_soc_hwpm *hwpm,
 
 			if (inst_a_info->range_end == 0ULL) {
 				tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
-				"No a_type = %d elements in IP %d",
-				a_type, ip_idx);
+					"No a_type = %d elements in IP %d",
+					a_type, ip_idx);
+				continue;
+			}
+
+			if (inst_a_info->islots_overlimit) {
+				tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+					"IP %d s_inst_idx %d Skip using dynamic instance array",
+					ip_idx, s_inst_idx);
 				continue;
 			}
 
@@ -668,8 +710,10 @@ static int tegra_hwpm_func_single_inst(struct tegra_soc_hwpm *hwpm,
 				"IP %d a_type %d inst range start 0x%llx"
 				"element range start 0x%llx"
 				" static inst idx %d == dynamic idx %d",
-				ip_idx, a_type, (unsigned long long)inst_a_info->range_start,
-				(unsigned long long)e_info->range_start, static_inst_idx, idx);
+				ip_idx, a_type,
+				(unsigned long long)inst_a_info->range_start,
+				(unsigned long long)e_info->range_start,
+				s_inst_idx, idx);
 
 			/* Set perfmux slot pointer */
 			inst_a_info->inst_arr[idx] = ip_inst;
@@ -688,17 +732,17 @@ static int tegra_hwpm_func_single_inst(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm,
 				"IP %d inst %d power mgmt disable failed",
-				ip_idx, static_inst_idx);
+				ip_idx, s_inst_idx);
 			goto fail;
 		}
 	}
 
 	/* Continue functionality for all apertures */
 	err = tegra_hwpm_func_all_elements(hwpm, func_args, iia_func,
-		ip_idx, chip_ip, static_inst_idx);
+		ip_idx, chip_ip, s_inst_idx);
 	if (err != 0) {
 		tegra_hwpm_err(hwpm, "IP %d inst %d func 0x%x failed",
-			ip_idx, static_inst_idx, iia_func);
+			ip_idx, s_inst_idx, iia_func);
 		goto fail;
 	}
 
@@ -721,7 +765,7 @@ static int tegra_hwpm_func_single_inst(struct tegra_soc_hwpm *hwpm,
 		if (err != 0) {
 			tegra_hwpm_err(hwpm,
 				"IP %d inst %d power mgmt enable failed",
-				ip_idx, static_inst_idx);
+				ip_idx, s_inst_idx);
 			goto fail;
 		}
 	}
@@ -735,22 +779,22 @@ static int tegra_hwpm_func_all_inst(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func, u32 ip_idx, struct hwpm_ip *chip_ip)
 {
 	int err = 0, ret = 0;
-	u32 inst_idx = 0U;
+	u32 s_inst_idx = 0U;
 	unsigned long reserved_insts = 0UL, idx = 0UL;
 
 	tegra_hwpm_fn(hwpm, " ");
 
-	for (inst_idx = 0U; inst_idx < chip_ip->num_instances; inst_idx++) {
+	for (s_inst_idx = 0U; s_inst_idx < chip_ip->num_instances; s_inst_idx++) {
 		err = tegra_hwpm_func_single_inst(hwpm, func_args, iia_func,
-			ip_idx, chip_ip, inst_idx);
+			ip_idx, chip_ip, s_inst_idx);
 		if (err != 0) {
 			tegra_hwpm_err(hwpm, "IP %d inst %d func 0x%x failed",
-				ip_idx, inst_idx, iia_func);
+				ip_idx, s_inst_idx, iia_func);
 			goto fail;
 		}
 
 		if (iia_func == TEGRA_HWPM_RESERVE_GIVEN_RESOURCE) {
-			reserved_insts |= BIT(inst_idx);
+			reserved_insts |= BIT(s_inst_idx);
 		}
 	}
 

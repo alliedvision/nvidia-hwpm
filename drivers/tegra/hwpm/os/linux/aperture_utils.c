@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -16,6 +16,7 @@
 
 #include <linux/slab.h>
 #include <linux/of_address.h>
+#include <linux/bitops.h>
 
 #include <tegra_hwpm_static_analysis.h>
 #include <tegra_hwpm_aperture.h>
@@ -24,6 +25,15 @@
 #include <tegra_hwpm_io.h>
 #include <tegra_hwpm.h>
 #include <os/linux/driver.h>
+
+u32 tegra_hwpm_ffs_impl(struct tegra_soc_hwpm *hwpm, u64 number)
+{
+	if (number == 0) {
+		return 0;
+	}
+
+	return __ffs(number);
+}
 
 int tegra_hwpm_perfmon_reserve_impl(struct tegra_soc_hwpm *hwpm,
 	struct hwpm_ip_inst *ip_inst, struct hwpm_ip_aperture *perfmon)

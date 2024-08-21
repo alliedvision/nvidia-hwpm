@@ -1,6 +1,6 @@
-/* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -48,7 +48,7 @@ int tegra_hwpm_func_single_ip(struct tegra_soc_hwpm *hwpm,
 
 bool tegra_hwpm_aperture_for_address(struct tegra_soc_hwpm *hwpm,
 	enum tegra_hwpm_funcs iia_func,
-	u64 find_addr, u32 *ip_idx, u32 *inst_idx, u32 *element_idx,
+	u64 find_addr, u32 *ip_idx, u32 *s_inst_idx, u32 *s_element_idx,
 	enum tegra_hwpm_element_type *element_type);
 
 int tegra_hwpm_perfmux_disable(struct tegra_soc_hwpm *hwpm,
@@ -90,6 +90,6 @@ int tegra_hwpm_check_status(struct tegra_soc_hwpm *hwpm);
 int tegra_hwpm_release_hw(struct tegra_soc_hwpm *hwpm);
 void tegra_hwpm_release_sw_setup(struct tegra_soc_hwpm *hwpm);
 int tegra_hwpm_update_ip_inst_fs_mask(struct tegra_soc_hwpm *hwpm,
-	u32 ip_idx, u32 a_type, u32 inst_idx, bool available);
+	u32 ip_idx, u32 a_type, u32 s_inst_idx, bool available);
 
 #endif /* TEGRA_HWPM_COMMON_H */
