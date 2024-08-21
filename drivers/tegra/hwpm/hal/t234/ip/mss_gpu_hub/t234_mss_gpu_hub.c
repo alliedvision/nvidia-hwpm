@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,19 +19,25 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
 #include "t234_mss_gpu_hub.h"
 
 #include <tegra_hwpm.h>
 #include <hal/t234/t234_regops_allowlist.h>
-#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 #include <hal/t234/t234_perfmon_device_index.h>
+#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 
 static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmon_element_static_array[
 	T234_HWPM_IP_MSS_GPU_HUB_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -52,8 +58,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	T234_HWPM_IP_MSS_GPU_HUB_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
-		.element_index = 1U,
+		.element_index = 0U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_1_base_r(),
@@ -67,8 +74,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 1U,
 		.element_index_mask = BIT(1),
-		.element_index = 2U,
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_2_base_r(),
@@ -82,8 +90,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 2U,
 		.element_index_mask = BIT(2),
-		.element_index = 3U,
+		.element_index = 2U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_3_base_r(),
@@ -97,8 +106,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 3U,
 		.element_index_mask = BIT(3),
-		.element_index = 4U,
+		.element_index = 3U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_4_base_r(),
@@ -112,8 +122,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 4U,
 		.element_index_mask = BIT(4),
-		.element_index = 5U,
+		.element_index = 4U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_5_base_r(),
@@ -127,8 +138,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 5U,
 		.element_index_mask = BIT(5),
-		.element_index = 6U,
+		.element_index = 5U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_6_base_r(),
@@ -142,8 +154,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 6U,
 		.element_index_mask = BIT(6),
-		.element_index = 7U,
+		.element_index = 6U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_7_base_r(),
@@ -157,8 +170,9 @@ static struct hwpm_ip_aperture t234_mss_gpu_hub_inst0_perfmux_element_static_arr
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 7U,
 		.element_index_mask = BIT(7),
-		.element_index = 8U,
+		.element_index = 7U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mss_nvlink_8_base_r(),
@@ -189,6 +203,7 @@ static struct hwpm_ip_inst t234_mss_gpu_hub_inst_static_array[
 					T234_HWPM_IP_MSS_GPU_HUB_NUM_PERFMUX_PER_INST,
 				.element_static_array =
 					t234_mss_gpu_hub_inst0_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_mss_nvlink_8_base_r(),
 				.range_end = addr_map_mss_nvlink_7_limit_r(),
 				.element_stride = addr_map_mss_nvlink_8_limit_r() -
@@ -251,6 +266,7 @@ struct hwpm_ip t234_hwpm_ip_mss_gpu_hub = {
 		 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
 		 */
 		{
+			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_mss_nvlink_8_base_r(),
 			.range_end = addr_map_mss_nvlink_7_limit_r(),
 			.inst_stride = addr_map_mss_nvlink_7_limit_r() -

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,19 +19,25 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
 #include "t234_nvdla.h"
 
 #include <tegra_hwpm.h>
 #include <hal/t234/t234_regops_allowlist.h>
-#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 #include <hal/t234/t234_perfmon_device_index.h>
+#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 
 static struct hwpm_ip_aperture t234_nvdla_inst0_perfmon_element_static_array[
 	T234_HWPM_IP_NVDLA_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -52,6 +58,7 @@ static struct hwpm_ip_aperture t234_nvdla_inst1_perfmon_element_static_array[
 	T234_HWPM_IP_NVDLA_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -72,6 +79,7 @@ static struct hwpm_ip_aperture t234_nvdla_inst0_perfmux_element_static_array[
 	T234_HWPM_IP_NVDLA_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -91,6 +99,7 @@ static struct hwpm_ip_aperture t234_nvdla_inst1_perfmux_element_static_array[
 	T234_HWPM_IP_NVDLA_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -123,6 +132,7 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 					T234_HWPM_IP_NVDLA_NUM_PERFMUX_PER_INST,
 				.element_static_array =
 					t234_nvdla_inst0_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_nvdla0_base_r(),
 				.range_end = addr_map_nvdla0_limit_r(),
 				.element_stride = addr_map_nvdla0_limit_r() -
@@ -166,11 +176,11 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
-			.fd = TEGRA_HWPM_IP_DEBUG_FD_VALID,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
 		},
 
 		.element_fs_mask = 0U,
-		.dev_name = "/dev/nvdladebugfs/nvdla0/hwpm/ctrl",
+		.dev_name = "",
 	},
 	{
 		.hw_inst_mask = BIT(1),
@@ -186,6 +196,7 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 					T234_HWPM_IP_NVDLA_NUM_PERFMUX_PER_INST,
 				.element_static_array =
 					t234_nvdla_inst1_perfmux_element_static_array,
+				/* NOTE: range should be in ascending order */
 				.range_start = addr_map_nvdla1_base_r(),
 				.range_end = addr_map_nvdla1_limit_r(),
 				.element_stride = addr_map_nvdla1_limit_r() -
@@ -229,11 +240,11 @@ static struct hwpm_ip_inst t234_nvdla_inst_static_array[
 			.ip_dev = NULL,
 			.hwpm_ip_pm = NULL,
 			.hwpm_ip_reg_op = NULL,
-			.fd = TEGRA_HWPM_IP_DEBUG_FD_VALID,
+			.fd = TEGRA_HWPM_IP_DEBUG_FD_INVALID,
 		},
 
 		.element_fs_mask = 0U,
-		.dev_name = "/dev/nvdladebugfs/nvdla1/hwpm/ctrl",
+		.dev_name = "",
 	},
 };
 
@@ -248,6 +259,7 @@ struct hwpm_ip t234_hwpm_ip_nvdla = {
 		 * TEGRA_HWPM_APERTURE_TYPE_PERFMUX
 		 */
 		{
+			/* NOTE: range should be in ascending order */
 			.range_start = addr_map_nvdla0_base_r(),
 			.range_end = addr_map_nvdla1_limit_r(),
 			.inst_stride = addr_map_nvdla0_limit_r() -

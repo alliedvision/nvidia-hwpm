@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,20 +19,25 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
 #ifndef T234_HWPM_IP_VIC_H
 #define T234_HWPM_IP_VIC_H
 
 #if defined(CONFIG_T234_HWPM_IP_VIC)
-#define T234_HWPM_ACTIVE_IP_VIC		T234_HWPM_IP_VIC,
+#define T234_HWPM_ACTIVE_IP_VIC	T234_HWPM_IP_VIC,
 
 /* This data should ideally be available in HW headers */
-#define T234_HWPM_IP_VIC_NUM_INSTANCES			1U
-#define T234_HWPM_IP_VIC_NUM_CORE_ELEMENT_PER_INST	1U
-#define T234_HWPM_IP_VIC_NUM_PERFMON_PER_INST		1U
-#define T234_HWPM_IP_VIC_NUM_PERFMUX_PER_INST		1U
-#define T234_HWPM_IP_VIC_NUM_BROADCAST_PER_INST		0U
+#define T234_HWPM_IP_VIC_NUM_INSTANCES               1U
+#define T234_HWPM_IP_VIC_NUM_CORE_ELEMENT_PER_INST   1U
+#define T234_HWPM_IP_VIC_NUM_PERFMON_PER_INST        1U
+#define T234_HWPM_IP_VIC_NUM_PERFMUX_PER_INST        1U
+#define T234_HWPM_IP_VIC_NUM_BROADCAST_PER_INST      0U
 
 extern struct hwpm_ip t234_hwpm_ip_vic;
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2021-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,21 +19,27 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
 #include "t234_mss_iso_niso_hubs.h"
 
 #include <tegra_hwpm.h>
 #include <hal/t234/t234_regops_allowlist.h>
-#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 #include <hal/t234/t234_perfmon_device_index.h>
+#include <hal/t234/hw/t234_addr_map_soc_hwpm.h>
 
 static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmon_element_static_array[
 	T234_HWPM_IP_MSS_ISO_NISO_HUBS_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
-		.element_index = 0U,
+		.element_index = 1U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub0",
 		.device_index = T234_MSSHUB0_PERFMON_DEVICE_NODE_INDEX,
@@ -48,8 +54,9 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmon_element_stati
 	},
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(0),
-		.element_index = 1U,
+		.aperture_index = 1U,
+		.element_index_mask = BIT(1),
+		.element_index = 2U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msshub1",
 		.device_index = T234_MSSHUB1_PERFMON_DEVICE_NODE_INDEX,
@@ -68,6 +75,7 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 	T234_HWPM_IP_MSS_ISO_NISO_HUBS_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -78,12 +86,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc0_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 1U,
 		.element_index_mask = BIT(1),
 		.element_index = 2U,
 		.dt_mmio = NULL,
@@ -94,12 +102,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc1_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 2U,
 		.element_index_mask = BIT(2),
 		.element_index = 3U,
 		.dt_mmio = NULL,
@@ -110,12 +118,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc2_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 3U,
 		.element_index_mask = BIT(3),
 		.element_index = 4U,
 		.dt_mmio = NULL,
@@ -126,12 +134,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc3_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 4U,
 		.element_index_mask = BIT(4),
 		.element_index = 5U,
 		.dt_mmio = NULL,
@@ -142,12 +150,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc4_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 5U,
 		.element_index_mask = BIT(5),
 		.element_index = 6U,
 		.dt_mmio = NULL,
@@ -158,12 +166,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc5_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 6U,
 		.element_index_mask = BIT(6),
 		.element_index = 7U,
 		.dt_mmio = NULL,
@@ -174,12 +182,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc6_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 7U,
 		.element_index_mask = BIT(7),
 		.element_index = 8U,
 		.dt_mmio = NULL,
@@ -190,12 +198,12 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_perfmux_element_stati
 		.end_pa = addr_map_mc7_limit_r(),
 		.base_pa = 0ULL,
 		.alist = t234_mc0to7_res_mss_iso_niso_hub_alist,
-		.alist_size =
-			ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
+		.alist_size = ARRAY_SIZE(t234_mc0to7_res_mss_iso_niso_hub_alist),
 		.fake_registers = NULL,
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 8U,
 		.element_index_mask = BIT(8),
 		.element_index = 9U,
 		.dt_mmio = NULL,
@@ -215,6 +223,7 @@ static struct hwpm_ip_aperture t234_mss_iso_niso_hub_inst0_broadcast_element_sta
 	T234_HWPM_IP_MSS_ISO_NISO_HUBS_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -352,4 +361,3 @@ struct hwpm_ip t234_hwpm_ip_mss_iso_niso_hubs = {
 	.resource_status = TEGRA_HWPM_RESOURCE_STATUS_INVALID,
 	.reserved = false,
 };
-
