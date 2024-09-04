@@ -37,6 +37,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst0_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -57,6 +58,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst1_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -77,6 +79,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst2_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -97,6 +100,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst3_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -117,6 +121,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst4_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -137,6 +142,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst5_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -157,6 +163,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst6_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -177,6 +184,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst7_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -197,6 +205,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst8_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -217,6 +226,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst9_perfmon_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -237,6 +247,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst0_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -256,6 +267,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst1_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -275,6 +287,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst2_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -294,6 +307,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst3_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -313,6 +327,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst4_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -332,6 +347,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst5_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -351,6 +367,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst6_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -370,6 +387,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst7_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -389,6 +407,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst8_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -408,6 +427,7 @@ static struct hwpm_ip_aperture th500_pcie_xtlq_inst9_perfmux_element_static_arra
 	TH500_HWPM_IP_PCIE_XTLQ_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,

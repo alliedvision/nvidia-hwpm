@@ -37,6 +37,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst0_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -57,6 +58,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst1_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -77,6 +79,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst2_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -97,6 +100,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst3_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -117,6 +121,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst4_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -137,6 +142,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst5_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -157,6 +163,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst6_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -177,6 +184,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst7_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -197,6 +205,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst8_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -217,6 +226,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst9_perfmon_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -237,6 +247,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst10_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -257,6 +268,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst11_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -277,6 +289,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst12_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -297,6 +310,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst13_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -317,6 +331,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst14_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -337,6 +352,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst15_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -357,6 +373,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst16_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -377,6 +394,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst17_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -397,6 +415,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst18_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -417,6 +436,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst19_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -437,6 +457,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst20_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -457,6 +478,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst21_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -477,6 +499,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst22_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -497,6 +520,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst23_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -517,6 +541,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst24_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -537,6 +562,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst25_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -557,6 +583,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst26_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -597,8 +624,9 @@ static struct hwpm_ip_aperture th500_mss_channel_inst28_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
-		.element_index_mask = BIT(0),
-		.element_index = 1U,
+		.aperture_index = 0U,
+		.element_index_mask = BIT(28),
+		.element_index = 29U,
 		.dt_mmio = NULL,
 		.name = "perfmon_msschannel_parth0",
 		.device_index = TH500_MSS_CHANNEL_PARTH0_PERFMON_DEVICE_NODE_INDEX,
@@ -617,6 +645,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst29_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -637,6 +666,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst30_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -657,6 +687,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst31_perfmon_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -677,6 +708,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst0_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -696,6 +728,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst1_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -715,6 +748,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst2_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -753,6 +787,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst4_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -772,8 +807,8 @@ static struct hwpm_ip_aperture th500_mss_channel_inst5_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
-		.element_index_mask = BIT(0),
-		.element_index = 1U,
+		.element_index_mask = BIT(5),
+		.element_index = 6U,
 		.dt_mmio = NULL,
 		.name = {'\0'},
 		.start_abs_pa = addr_map_mc5_base_r(),
@@ -791,6 +826,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst6_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -810,6 +846,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst7_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -829,6 +866,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst8_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -848,6 +886,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst9_perfmux_element_static_ar
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -867,6 +906,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst10_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -886,6 +926,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst11_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -905,6 +946,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst12_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -924,6 +966,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst13_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -943,6 +986,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst14_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -962,6 +1006,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst15_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -981,6 +1026,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst16_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1000,6 +1046,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst17_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1019,6 +1066,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst18_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1038,6 +1086,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst19_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1057,6 +1106,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst20_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1076,6 +1126,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst21_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1095,6 +1146,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst22_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1114,6 +1166,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst23_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1133,6 +1186,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst24_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1152,6 +1206,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst25_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1171,6 +1226,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst26_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1190,6 +1246,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst27_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1209,6 +1266,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst28_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1228,6 +1286,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst29_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1247,6 +1306,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst30_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1266,6 +1326,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst31_perfmux_element_static_a
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -1285,6 +1346,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst0_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1304,6 +1366,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst1_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1323,6 +1386,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst2_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1342,6 +1406,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst3_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1361,6 +1426,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst4_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1380,6 +1446,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst5_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1399,6 +1466,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst6_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1418,6 +1486,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst7_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1437,6 +1506,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst8_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1456,6 +1526,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst9_broadcast_element_static_
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -1475,6 +1546,7 @@ static struct hwpm_ip_aperture th500_mss_channel_inst10_broadcast_element_static
 	TH500_HWPM_IP_MSS_CHANNEL_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,

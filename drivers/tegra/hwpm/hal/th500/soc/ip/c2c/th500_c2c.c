@@ -37,6 +37,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmon_element_static_array[
 	TH500_HWPM_IP_C2C_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -53,6 +54,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmon_element_static_array[
 	},
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 1U,
 		.element_index_mask = BIT(1),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -73,6 +75,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	TH500_HWPM_IP_C2C_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -88,6 +91,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 1U,
 		.element_index_mask = BIT(1),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -103,6 +107,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 2U,
 		.element_index_mask = BIT(2),
 		.element_index = 2U,
 		.dt_mmio = NULL,
@@ -118,6 +123,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 3U,
 		.element_index_mask = BIT(3),
 		.element_index = 3U,
 		.dt_mmio = NULL,
@@ -133,6 +139,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 4U,
 		.element_index_mask = BIT(4),
 		.element_index = 4U,
 		.dt_mmio = NULL,
@@ -148,6 +155,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 5U,
 		.element_index_mask = BIT(5),
 		.element_index = 5U,
 		.dt_mmio = NULL,
@@ -163,6 +171,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 6U,
 		.element_index_mask = BIT(6),
 		.element_index = 6U,
 		.dt_mmio = NULL,
@@ -178,6 +187,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 7U,
 		.element_index_mask = BIT(7),
 		.element_index = 7U,
 		.dt_mmio = NULL,
@@ -193,6 +203,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 8U,
 		.element_index_mask = BIT(8),
 		.element_index = 8U,
 		.dt_mmio = NULL,
@@ -208,6 +219,7 @@ static struct hwpm_ip_aperture th500_c2c_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 9U,
 		.element_index_mask = BIT(9),
 		.element_index = 9U,
 		.dt_mmio = NULL,

@@ -37,6 +37,7 @@ static struct hwpm_ip_aperture th500_nvlctrl_inst0_perfmon_element_static_array[
 	TH500_HWPM_IP_NVLCTRL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -57,6 +58,7 @@ static struct hwpm_ip_aperture th500_nvlctrl_inst1_perfmon_element_static_array[
 	TH500_HWPM_IP_NVLCTRL_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -77,6 +79,7 @@ static struct hwpm_ip_aperture th500_nvlctrl_inst0_perfmux_element_static_array[
 	TH500_HWPM_IP_NVLCTRL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
@@ -96,6 +99,7 @@ static struct hwpm_ip_aperture th500_nvlctrl_inst1_perfmux_element_static_array[
 	TH500_HWPM_IP_NVLCTRL_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,

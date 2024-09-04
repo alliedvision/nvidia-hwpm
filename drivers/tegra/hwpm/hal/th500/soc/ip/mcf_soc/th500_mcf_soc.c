@@ -37,6 +37,7 @@ static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmon_element_static_array[
 	TH500_HWPM_IP_MCF_SOC_NUM_PERFMON_PER_INST] = {
 	{
 		.element_type = HWPM_ELEMENT_PERFMON,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -57,6 +58,7 @@ static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmux_element_static_array[
 	TH500_HWPM_IP_MCF_SOC_NUM_PERFMUX_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 1U,
 		.dt_mmio = NULL,
@@ -72,6 +74,7 @@ static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 1U,
 		.element_index_mask = BIT(1),
 		.element_index = 2U,
 		.dt_mmio = NULL,
@@ -87,6 +90,7 @@ static struct hwpm_ip_aperture th500_mcf_soc_inst0_perfmux_element_static_array[
 	},
 	{
 		.element_type = IP_ELEMENT_PERFMUX,
+		.aperture_index = 2U,
 		.element_index_mask = BIT(2),
 		.element_index = 3U,
 		.dt_mmio = NULL,
@@ -121,6 +125,7 @@ static struct hwpm_ip_aperture th500_mcf_soc_inst0_broadcast_element_static_arra
 	TH500_HWPM_IP_MCF_SOC_NUM_BROADCAST_PER_INST] = {
 	{
 		.element_type = IP_ELEMENT_BROADCAST,
+		.aperture_index = 0U,
 		.element_index_mask = BIT(0),
 		.element_index = 0U,
 		.dt_mmio = NULL,
