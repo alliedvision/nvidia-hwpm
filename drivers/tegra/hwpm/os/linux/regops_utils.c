@@ -244,7 +244,7 @@ int tegra_hwpm_credit_program(struct tegra_soc_hwpm *hwpm,
 		return -EINVAL;
 	}
 
-	for (idx = 0; idx <= credit_prog->num_entries; idx++) {
+	for (idx = 0; idx < credit_prog->num_entries; idx++) {
 		//Extract the credit_info pointer for a given Credit packet.
 		//This contains the num_credits param
 		//which has to be updated in chip specific HALs.
