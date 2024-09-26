@@ -90,3 +90,9 @@ ccflags-y += -DCONFIG_TEGRA_HWPM_TH500
 include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.th500.sources
 nvhwpm-objs += ${nvhwpm-th500-objs}
 endif
+
+# Include T264 files
+CONFIG_TEGRA_T264_HWPM := y
+ccflags-y += -DCONFIG_TEGRA_T264_HWPM
+include ${srctree.hwpm}/drivers/tegra/hwpm/Makefile.t264.sources
+nvhwpm-objs += ${nvhwpm-t264-objs}

@@ -40,11 +40,11 @@ static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 	{
 		.compatible     = "nvidia,th500-soc-hwpm",
 	},
+	{
+		.compatible     = "nvidia,t264-soc-hwpm",
+	},
 #ifdef CONFIG_TEGRA_NEXT1_HWPM
 #include <os/linux/next1_driver.h>
-#endif
-#ifdef CONFIG_TEGRA_NEXT3_HWPM
-#include <os/linux/next3_driver.h>
 #endif
 	{ },
 };

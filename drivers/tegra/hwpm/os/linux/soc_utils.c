@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2022-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -31,9 +31,6 @@
 #if defined(CONFIG_TEGRA_NEXT1_HWPM)
 #include <os/linux/next1_soc_utils.h>
 #endif
-#if defined(CONFIG_TEGRA_NEXT3_HWPM)
-#include <os/linux/next3_soc_utils.h>
-#endif
 
 static struct hwpm_soc_chip_info chip_info = {
 	.chip_id = CHIP_ID_UNKNOWN,
@@ -55,6 +52,12 @@ const struct hwpm_soc_chip_info th500_chip_info = {
 	.platform = PLAT_SI,
 };
 #endif
+
+const struct hwpm_soc_chip_info t264_soc_chip_info = {
+	.chip_id = 0x26,
+	.chip_id_rev = 0x4,
+	.platform = PLAT_SI,
+};
 
 /* This function should be invoked only once before retrieving soc chip info */
 int tegra_hwpm_init_chip_info(struct tegra_hwpm_os_linux *hwpm_linux)
@@ -96,13 +99,16 @@ int tegra_hwpm_init_chip_info(struct tegra_hwpm_os_linux *hwpm_linux)
 		goto complete;
 	}
 #endif /* CONFIG_ACPI */
-#if defined(CONFIG_TEGRA_NEXT1_HWPM)
-	if (tegra_hwpm_next1_get_chip_compatible(&chip_info) == 0) {
+	if (of_machine_is_compatible("nvidia,tegra264")) {
+		chip_info.chip_id = t264_soc_chip_info.chip_id;
+		chip_info.chip_id_rev = t264_soc_chip_info.chip_id_rev;
+		chip_info.platform = t264_soc_chip_info.platform;
+
 		goto complete;
 	}
-#endif
-#if defined(CONFIG_TEGRA_NEXT3_HWPM)
-	if (tegra_hwpm_next3_get_chip_compatible(&chip_info) == 0) {
+
+#if defined(CONFIG_TEGRA_NEXT1_HWPM)
+	if (tegra_hwpm_next1_get_chip_compatible(&chip_info) == 0) {
 		goto complete;
 	}
 #endif
