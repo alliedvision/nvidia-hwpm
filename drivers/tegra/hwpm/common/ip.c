@@ -369,6 +369,14 @@ static bool tegra_hwpm_addr_in_single_element(struct tegra_soc_hwpm *hwpm,
 			"a_type %d s_element_idx %d address not in alist",
 			*ip_idx, (unsigned long long)find_addr,
 			*s_inst_idx, a_type, *s_element_idx);
+
+		if (hwpm->dbg_skip_alist) {
+			*element_type = element->element_type;
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_regops,
+				"skipping allowlist check");
+			return true;
+		}
+
 		return false;
 	}
 

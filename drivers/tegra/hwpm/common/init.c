@@ -132,6 +132,7 @@ int tegra_hwpm_init_sw_components(struct tegra_soc_hwpm *hwpm,
 	tegra_hwpm_fn(hwpm, " ");
 
 	hwpm->dbg_mask = TEGRA_HWPM_DEFAULT_DBG_MASK;
+	hwpm->dbg_skip_alist = false;
 
 	err = tegra_hwpm_init_chip_ip_structures(hwpm, chip_id, chip_id_rev);
 	if (err != 0) {

@@ -623,6 +623,7 @@ struct tegra_soc_hwpm {
 	bool bind_completed;
 	bool device_opened;
 	bool fake_registers_enabled;
+	bool dbg_skip_alist;
 };
 
 #endif /* TEGRA_HWPM_H */
