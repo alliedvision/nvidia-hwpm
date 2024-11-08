@@ -302,13 +302,6 @@ int tegra_hwpm_finalize_chip_info(struct tegra_soc_hwpm *hwpm)
 		return ret;
 	}
 
-	ret = hwpm->active_chip->force_enable_ips(hwpm);
-	if (ret != 0) {
-		tegra_hwpm_err(hwpm, "Failed to force enable IPs");
-		/* Do not fail because of force enable failure */
-		return 0;
-	}
-
 	return 0;
 }
 

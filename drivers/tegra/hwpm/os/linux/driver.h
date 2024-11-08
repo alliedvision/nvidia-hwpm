@@ -66,6 +66,7 @@ struct tegra_hwpm_os_linux {
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_root;
+	struct dentry *debugfs_ip_config;
 #endif
 };
 

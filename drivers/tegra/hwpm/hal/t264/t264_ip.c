@@ -387,245 +387,255 @@ int t264_hwpm_force_enable_ips(struct tegra_soc_hwpm *hwpm)
 		if (tegra_hwpm_is_platform_silicon()) {
 		/* Static IP instances corresponding to silicon */
 #if defined(CONFIG_T264_HWPM_IP_OCU)
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+			if (hwpm->ip_config[TEGRA_HWPM_IP_MCF_OCU]) {
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
 					addr_map_ocu_base_r(),
 					T264_HWPM_IP_OCU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_OCU force enable failed");
-				return ret;
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_OCU force enable failed");
+					return ret;
+				}
 			}
 #endif
 #if defined(CONFIG_T264_HWPM_IP_UCF_PSW)
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_psn0_psw_base_r(),
-				T264_HWPM_IP_UCF_PSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_PSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_psn1_psw_base_r(),
-				T264_HWPM_IP_UCF_PSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_PSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_psn2_psw_base_r(),
-				T264_HWPM_IP_UCF_PSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_PSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_psn3_psw_base_r(),
-				T264_HWPM_IP_UCF_PSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_PSW force enable failed");
-				return ret;
+			if (hwpm->ip_config[TEGRA_HWPM_IP_UCF_PSW]) {
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_psn0_psw_base_r(),
+					T264_HWPM_IP_UCF_PSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_PSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_psn1_psw_base_r(),
+					T264_HWPM_IP_UCF_PSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_PSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_psn2_psw_base_r(),
+					T264_HWPM_IP_UCF_PSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_PSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_psn3_psw_base_r(),
+					T264_HWPM_IP_UCF_PSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_PSW force enable failed");
+					return ret;
+				}
 			}
 #endif /* CONFIG_T264_HWPM_IP_UCF_PSW */
 #if defined(CONFIG_T264_HWPM_IP_UCF_CSW)
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_csw0_base_r(),
-				T264_HWPM_IP_UCF_CSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_CSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_ucf_csw1_base_r(),
-				T264_HWPM_IP_UCF_CSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_CSW force enable failed");
-				return ret;
+			if (hwpm->ip_config[TEGRA_HWPM_IP_UCF_CSW]) {
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_csw0_base_r(),
+					T264_HWPM_IP_UCF_CSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_CSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_ucf_csw1_base_r(),
+					T264_HWPM_IP_UCF_CSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_CSW force enable failed");
+					return ret;
+				}
 			}
 #endif /* CONFIG_T264_HWPM_IP_UCF_CSW */
 #if defined(CONFIG_T264_HWPM_IP_UCF_MSW)
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc0_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc2_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc4_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc6_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc8_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc10_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc12_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_mc14_base_r(),
-				T264_HWPM_IP_UCF_MSW, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_UCF_MSW force enable failed");
-				return ret;
+			if (hwpm->ip_config[TEGRA_HWPM_IP_UCF_MSW]) {
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc0_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc2_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc4_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc6_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc8_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc10_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc12_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_mc14_base_r(),
+					T264_HWPM_IP_UCF_MSW, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_UCF_MSW force enable failed");
+					return ret;
+				}
 			}
 #endif /* CONFIG_T264_HWPM_IP_UCF_MSW */
 #if defined(CONFIG_T264_HWPM_IP_CPU)
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore0_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore1_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore2_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore3_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore4_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore5_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore6_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore7_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore8_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore9_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore10_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore11_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore12_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
-			}
-			ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
-				addr_map_cpucore13_base_r(),
-				T264_HWPM_IP_CPU, true);
-			if (ret != 0) {
-				tegra_hwpm_err(hwpm,
-					"T264_HWPM_IP_CPU force enable failed");
-				return ret;
+			if (hwpm->ip_config[TEGRA_HWPM_IP_CPU]) {
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore0_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore1_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore2_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore3_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore4_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore5_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore6_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore7_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore8_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore9_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore10_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore11_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore12_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
+				ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, NULL,
+					addr_map_cpucore13_base_r(),
+					T264_HWPM_IP_CPU, true);
+				if (ret != 0) {
+					tegra_hwpm_err(hwpm,
+						"T264_HWPM_IP_CPU force enable failed");
+					return ret;
+				}
 			}
 #endif /* CONFIG_T264_HWPM_IP_CPU */
 		}

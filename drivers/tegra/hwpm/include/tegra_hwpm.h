@@ -108,6 +108,60 @@ enum tegra_hwpm_ip_enum {
 };
 
 /*
+ * Function to translate IP index into IP name
+ * Developer is responsible to update this corresponding to tegra_hwpm_ip_enum
+ */
+static inline const char *tegra_hwpm_ip_string(enum tegra_hwpm_ip_enum ip_enum)
+{
+	const char *tegra_hwpm_ip_name[TERGA_HWPM_NUM_IPS + 1] = {
+		[TEGRA_HWPM_IP_VI] = "vi",
+		[TEGRA_HWPM_IP_ISP] = "isp",
+		[TEGRA_HWPM_IP_VIC] = "vic",
+		[TEGRA_HWPM_IP_OFA] = "ofa",
+		[TEGRA_HWPM_IP_PVA] = "pva",
+		[TEGRA_HWPM_IP_NVDLA] = "dla",
+		[TEGRA_HWPM_IP_MGBE] = "mgbe",
+		[TEGRA_HWPM_IP_SCF] = "scf",
+		[TEGRA_HWPM_IP_NVDEC] = "nvdec",
+		[TEGRA_HWPM_IP_NVENC] = "nvenc",
+		[TEGRA_HWPM_IP_PCIE] = "pcie",
+		[TEGRA_HWPM_IP_DISPLAY] = "display",
+		[TEGRA_HWPM_IP_MSS_CHANNEL] = "mss_channel",
+		[TEGRA_HWPM_IP_MSS_GPU_HUB] = "mss_gpu_hub",
+		[TEGRA_HWPM_IP_MSS_ISO_NISO_HUBS] = "mss_iso_niso_hubs",
+		[TEGRA_HWPM_IP_MSS_MCF] = "mss_mcf",
+		[TEGRA_HWPM_IP_APE] = "ape",
+		[TEGRA_HWPM_IP_C2C] = "c2c",
+		[TEGRA_HWPM_IP_SMMU] = "smmu",
+		[TEGRA_HWPM_IP_CL2] = "cl2",
+		[TEGRA_HWPM_IP_NVLCTRL] = "nvlctrl",
+		[TEGRA_HWPM_IP_NVLRX] = "nvlrx",
+		[TEGRA_HWPM_IP_NVLTX] = "nvltx",
+		[TEGRA_HWPM_IP_MSS_HUB] = "mss_hub",
+		[TEGRA_HWPM_IP_MCF_SOC] = "mcf_soc",
+		[TEGRA_HWPM_IP_MCF_C2C] = "mcf_c2c",
+		[TEGRA_HWPM_IP_MCF_CLINK] = "mcf_clink",
+		[TEGRA_HWPM_IP_MCF_CORE] = "mcf_core",
+		[TEGRA_HWPM_IP_MCF_OCU] = "mcf_ocu",
+		[TEGRA_HWPM_IP_PCIE_XTLQ] = "pcie_xtlq",
+		[TEGRA_HWPM_IP_PCIE_XTLRC] = "pcie_xltrc",
+		[TEGRA_HWPM_IP_PCIE_XALRC] = "pcie_xalrc",
+		[TEGRA_HWPM_IP_UCF_MSW] = "ucf_msw",
+		[TEGRA_HWPM_IP_UCF_PSW] = "ucf_psw",
+		[TEGRA_HWPM_IP_UCF_CSW] = "ucf_csw",
+		[TEGRA_HWPM_IP_UCF_HUB] = "ucf_hub",
+		[TEGRA_HWPM_IP_UCF_SCB] = "ucf_scb",
+		[TEGRA_HWPM_IP_CPU] = "cpu",
+		[TERGA_HWPM_NUM_IPS] = "unknown",
+	};
+
+	if (ip_enum >= TERGA_HWPM_NUM_IPS) {
+		return tegra_hwpm_ip_name[TERGA_HWPM_NUM_IPS];
+	}
+	return tegra_hwpm_ip_name[ip_enum];
+}
+
+/*
  * This is a copy of enum tegra_soc_hwpm_resource uapi structure.
  * It is not a hard requirement as tegra_soc_hwpm_resource is translated to
  * tegra_hwpm_resource_enum before each use.
@@ -620,6 +674,7 @@ struct tegra_soc_hwpm {
 
 	/* SW State */
 	u32 dbg_mask;
+	bool ip_config[TERGA_HWPM_NUM_IPS];
 	bool bind_completed;
 	bool device_opened;
 	bool fake_registers_enabled;

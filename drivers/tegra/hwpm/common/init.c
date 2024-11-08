@@ -154,6 +154,13 @@ int tegra_hwpm_setup_sw(struct tegra_soc_hwpm *hwpm)
 	int ret = 0;
 	tegra_hwpm_fn(hwpm, " ");
 
+	ret = hwpm->active_chip->force_enable_ips(hwpm);
+	if (ret != 0) {
+		tegra_hwpm_err(hwpm, "Failed to force enable IPs");
+		/* Do not fail because of force enable failure */
+		return 0;
+	}
+
 	ret = hwpm->active_chip->validate_current_config(hwpm);
 	if (ret != 0) {
 		tegra_hwpm_err(hwpm, "Failed to validate current conifg");
