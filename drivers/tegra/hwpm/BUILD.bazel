@@ -15,6 +15,7 @@ filegroup(
     ] + [
         "Makefile.hwpm.sources",
         "Makefile.t234.sources",
+        "Makefile.t264.sources",
         "Makefile.th500.sources",
         "Makefile.common.sources",
         "Makefile.linux.sources",
