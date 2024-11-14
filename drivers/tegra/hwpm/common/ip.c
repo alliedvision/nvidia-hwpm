@@ -476,7 +476,7 @@ static bool tegra_hwpm_addr_in_all_elements(struct tegra_soc_hwpm *hwpm,
 		idx = element->aperture_index;
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
 			"find_addr 0x%llx element dyn_idx %u static idx %u",
-			find_addr, dyn_idx, idx);
+			(unsigned long long)find_addr, dyn_idx, idx);
 	}
 
 	*s_element_idx = idx;
