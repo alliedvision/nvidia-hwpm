@@ -31,6 +31,9 @@
 #if defined(CONFIG_TEGRA_NEXT1_HWPM)
 #include <os/linux/next1_soc_utils.h>
 #endif
+#if defined(CONFIG_TEGRA_NEXT4_HWPM)
+#include <os/linux/next4_soc_utils.h>
+#endif
 
 static struct hwpm_soc_chip_info chip_info = {
 	.chip_id = CHIP_ID_UNKNOWN,
@@ -109,6 +112,12 @@ int tegra_hwpm_init_chip_info(struct tegra_hwpm_os_linux *hwpm_linux)
 
 #if defined(CONFIG_TEGRA_NEXT1_HWPM)
 	if (tegra_hwpm_next1_get_chip_compatible(&chip_info) == 0) {
+		goto complete;
+	}
+#endif
+
+#if defined(CONFIG_TEGRA_NEXT4_HWPM)
+	if (tegra_hwpm_next4_get_chip_compatible(&chip_info) == 0) {
 		goto complete;
 	}
 #endif
