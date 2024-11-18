@@ -591,7 +591,7 @@ static bool tegra_hwpm_addr_in_all_instances(struct tegra_soc_hwpm *hwpm,
 		idx = tegra_hwpm_ffs(hwpm, ip_inst->hw_inst_mask);
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
 			"IP %d find_addr 0x%llx inst dyn_idx %u static idx %u",
-			*ip_idx, find_addr, dyn_idx, idx);
+			*ip_idx, (unsigned long long)find_addr, dyn_idx, idx);
 
 		*s_inst_idx = idx;
 
