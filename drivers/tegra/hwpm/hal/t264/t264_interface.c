@@ -160,6 +160,11 @@ bool t264_hwpm_is_ip_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = T264_HWPM_IP_OCU;
 #endif
 		break;
+#if defined(CONFIG_T264_HWPM_IP_VI)
+	case TEGRA_HWPM_IP_VI:
+		config_ip = T264_HWPM_IP_VI;
+#endif
+		break;
 #if defined(CONFIG_T264_HWPM_IP_SMMU)
 	case TEGRA_HWPM_IP_SMMU:
 		config_ip = T264_HWPM_IP_SMMU;
@@ -212,7 +217,7 @@ bool t264_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 #endif
 		break;
 #if defined(CONFIG_T264_HWPM_IP_PVA)
-	case TEGRA_HWPM_IP_PVA:
+	case TEGRA_HWPM_RESOURCE_PVA:
 		config_ip = T264_HWPM_IP_PVA;
 #endif
 		break;
@@ -224,6 +229,11 @@ bool t264_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_T264_HWPM_IP_OCU)
 	case TEGRA_HWPM_RESOURCE_MCF_OCU:
 		config_ip = T264_HWPM_IP_OCU;
+#endif
+		break;
+#if defined(CONFIG_T264_HWPM_IP_VI)
+	case TEGRA_HWPM_RESOURCE_VI:
+		config_ip = T264_HWPM_IP_VI;
 #endif
 		break;
 #if defined(CONFIG_T264_HWPM_IP_SMMU)
@@ -326,7 +336,9 @@ int t264_hwpm_init_chip_info(struct tegra_soc_hwpm *hwpm)
 #if defined(CONFIG_T264_HWPM_IP_CPU)
 	t264_active_ip_info[T264_HWPM_IP_CPU] = &t264_hwpm_ip_cpu;
 #endif
-
+#if defined(CONFIG_T264_HWPM_IP_VI)
+	t264_active_ip_info[T264_HWPM_IP_VI] = &t264_hwpm_ip_vi;
+#endif
 	if (!tegra_hwpm_validate_primary_hals(hwpm)) {
 		return -EINVAL;
 	}

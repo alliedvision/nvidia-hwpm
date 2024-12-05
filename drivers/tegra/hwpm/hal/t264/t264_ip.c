@@ -81,6 +81,9 @@ int t264_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_T264_HWPM_IP_CPU)
 	case T264_HWPM_IP_CPU:
 #endif
+#if defined(CONFIG_T264_HWPM_IP_VI)
+	case T264_HWPM_IP_VI:
+#endif
 	ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
 			base_address, ip_idx, available);
 		if (ret != 0) {

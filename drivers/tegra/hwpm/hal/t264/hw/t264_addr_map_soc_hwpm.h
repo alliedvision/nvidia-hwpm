@@ -335,5 +335,13 @@
 #define addr_map_cpucore12_base_size_v()                           (0x00001000U)
 #define addr_map_cpucore13_base_r()                              (0x8132d30000U)
 #define addr_map_cpucore13_base_size_v()                           (0x00001000U)
+#define addr_map_rpg_pm_vi0_base_r()                             (0x8181600000U)
+#define addr_map_rpg_pm_vi0_limit_r()                            (0x8181600fffU)
+#define addr_map_rpg_pm_vi1_base_r()                             (0x8181601000U)
+#define addr_map_rpg_pm_vi1_limit_r()                            (0x8181601fffU)
+#define addr_map_vi_thi_base_r()                                 (0x8188700000U)
+#define addr_map_vi_thi_limit_r()                                (0x81887fffffU)
+#define addr_map_vi2_thi_base_r()                                (0x8188f00000U)
+#define addr_map_vi2_thi_limit_r()                               (0x8188ffffffU)
 #define addr_map_pmc_misc_base_r()                                  (0xc9c0000U)
 #endif /* T264_ADDR_MAP_SOC_HWPM_H */
