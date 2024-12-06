@@ -19,31 +19,30 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ *
+ * This is a generated file. Do not edit.
+ *
+ * Steps to regenerate:
+ *     python3 ip_files_generator.py <soc_chip> <IP_name> [<dir_name>]
  */
 
-#ifndef T264_HWPM_REGOPS_ALLOWLIST_H
-#define T264_HWPM_REGOPS_ALLOWLIST_H
+#ifndef T264_HWPM_IP_ISP_H
+#define T264_HWPM_IP_ISP_H
 
-#include <tegra_hwpm.h>
+#if defined(CONFIG_T264_HWPM_IP_ISP)
+#define T264_HWPM_ACTIVE_IP_ISP	T264_HWPM_IP_ISP,
 
-extern struct allowlist t264_perfmon_alist[67];
-extern struct allowlist t264_pma_res_cmd_slice_rtr_alist[41];
-extern struct allowlist t264_pma_res_pma_alist[1];
-extern struct allowlist t264_rtr_alist[2];
-extern struct allowlist t264_vic_alist[8];
-extern struct allowlist t264_pva_pm_alist[10];
-extern struct allowlist t264_mss_channel_alist[2];
-extern struct allowlist t264_mss_hub_alist[3];
-extern struct allowlist t264_ocu_alist[1];
-extern struct allowlist t264_smmu_alist[1];
-extern struct allowlist t264_ucf_msw_cbridge_alist[1];
-extern struct allowlist t264_ucf_msn_msw0_alist[2];
-extern struct allowlist t264_ucf_msn_msw1_alist[2];
-extern struct allowlist t264_ucf_msw_slc_alist[1];
-extern struct allowlist t264_ucf_psn_psw_alist[2];
-extern struct allowlist t264_ucf_csw_alist[2];
-extern struct allowlist t264_cpucore_alist[4];
-extern struct allowlist t264_vi_alist[1];
-extern struct allowlist t264_isp_alist[1];
+/* This data should ideally be available in HW headers */
+#define T264_HWPM_IP_ISP_NUM_INSTANCES               2U
+#define T264_HWPM_IP_ISP_NUM_CORE_ELEMENT_PER_INST   1U
+#define T264_HWPM_IP_ISP_NUM_PERFMON_PER_INST        1U
+#define T264_HWPM_IP_ISP_NUM_PERFMUX_PER_INST        1U
+#define T264_HWPM_IP_ISP_NUM_BROADCAST_PER_INST      0U
 
-#endif /* T264_HWPM_REGOPS_ALLOWLIST_H */
+extern struct hwpm_ip t264_hwpm_ip_isp;
+
+#else
+#define T264_HWPM_ACTIVE_IP_ISP
+#endif
+
+#endif /* T264_HWPM_IP_ISP_H */

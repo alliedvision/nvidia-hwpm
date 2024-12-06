@@ -35,6 +35,7 @@
 #include <hal/t264/ip/ucf_csw/t264_ucf_csw.h>
 #include <hal/t264/ip/cpu/t264_cpu.h>
 #include <hal/t264/ip/vi/t264_vi.h>
+#include <hal/t264/ip/isp/t264_isp.h>
 #include <hal/t264/ip/pma/t264_pma.h>
 #include <hal/t264/ip/rtr/t264_rtr.h>
 
@@ -57,6 +58,7 @@
 	DEFINE_SOC_HWPM_ACTIVE_IP(T264_HWPM_ACTIVE_IP_UCF_CSW)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(T264_HWPM_ACTIVE_IP_CPU)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(T264_HWPM_ACTIVE_IP_VI)		\
+	DEFINE_SOC_HWPM_ACTIVE_IP(T264_HWPM_ACTIVE_IP_ISP)		\
 	DEFINE_SOC_HWPM_ACTIVE_IP(T264_HWPM_ACTIVE_IP_MAX)
 
 enum t264_hwpm_active_ips {

@@ -343,5 +343,13 @@
 #define addr_map_vi_thi_limit_r()                                (0x81887fffffU)
 #define addr_map_vi2_thi_base_r()                                (0x8188f00000U)
 #define addr_map_vi2_thi_limit_r()                               (0x8188ffffffU)
+#define addr_map_rpg_pm_isp0_base_r()                            (0x8181602000U)
+#define addr_map_rpg_pm_isp0_limit_r()                           (0x8181602fffU)
+#define addr_map_rpg_pm_isp1_base_r()                            (0x8181603000U)
+#define addr_map_rpg_pm_isp1_limit_r()                           (0x8181603fffU)
+#define addr_map_isp_thi_base_r()                                (0x8188b00000U)
+#define addr_map_isp_thi_limit_r()                               (0x8188bfffffU)
+#define addr_map_isp1_thi_base_r()                               (0x818ab00000U)
+#define addr_map_isp1_thi_limit_r()                              (0x818abfffffU)
 #define addr_map_pmc_misc_base_r()                                  (0xc9c0000U)
 #endif /* T264_ADDR_MAP_SOC_HWPM_H */

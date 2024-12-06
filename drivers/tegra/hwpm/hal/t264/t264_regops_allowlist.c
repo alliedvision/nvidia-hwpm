@@ -227,3 +227,7 @@ struct allowlist t264_cpucore_alist[4] = {
 struct allowlist t264_vi_alist[1] = {
 	{0x0000c004, true},
 };
+
+struct allowlist t264_isp_alist[1] = {
+	{0x0000c004, true},
+};
