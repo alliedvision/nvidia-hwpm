@@ -1,0 +1,56 @@
+################################### tell Emacs this is a -*- makefile-gmake -*-
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms and conditions of the GNU General Public License,
+# version 2, as published by the Free Software Foundation.
+#
+# This program is distributed in the hope it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# tmake for SW Mobile component makefile
+#
+# nv_soc_test: unit testing for libnvsochwpm
+#
+###############################################################################
+
+ifdef NV_COMPONENT_FLAG_NVTEST_EXECUTABLE_SECTION
+include $(NV_BUILD_START_COMPONENT)
+
+NV_COMPONENT_NAME := nv_soc_hwpm_test
+
+NV_COMPONENT_SOURCES := \
+	nv_soc_hwpm_test.cpp \
+	t241_test.cpp
+
+_soc_hwpm_dir = ../../
+
+NV_COMPONENT_CFLAGS := -DNV_IS_LDK=1 -Wall
+
+NV_COMPONENT_INCLUDES := \
+	$(_common_includes) \
+	$(NV_SOURCE)/3rdparty/google/googletest/googletest/include \
+	$(NV_SOURCE)/3rdparty/google/googletest/googlemock/include \
+	$$(_soc_hwpm_dir)/include
+
+NV_COMPONENT_NEEDED_STATIC_INTERFACE_DIRS := \
+	$(NV_SOURCE)/3rdparty/google/googletest/googletest \
+	$(NV_SOURCE)/3rdparty/google/googletest/googlemock
+
+ifeq ($(NV_BUILD_CONFIGURATION_IS_COVERAGE),1)
+	NV_COMPONENT_CFLAGS += --coverage
+endif
+
+NV_COMPONENT_SYSTEM_SHARED_LIBRARIES := \
+	stdc++ \
+	dl \
+	pthread
+
+NV_COMPONENT_CODE_GENERATION := c++11
+
+include $(NV_BUILD_NVTEST_EXECUTABLE)
+endif
