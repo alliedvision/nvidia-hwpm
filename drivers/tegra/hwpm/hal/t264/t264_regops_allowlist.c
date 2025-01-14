@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -224,10 +224,18 @@ struct allowlist t264_cpucore_alist[4] = {
 	{0x00000018, true},
 };
 
-struct allowlist t264_vi_alist[1] = {
-	{0x0000c004, true},
+struct allowlist t264_vi_alist[5] = {
+	{0x00030008, true},
+	{0x0003000c, true},
+	{0x00030010, true},
+	{0x00030014, true},
+	{0x00030018, true},
 };
 
-struct allowlist t264_isp_alist[1] = {
-	{0x0000c004, true},
+struct allowlist t264_isp_alist[5] = {
+	{0x00030008, true},
+	{0x0003000c, true},
+	{0x00030010, true},
+	{0x00030014, true},
+	{0x00030018, true},
 };

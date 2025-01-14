@@ -1,6 +1,6 @@
 # -*- mode: makefile -*-
 #
-# Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+# Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -87,5 +87,11 @@ nvhwpm-t264-objs += hal/t264/ip/ucf_csw/t264_ucf_csw.o
 
 ccflags-y += -DCONFIG_T264_HWPM_IP_CPU
 nvhwpm-t264-objs += hal/t264/ip/cpu/t264_cpu.o
+
+ccflags-y += -DCONFIG_T264_HWPM_IP_VI
+nvhwpm-t264-objs += hal/t264/ip/vi/t264_vi.o
+
+ccflags-y += -DCONFIG_T264_HWPM_IP_ISP
+nvhwpm-t264-objs += hal/t264/ip/isp/t264_isp.o
 
 endif

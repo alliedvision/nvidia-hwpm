@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -43,7 +43,7 @@ extern struct allowlist t264_ucf_msw_slc_alist[1];
 extern struct allowlist t264_ucf_psn_psw_alist[2];
 extern struct allowlist t264_ucf_csw_alist[2];
 extern struct allowlist t264_cpucore_alist[4];
-extern struct allowlist t264_vi_alist[1];
-extern struct allowlist t264_isp_alist[1];
+extern struct allowlist t264_vi_alist[5];
+extern struct allowlist t264_isp_alist[5];
 
 #endif /* T264_HWPM_REGOPS_ALLOWLIST_H */

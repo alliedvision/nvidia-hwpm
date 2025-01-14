@@ -81,12 +81,6 @@ int t264_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 #if defined(CONFIG_T264_HWPM_IP_CPU)
 	case T264_HWPM_IP_CPU:
 #endif
-#if defined(CONFIG_T264_HWPM_IP_VI)
-	case T264_HWPM_IP_VI:
-#endif
-#if defined(CONFIG_T264_HWPM_IP_ISP)
-	case T264_HWPM_IP_ISP:
-#endif
 	ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
 			base_address, ip_idx, available);
 		if (ret != 0) {
@@ -97,6 +91,32 @@ int t264_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 			goto fail;
 		}
 		break;
+
+#if defined(CONFIG_T264_HWPM_IP_VI)
+	case T264_HWPM_IP_VI:
+#endif
+#if defined(CONFIG_T264_HWPM_IP_ISP)
+	case T264_HWPM_IP_ISP:
+#endif
+	if (tegra_hwpm_is_hypervisor_mode()) {
+		/*
+		 * VI and ISP are enabled only on AV+L configuration
+		 * as the camera driver is not supported on L4T.
+		 */
+		ret = tegra_hwpm_set_fs_info_ip_ops(hwpm, ip_ops,
+				base_address, ip_idx, available);
+		if (ret != 0) {
+			tegra_hwpm_err(hwpm,
+				"Failed to %s fs/ops for IP %d (base 0x%llx)",
+				available == true ? "set" : "reset",
+				ip_idx, (unsigned long long)base_address);
+			goto fail;
+		}
+	} else {
+		tegra_hwpm_err(hwpm, "Invalid IP %d for ip_ops", ip_idx);
+	}
+		break;
+
 #if defined(CONFIG_T264_HWPM_IP_MSS_CHANNEL)
 	case T264_HWPM_IP_MSS_CHANNEL:
 #endif
