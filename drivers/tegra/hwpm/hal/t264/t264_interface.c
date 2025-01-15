@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -278,7 +278,8 @@ bool t264_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 		config_ip = T264_HWPM_IP_RTR;
 		break;
 	default:
-		tegra_hwpm_err(hwpm, "Queried resource %d invalid",
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
+			"Queried resource %d invalid",
 			res_enum);
 		break;
 	}

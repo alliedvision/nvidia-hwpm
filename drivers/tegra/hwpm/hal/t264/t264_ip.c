@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -50,7 +50,7 @@ int t264_hwpm_extract_ip_ops(struct tegra_soc_hwpm *hwpm,
 
 	/* Convert tegra_soc_hwpm_resource to internal enum */
 	if (!(t264_hwpm_is_resource_active(hwpm, resource_enum, &ip_idx))) {
-		tegra_hwpm_err(hwpm,
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_ip_register,
 			"SOC hwpm resource %d (base 0x%llx) is unconfigured",
 			resource_enum, (unsigned long long)base_address);
 		goto fail;
