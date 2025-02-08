@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -210,6 +210,17 @@ static int tegra_hwpm_alloc_dynamic_inst_element_array(
 	if (inst_a_info->range_end == 0ULL) {
 		tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
 			"No a_type = %d elements in IP", a_type);
+		return 0;
+	}
+
+	/* This is for IP that is pre-configured with instance overlimit. */
+	if (inst_a_info->islots_overlimit == true) {
+		tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+			"IP inst range(0x%llx-0x%llx) a_type = %d inst_slots %d"
+			"forced over limit, skip allocating dynamic array",
+			(unsigned long long)inst_a_info->range_start,
+			(unsigned long long)inst_a_info->range_end,
+			a_type, inst_a_info->inst_slots);
 		return 0;
 	}
 
@@ -559,6 +570,22 @@ static int tegra_hwpm_func_all_elements_of_type(struct tegra_soc_hwpm *hwpm,
 			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
 				"No a_type = %d elements in IP %d stat inst %d",
 				a_type, ip_idx, s_inst_idx);
+			return 0;
+		}
+
+		/**
+		 * This is for IP instance that is pre-configured with element
+		 * overlimit.
+		 */
+		if (e_info->eslots_overlimit == true) {
+			tegra_hwpm_dbg(hwpm, hwpm_dbg_driver_init,
+				"iia_func %d IP %d static inst %d a_type %d"
+				" element range(0x%llx-0x%llx) element_slots %d "
+				"force over limit, skip allocating dynamic array",
+				iia_func, ip_idx, s_inst_idx, a_type,
+				(unsigned long long)e_info->range_start,
+				(unsigned long long)e_info->range_end,
+				e_info->element_slots);
 			return 0;
 		}
 
