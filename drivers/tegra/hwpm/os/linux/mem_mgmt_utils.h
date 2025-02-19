@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2022-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -23,8 +23,10 @@
 
 #include <linux/types.h>
 #include <linux/version.h>
-#if defined(NV_LINUX_IOSYS_MAP_H_PRESENT)
+#if defined(NV_LINUX_IOSYS_MAP_H_PRESENT) || \
+	LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0)
 #include <linux/iosys-map.h>
+#define HWPM_IOSYS_MAP_PRESENT 1
 #else
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
 #include <linux/dma-buf-map.h>
@@ -53,12 +55,10 @@ struct tegra_hwpm_mem_mgmt {
 	struct dma_buf *mem_bytes_dma_buf;
 	struct dma_buf_attachment *mem_bytes_attach;
 	void *mem_bytes_kernel;
-#if defined(NV_LINUX_IOSYS_MAP_H_PRESENT)
+#if defined(HWPM_IOSYS_MAP_PRESENT)
 	struct iosys_map mem_bytes_map;
 #else
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
 	struct dma_buf_map mem_bytes_map;
-#endif
 #endif
 };
 

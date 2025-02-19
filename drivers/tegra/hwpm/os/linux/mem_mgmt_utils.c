@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 #include <nvidia/conftest.h>
 
@@ -25,7 +25,8 @@
 
 #include <os/linux/driver.h>
 
-#if defined(NV_MODULE_IMPORT_NS_CALLS_STRINGIFY)
+#if defined(NV_MODULE_IMPORT_NS_CALLS_STRINGIFY) || \
+	LINUX_VERSION_CODE < KERNEL_VERSION(6, 13, 0)
 MODULE_IMPORT_NS(DMA_BUF);
 #else
 MODULE_IMPORT_NS("DMA_BUF");
@@ -460,7 +461,7 @@ int tegra_hwpm_map_update_allowlist(struct tegra_soc_hwpm *hwpm,
 		goto fail;
 	}
 
-#if defined(NV_GET_USER_PAGES_HAS_ARGS_FLAGS) /* Linux v6.5 */
+#if defined(NV_GET_USER_PAGES_HAS_ARGS_FLAGS) || LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0)
 	pinned_pages = get_user_pages(user_va & PAGE_MASK,
 		hwpm->alist_map->num_pages, 0, hwpm->alist_map->pages);
 #else

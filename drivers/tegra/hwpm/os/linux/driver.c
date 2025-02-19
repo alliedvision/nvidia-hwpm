@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 #include <linux/slab.h>
 #include <linux/dma-buf.h>
 #include <linux/debugfs.h>
+#include <linux/version.h>
 
 #include <tegra_hwpm.h>
 #include <tegra_hwpm_ip.h>
@@ -53,7 +54,8 @@ static const struct of_device_id tegra_soc_hwpm_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, tegra_soc_hwpm_of_match);
 
-#if defined(NV_CLASS_STRUCT_DEVNODE_HAS_CONST_DEV_ARG)
+#if defined(NV_CLASS_STRUCT_DEVNODE_HAS_CONST_DEV_ARG) || \
+	LINUX_VERSION_CODE >= KERNEL_VERSION(6, 2, 0)
 static char *tegra_hwpm_get_devnode(const struct device *dev, umode_t *mode)
 #else
 static char *tegra_hwpm_get_devnode(struct device *dev, umode_t *mode)
