@@ -1,6 +1,6 @@
 # -*- mode: makefile -*-
 #
-# Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+# Copyright (c) 2022-2025, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -43,7 +43,10 @@ ccflags-y += -DCONFIG_TEGRA_HWPM_OOT
 CONFIG_TEGRA_FUSE_UPSTREAM := y
 ccflags-y += -DCONFIG_TEGRA_FUSE_UPSTREAM
 
+ifneq ($(NV_BUILD_SYSTEM_TYPE),)
+ccflags-y += -DCONFIG_TEGRA_HWPM_CONFTEST
 ccflags-y += -I$(srctree.nvconftest)
+endif
 
 else # CONFIG_TEGRA_OOT_MODULE != m
 NVHWPM_OBJ = y
