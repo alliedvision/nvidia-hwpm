@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -213,13 +213,13 @@ int tegra_hwpm_get_fs_info(struct tegra_soc_hwpm *hwpm,
 		active_chip = hwpm->active_chip;
 		chip_ip = active_chip->chip_ips[ip_idx];
 		if (!(chip_ip->override_enable) && chip_ip->inst_fs_mask) {
+			element_mask_shift = 0U;
+
 			for (s_inst_idx = 0U;
 				s_inst_idx < chip_ip->num_instances;
 				s_inst_idx++) {
 				ip_inst = &chip_ip->ip_inst_static_array[
 					s_inst_idx];
-				element_mask_shift = (s_inst_idx == 0U ? 0U :
-					ip_inst->num_core_elements_per_inst);
 
 				if (ip_inst->hw_inst_mask &
 					chip_ip->inst_fs_mask) {
@@ -227,6 +227,8 @@ int tegra_hwpm_get_fs_info(struct tegra_soc_hwpm *hwpm,
 						ip_inst->element_fs_mask <<
 							element_mask_shift);
 				}
+
+				element_mask_shift += ip_inst->num_core_elements_per_inst;
 			}
 			*fs_mask = floorsweep;
 			*ip_status = TEGRA_HWPM_IP_STATUS_VALID;
