@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -48,7 +48,7 @@ int t264_hwpm_perfmon_enable(struct tegra_soc_hwpm *hwpm,
 	u32 config_dgmap = 0U;
 	u32 dgmap_status_reg_idx = 0U, dgmap_status_reg_dgidx = 0U;
 	u32 retries = 10U;
-	u32 sleep_msecs = 100U;
+	u32 sleep_msecs = 10U;
 	int err = 0;
 	struct hwpm_ip_aperture *rtr_perfmux = NULL;
 
@@ -137,7 +137,7 @@ int t264_hwpm_perfmon_disable(struct tegra_soc_hwpm *hwpm,
 	u32 config_dgmap = 0U;
 	u32 dgmap_status_reg_idx = 0U, dgmap_status_reg_dgidx = 0U;
 	u32 retries = 10U;
-	u32 sleep_msecs = 100U;
+	u32 sleep_msecs = 10U;
 	int err = 0;
 	struct hwpm_ip_aperture *rtr_perfmux = NULL;
 
