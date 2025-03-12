@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
-#if defined(CONFIG_TEGRA_HWPM_CONFTEST) && defined(CONFIG_TEGRA_HWPM_OOT)
+#if defined(CONFIG_TEGRA_HWPM_CONFTEST)
 #include <nvidia/conftest.h>
 #endif
 #include <linux/mm.h>

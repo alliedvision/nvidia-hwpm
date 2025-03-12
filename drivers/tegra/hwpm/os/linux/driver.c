@@ -10,7 +10,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  */
-#if defined(CONFIG_TEGRA_HWPM_CONFTEST) && defined(CONFIG_TEGRA_HWPM_OOT)
+#if defined(CONFIG_TEGRA_HWPM_CONFTEST)
 #include <nvidia/conftest.h>
 #endif
 

@@ -17,7 +17,7 @@
 #ifndef TEGRA_HWPM_OS_LINUX_MEM_MGMT_UTILS_H
 #define TEGRA_HWPM_OS_LINUX_MEM_MGMT_UTILS_H
 
-#if defined(CONFIG_TEGRA_HWPM_CONFTEST) && defined(CONFIG_TEGRA_HWPM_OOT)
+#if defined(CONFIG_TEGRA_HWPM_CONFTEST)
 #include <nvidia/conftest.h>
 #endif
 

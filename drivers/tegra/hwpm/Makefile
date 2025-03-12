@@ -43,7 +43,7 @@ ccflags-y += -DCONFIG_TEGRA_HWPM_OOT
 CONFIG_TEGRA_FUSE_UPSTREAM := y
 ccflags-y += -DCONFIG_TEGRA_FUSE_UPSTREAM
 
-ifneq ($(NV_BUILD_SYSTEM_TYPE),)
+ifneq ($(srctree.nvconftest),)
 ccflags-y += -DCONFIG_TEGRA_HWPM_CONFTEST
 ccflags-y += -I$(srctree.nvconftest)
 endif
