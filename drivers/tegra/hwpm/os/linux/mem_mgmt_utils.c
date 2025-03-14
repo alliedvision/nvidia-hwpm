@@ -125,6 +125,21 @@ static int tegra_hwpm_dma_map_mem_bytes_buffer(struct tegra_soc_hwpm *hwpm,
 	hwpm->mem_mgmt->mem_bytes_buf_va =
 		sg_dma_address(hwpm->mem_mgmt->mem_bytes_sgt->sgl);
 
+	/**
+	 * The PMA doesnt define register to specify the high 32-bit address of
+	 * the mem bytes buffer. It will take from the stream buffer's high
+	 * 32-bit address.
+	 * Since mem bytes is allocated in different buffer, we need to check
+	 * the high address of mem bytes buffer is equal to the high address
+	 * of stream buffer.
+	 */
+	if ((hwpm->mem_mgmt->mem_bytes_buf_va >> 32) !=
+	    (hwpm->mem_mgmt->stream_buf_va >> 32)) {
+		tegra_hwpm_err(hwpm,
+			"Mem bytes and stream buffer high address mismatch");
+		return -EINVAL;
+	}
+
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
 	/*
 	 * Kernel version 5.11 and above introduces dma_buf_map structure
@@ -342,13 +357,14 @@ int tegra_hwpm_clear_mem_pipeline(struct tegra_soc_hwpm *hwpm)
 		goto fail;
 	}
 
+fail:
 	/* Reset stream buffer */
 	ret = tegra_hwpm_reset_stream_buf(hwpm);
 	if (ret != 0) {
 		tegra_hwpm_err(hwpm, "Failed to reset stream buffer");
 		goto fail;
 	}
-fail:
+
 	return ret;
 }
 
