@@ -242,7 +242,7 @@ bool t264_hwpm_is_resource_active(struct tegra_soc_hwpm *hwpm,
 #endif
 		break;
 #if defined(CONFIG_T264_HWPM_IP_ISP)
-	case TEGRA_HWPM_IP_ISP:
+	case TEGRA_HWPM_RESOURCE_ISP:
 		config_ip = T264_HWPM_IP_ISP;
 #endif
 		break;

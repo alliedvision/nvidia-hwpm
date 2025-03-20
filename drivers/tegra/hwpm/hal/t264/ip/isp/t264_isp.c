@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -265,6 +265,7 @@ struct hwpm_ip t264_hwpm_ip_isp = {
 			.inst_stride = addr_map_isp_thi_limit_r() -
 				addr_map_isp_thi_base_r() + 1ULL,
 			.inst_slots = 0U,
+			.islots_overlimit = true,
 			.inst_arr = NULL,
 		},
 		/*
