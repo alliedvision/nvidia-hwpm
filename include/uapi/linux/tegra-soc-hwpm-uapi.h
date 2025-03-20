@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -62,6 +62,7 @@ enum tegra_soc_hwpm_ip {
 	TEGRA_SOC_HWPM_IP_UCF_HUB,
 	TEGRA_SOC_HWPM_IP_UCF_SCB,
 	TEGRA_SOC_HWPM_IP_CPU,
+	TEGRA_SOC_HWPM_IP_NVTHERM,
 	TERGA_SOC_HWPM_NUM_IPS
 };
 
@@ -149,6 +150,7 @@ enum tegra_soc_hwpm_resource {
 	TEGRA_SOC_HWPM_RESOURCE_UCF_HUB,
 	TEGRA_SOC_HWPM_RESOURCE_UCF_SCB,
 	TEGRA_SOC_HWPM_RESOURCE_CPU,
+	TEGRA_SOC_HWPM_RESOURCE_NVTHERM,
 	TERGA_SOC_HWPM_NUM_RESOURCES
 };
 

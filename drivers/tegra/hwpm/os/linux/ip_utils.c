@@ -1,4 +1,4 @@
-/* SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -146,6 +146,9 @@ static u32 tegra_hwpm_translate_soc_hwpm_ip(struct tegra_soc_hwpm *hwpm,
 		break;
 	case TEGRA_SOC_HWPM_IP_CPU:
 		ip_enum_idx = TEGRA_HWPM_IP_CPU;
+		break;
+	case TEGRA_SOC_HWPM_IP_NVTHERM:
+		ip_enum_idx = TEGRA_HWPM_IP_NVTHERM;
 		break;
 	default:
 		tegra_hwpm_err(hwpm,
@@ -311,6 +314,9 @@ u32 tegra_hwpm_translate_soc_hwpm_resource(struct tegra_soc_hwpm *hwpm,
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_CPU:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_CPU;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_NVTHERM:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_NVTHERM;
 		break;
 	default:
 		tegra_hwpm_err(hwpm,

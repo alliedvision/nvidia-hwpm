@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -104,6 +104,7 @@ enum tegra_hwpm_ip_enum {
 	TEGRA_HWPM_IP_UCF_HUB,
 	TEGRA_HWPM_IP_UCF_SCB,
 	TEGRA_HWPM_IP_CPU,
+	TEGRA_HWPM_IP_NVTHERM,
 	TERGA_HWPM_NUM_IPS
 };
 
@@ -152,6 +153,7 @@ static inline const char *tegra_hwpm_ip_string(enum tegra_hwpm_ip_enum ip_enum)
 		[TEGRA_HWPM_IP_UCF_HUB] = "ucf_hub",
 		[TEGRA_HWPM_IP_UCF_SCB] = "ucf_scb",
 		[TEGRA_HWPM_IP_CPU] = "cpu",
+		[TEGRA_HWPM_IP_NVTHERM] = "nvtherm",
 		[TERGA_HWPM_NUM_IPS] = "unknown",
 	};
 
@@ -207,6 +209,7 @@ enum tegra_hwpm_resource_enum {
 	TEGRA_HWPM_RESOURCE_UCF_HUB,
 	TEGRA_HWPM_RESOURCE_UCF_SCB,
 	TEGRA_HWPM_RESOURCE_CPU,
+	TEGRA_HWPM_RESOURCE_NVTHERM,
 	TERGA_HWPM_NUM_RESOURCES
 };
 

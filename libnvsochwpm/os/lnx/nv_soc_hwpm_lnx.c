@@ -121,6 +121,12 @@ static uint32_t get_ip_max_instances(
 		}
 		break;
 	case TEGRA_SOC_HWPM_CHIP_ID_T410:
+		switch (ip) {
+		case NV_SOC_HWPM_IP_NVTHERM:
+			return 1;
+		default:
+			break;
+		}
 		break;
 	default:
 		break;
