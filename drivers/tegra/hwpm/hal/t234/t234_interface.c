@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -69,6 +69,7 @@ static struct tegra_soc_hwpm_chip t234_chip_info = {
 	.perfmux_disable = tegra_hwpm_perfmux_disable,
 	.disable_triggers = t234_hwpm_disable_triggers,
 	.check_status = t234_hwpm_check_status,
+	.soft_reset = NULL,
 
 	.disable_mem_mgmt = t234_hwpm_disable_mem_mgmt,
 	.enable_mem_mgmt = t234_hwpm_enable_mem_mgmt,

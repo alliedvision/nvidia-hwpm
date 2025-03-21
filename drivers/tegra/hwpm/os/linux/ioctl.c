@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2021-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -437,6 +437,11 @@ static int tegra_hwpm_open(struct inode *inode, struct file *filp)
 
 	tegra_hwpm_fn(hwpm, " ");
 
+	if (hwpm->soft_reset_unstable) {
+		tegra_hwpm_err(hwpm, "HWPM subsystem is unstable. Please perform system-wide reset.");
+		return -ENOTRECOVERABLE;
+	}
+
 	/* Initialize driver on first open call only */
 	if (!atomic_add_unless(&hwpm_linux->usage_count.var, 1U, 1U)) {
 		return -EAGAIN;
@@ -517,6 +522,22 @@ static int tegra_hwpm_release(struct inode *inode, struct file *filp)
 	if (hwpm->device_opened == false) {
 		/* Device was not opened, do nothing */
 		return 0;
+	}
+
+	/* Reset the HWPM state via soft reset before releasing resources */
+	if (hwpm->bind_completed && hwpm->active_chip->soft_reset) {
+		int soft_reset_ret = hwpm->active_chip->soft_reset(hwpm);
+		if (soft_reset_ret != 0) {
+			tegra_hwpm_err(hwpm,
+				       "Failed to perform soft reset. Error: %d",
+				       soft_reset_ret);
+			if (soft_reset_ret == -ENOTRECOVERABLE) {
+				hwpm->soft_reset_unstable = true;
+				tegra_hwpm_err(hwpm,
+					"HWPM subsystem has become unstable. "
+					"Only recovery scheme is to perform System-wide reset.");
+			}
+		}
 	}
 
 	ret = tegra_hwpm_disable_triggers(hwpm);

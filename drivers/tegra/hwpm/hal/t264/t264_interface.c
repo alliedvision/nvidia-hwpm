@@ -73,6 +73,7 @@ static struct tegra_soc_hwpm_chip t264_chip_info = {
 	.perfmux_disable = tegra_hwpm_perfmux_disable,
 	.disable_triggers = t264_hwpm_disable_triggers,
 	.check_status = t264_hwpm_check_status,
+	.soft_reset = NULL,
 
 	/* Memory management */
 	.disable_mem_mgmt = t264_hwpm_disable_mem_mgmt,

@@ -105,6 +105,11 @@ int tegra_hwpm_bind_resources(struct tegra_soc_hwpm *hwpm)
 
 	tegra_hwpm_fn(hwpm, " ");
 
+	/**
+	 * TODO: use soft reset after configuring DG map and avoid zeroing
+	 * the perfmons.
+	 */
+
 	err = tegra_hwpm_func_all_ip(hwpm, NULL, TEGRA_HWPM_BIND_RESOURCES);
 	if (err != 0) {
 		tegra_hwpm_err(hwpm, "failed to bind resources");

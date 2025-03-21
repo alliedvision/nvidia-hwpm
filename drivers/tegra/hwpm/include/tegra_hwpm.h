@@ -685,6 +685,15 @@ struct tegra_soc_hwpm_chip {
 	int (*release_rtr)(struct tegra_soc_hwpm *hwpm);
 
 	int (*check_status)(struct tegra_soc_hwpm *hwpm);
+	/**
+	 * @brief Perform HWPM reset via soft-reset command.
+	 *
+	 * @returns This function returns 0 on success, negative errno on failure:
+	 *   -ETIMEDOUT: soft reset sequence did not complete within timeout.
+	 *   -ENOTRECOVERABLE: system is unstable and requires system-wide reset.
+	 *   -EAGAIN: the cmd packet for soft reset maybe dropped and requires retry.
+	 */
+	int (*soft_reset)(struct tegra_soc_hwpm *hwpm);
 	int (*disable_triggers)(struct tegra_soc_hwpm *hwpm);
 	int (*perfmon_enable)(struct tegra_soc_hwpm *hwpm,
 	struct hwpm_ip_aperture *perfmon);
@@ -733,6 +742,7 @@ struct tegra_soc_hwpm {
 	bool device_opened;
 	bool fake_registers_enabled;
 	bool dbg_skip_alist;
+	bool soft_reset_unstable;
 };
 
 #endif /* TEGRA_HWPM_H */
