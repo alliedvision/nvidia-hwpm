@@ -124,6 +124,12 @@ static uint32_t get_ip_max_instances(
 		switch (ip) {
 		case NV_SOC_HWPM_IP_NVTHERM:
 			return 1;
+		case NV_SOC_HWPM_IP_CSN:
+			return 32;
+		case NV_SOC_HWPM_IP_CSN_EXT_0:
+			return 10;
+		case NV_SOC_HWPM_IP_CSNH:
+			return 7;
 		default:
 			break;
 		}

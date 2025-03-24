@@ -74,6 +74,9 @@ typedef enum {
 	NV_SOC_HWPM_IP_UCF_SCB,
 	NV_SOC_HWPM_IP_CPU,
 	NV_SOC_HWPM_IP_NVTHERM,
+	NV_SOC_HWPM_IP_CSN,		/* CSN instance 0-31 */
+	NV_SOC_HWPM_IP_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
+	NV_SOC_HWPM_IP_CSNH,
 	NV_SOC_HWPM_NUM_IPS
 } nv_soc_hwpm_ip;
 
@@ -137,6 +140,9 @@ typedef enum {
 	NV_SOC_HWPM_RESOURCE_UCF_SCB,
 	NV_SOC_HWPM_RESOURCE_CPU,
 	NV_SOC_HWPM_RESOURCE_NVTHERM,
+	NV_SOC_HWPM_RESOURCE_CSN,	/* CSN instance 0-31 */
+	NV_SOC_HWPM_RESOURCE_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
+	NV_SOC_HWPM_RESOURCE_CSNH,
 	NV_SOC_HWPM_NUM_RESOURCES
 } nv_soc_hwpm_resource;
 

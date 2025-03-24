@@ -105,6 +105,9 @@ enum tegra_hwpm_ip_enum {
 	TEGRA_HWPM_IP_UCF_SCB,
 	TEGRA_HWPM_IP_CPU,
 	TEGRA_HWPM_IP_NVTHERM,
+	TEGRA_HWPM_IP_CSN,		/* CSN instance 0-31 */
+	TEGRA_HWPM_IP_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
+	TEGRA_HWPM_IP_CSNH,
 	TERGA_HWPM_NUM_IPS
 };
 
@@ -154,6 +157,9 @@ static inline const char *tegra_hwpm_ip_string(enum tegra_hwpm_ip_enum ip_enum)
 		[TEGRA_HWPM_IP_UCF_SCB] = "ucf_scb",
 		[TEGRA_HWPM_IP_CPU] = "cpu",
 		[TEGRA_HWPM_IP_NVTHERM] = "nvtherm",
+		[TEGRA_HWPM_IP_CSN] = "csn",
+		[TEGRA_HWPM_IP_CSN_EXT_0] = "csn_ext_0",
+		[TEGRA_HWPM_IP_CSNH] = "csnh",
 		[TERGA_HWPM_NUM_IPS] = "unknown",
 	};
 
@@ -210,6 +216,9 @@ enum tegra_hwpm_resource_enum {
 	TEGRA_HWPM_RESOURCE_UCF_SCB,
 	TEGRA_HWPM_RESOURCE_CPU,
 	TEGRA_HWPM_RESOURCE_NVTHERM,
+	TEGRA_HWPM_RESOURCE_CSN,	/* CSN instance 0-31 */
+	TEGRA_HWPM_RESOURCE_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
+	TEGRA_HWPM_RESOURCE_CSNH,
 	TERGA_HWPM_NUM_RESOURCES
 };
 
