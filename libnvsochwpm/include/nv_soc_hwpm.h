@@ -72,7 +72,10 @@ typedef enum {
 	NV_SOC_HWPM_IP_UCF_CSW,
 	NV_SOC_HWPM_IP_UCF_HUB,
 	NV_SOC_HWPM_IP_UCF_SCB,
-	NV_SOC_HWPM_IP_CPU,
+	NV_SOC_HWPM_IP_CPU,		/* CPU instance 0-31 */
+	NV_SOC_HWPM_IP_CPU_EXT_0,	/* CPU (extended) instance 32-63 */
+	NV_SOC_HWPM_IP_CPU_EXT_1,	/* CPU (extended) instance 64-95 */
+	NV_SOC_HWPM_IP_CPU_EXT_2,	/* CPU (extended) instance 96-127 */
 	NV_SOC_HWPM_IP_NVTHERM,
 	NV_SOC_HWPM_IP_CSN,		/* CSN instance 0-31 */
 	NV_SOC_HWPM_IP_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
@@ -138,7 +141,10 @@ typedef enum {
 	NV_SOC_HWPM_RESOURCE_UCF_CSW,
 	NV_SOC_HWPM_RESOURCE_UCF_HUB,
 	NV_SOC_HWPM_RESOURCE_UCF_SCB,
-	NV_SOC_HWPM_RESOURCE_CPU,
+	NV_SOC_HWPM_RESOURCE_CPU,	/* CPU instance 0-31 */
+	NV_SOC_HWPM_RESOURCE_CPU_EXT_0,	/* CPU (extended) instance 32-63 */
+	NV_SOC_HWPM_RESOURCE_CPU_EXT_1,	/* CPU (extended) instance 64-95 */
+	NV_SOC_HWPM_RESOURCE_CPU_EXT_2,	/* CPU (extended) instance 96-127 */
 	NV_SOC_HWPM_RESOURCE_NVTHERM,
 	NV_SOC_HWPM_RESOURCE_CSN,	/* CSN instance 0-31 */
 	NV_SOC_HWPM_RESOURCE_CSN_EXT_0,	/* CSN (extended) instance 32-63 */

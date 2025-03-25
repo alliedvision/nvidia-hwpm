@@ -147,6 +147,15 @@ static u32 tegra_hwpm_translate_soc_hwpm_ip(struct tegra_soc_hwpm *hwpm,
 	case TEGRA_SOC_HWPM_IP_CPU:
 		ip_enum_idx = TEGRA_HWPM_IP_CPU;
 		break;
+	case TEGRA_SOC_HWPM_IP_CPU_EXT_0:
+		ip_enum_idx = TEGRA_HWPM_IP_CPU_EXT_0;
+		break;
+	case TEGRA_SOC_HWPM_IP_CPU_EXT_1:
+		ip_enum_idx = TEGRA_HWPM_IP_CPU_EXT_1;
+		break;
+	case TEGRA_SOC_HWPM_IP_CPU_EXT_2:
+		ip_enum_idx = TEGRA_HWPM_IP_CPU_EXT_2;
+		break;
 	case TEGRA_SOC_HWPM_IP_NVTHERM:
 		ip_enum_idx = TEGRA_HWPM_IP_NVTHERM;
 		break;
@@ -323,6 +332,15 @@ u32 tegra_hwpm_translate_soc_hwpm_resource(struct tegra_soc_hwpm *hwpm,
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_CPU:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_CPU;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_CPU_EXT_0:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_CPU_EXT_0;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_CPU_EXT_1:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_CPU_EXT_1;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_CPU_EXT_2:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_CPU_EXT_2;
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_NVTHERM:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_NVTHERM;

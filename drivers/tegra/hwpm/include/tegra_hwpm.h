@@ -103,7 +103,10 @@ enum tegra_hwpm_ip_enum {
 	TEGRA_HWPM_IP_UCF_CSW,
 	TEGRA_HWPM_IP_UCF_HUB,
 	TEGRA_HWPM_IP_UCF_SCB,
-	TEGRA_HWPM_IP_CPU,
+	TEGRA_HWPM_IP_CPU,		/* CPU instance 0-31 */
+	TEGRA_HWPM_IP_CPU_EXT_0,	/* CPU (extended) instance 32-63 */
+	TEGRA_HWPM_IP_CPU_EXT_1,	/* CPU (extended) instance 64-95 */
+	TEGRA_HWPM_IP_CPU_EXT_2,	/* CPU (extended) instance 96-127 */
 	TEGRA_HWPM_IP_NVTHERM,
 	TEGRA_HWPM_IP_CSN,		/* CSN instance 0-31 */
 	TEGRA_HWPM_IP_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
@@ -156,6 +159,9 @@ static inline const char *tegra_hwpm_ip_string(enum tegra_hwpm_ip_enum ip_enum)
 		[TEGRA_HWPM_IP_UCF_HUB] = "ucf_hub",
 		[TEGRA_HWPM_IP_UCF_SCB] = "ucf_scb",
 		[TEGRA_HWPM_IP_CPU] = "cpu",
+		[TEGRA_HWPM_IP_CPU_EXT_0] = "cpu_ext_0",
+		[TEGRA_HWPM_IP_CPU_EXT_1] = "cpu_ext_1",
+		[TEGRA_HWPM_IP_CPU_EXT_2] = "cpu_ext_2",
 		[TEGRA_HWPM_IP_NVTHERM] = "nvtherm",
 		[TEGRA_HWPM_IP_CSN] = "csn",
 		[TEGRA_HWPM_IP_CSN_EXT_0] = "csn_ext_0",
@@ -214,7 +220,10 @@ enum tegra_hwpm_resource_enum {
 	TEGRA_HWPM_RESOURCE_UCF_CSW,
 	TEGRA_HWPM_RESOURCE_UCF_HUB,
 	TEGRA_HWPM_RESOURCE_UCF_SCB,
-	TEGRA_HWPM_RESOURCE_CPU,
+	TEGRA_HWPM_RESOURCE_CPU,	/* CPU instance 0 -31 */
+	TEGRA_HWPM_RESOURCE_CPU_EXT_0,	/* CPU (extended) instance 32-63 */
+	TEGRA_HWPM_RESOURCE_CPU_EXT_1,	/* CPU (extended) instance 64-95 */
+	TEGRA_HWPM_RESOURCE_CPU_EXT_2,	/* CPU (extended) instance 96-127 */
 	TEGRA_HWPM_RESOURCE_NVTHERM,
 	TEGRA_HWPM_RESOURCE_CSN,	/* CSN instance 0-31 */
 	TEGRA_HWPM_RESOURCE_CSN_EXT_0,	/* CSN (extended) instance 32-63 */
