@@ -1,55 +1,51 @@
-/* SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (c) 2025, NVIDIA CORPORATION.  All rights reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms and conditions of the GNU General Public License,
- * version 2, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
- *
+ * NVIDIA CORPORATION and its licensors retain all intellectual property
+ * and proprietary rights in and to this software, related documentation
+ * and any modifications thereto.  Any use, reproduction, disclosure or
+ * distribution of this software and related documentation without an express
+ * license agreement from NVIDIA CORPORATION is strictly prohibited.
  */
 
-#include "t241_test.h"
+#include "t410_test.h"
 #include "soc_mode_e_buffer.h"
 #include "common/register_util.h"
-#include "th500/nv_ref_dev_perf.h"
+#include "tb500/nv_ref_dev_perf.h"
 #include "ip_names.h"
 #include <unistd.h>
 
-T241Tests::T241Tests() : NvSocHwpmTests(), t241_dev_count(0)
+T410Tests::T410Tests() : NvSocHwpmTests(), t410_dev_count(0)
 {
 }
 
-T241Tests::~T241Tests()
+T410Tests::~T410Tests()
 {
 }
 
-void T241Tests::SetUp()
+void T410Tests::SetUp(void)
 {
 	NvSocHwpmTests::SetUp();
 	ASSERT_EQ(0, api_table.nv_soc_hwpm_init_fn());
 }
 
-void T241Tests::TearDown()
+void T410Tests::TearDown(void)
 {
 	api_table.nv_soc_hwpm_exit_fn();
 	NvSocHwpmTests::TearDown();
 }
 
-void T241Tests::GetDevices()
+void T410Tests::GetDevices(void)
 {
-	t241_dev_count = 0;
+	t410_dev_count = 0;
 
-	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t241_dev_count, NULL));
-	ASSERT_EQ(1U, t241_dev_count);
+	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t410_dev_count, NULL));
+	ASSERT_EQ(1U, t410_dev_count);
 
-	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t241_dev_count, t241_dev));
+	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t410_dev_count, t410_dev));
 }
 
-TEST_F(T241Tests, EnumerateDevices)
+TEST_F(T410Tests, EnumerateDevices)
 {
 	uint32_t chip_id, i;
 	nv_soc_hwpm_device dev;
@@ -57,35 +53,35 @@ TEST_F(T241Tests, EnumerateDevices)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
-		dev = t241_dev[i];
+	for (i = 0; i < t410_dev_count; i++) {
+		dev = t410_dev[i];
 
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_SOC_CHIP_ID;
 
 		ASSERT_EQ(0,
 			api_table.nv_soc_hwpm_device_get_info_fn(
 				dev, dev_attr, sizeof(chip_id), &chip_id));
-		ASSERT_EQ(TEGRA_SOC_HWPM_CHIP_ID_T241, chip_id);
+		ASSERT_EQ(TEGRA_SOC_HWPM_CHIP_ID_T410, chip_id);
 
 	}
 }
 
-TEST_F(T241Tests, EnumerateDevicesNegative)
+TEST_F(T410Tests, EnumerateDevicesNegative)
 {
-	t241_dev_count = 0;
+	t410_dev_count = 0;
 
 	// Should fail with invalid dev_count ptr.
-	ASSERT_NE(0, api_table.nv_soc_hwpm_get_devices_fn(NULL, t241_dev));
+	ASSERT_NE(0, api_table.nv_soc_hwpm_get_devices_fn(NULL, t410_dev));
 
 	// Get valid count.
-	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t241_dev_count, NULL));
-	ASSERT_EQ(1U, t241_dev_count);
+	ASSERT_EQ(0, api_table.nv_soc_hwpm_get_devices_fn(&t410_dev_count, NULL));
+	ASSERT_EQ(1U, t410_dev_count);
 
 	// Should fail with invalid buffer ptr.
-	ASSERT_NE(0, api_table.nv_soc_hwpm_get_devices_fn(&t241_dev_count, NULL));
+	ASSERT_NE(0, api_table.nv_soc_hwpm_get_devices_fn(&t410_dev_count, NULL));
 }
 
-TEST_F(T241Tests, EnumerateIPs)
+TEST_F(T410Tests, EnumerateIPs)
 {
 	uint32_t ip_count, i, j;
 	uint64_t fs_mask;
@@ -96,9 +92,9 @@ TEST_F(T241Tests, EnumerateIPs)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_IP_AVAILABLE_COUNT;
 
@@ -128,7 +124,7 @@ TEST_F(T241Tests, EnumerateIPs)
 	}
 }
 
-TEST_F(T241Tests, EnumerateIPsNegative)
+TEST_F(T410Tests, EnumerateIPsNegative)
 {
 	uint32_t ip_count, i, j;
 	uint64_t fs_mask;
@@ -139,9 +135,9 @@ TEST_F(T241Tests, EnumerateIPsNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_IP_AVAILABLE_COUNT;
 
@@ -166,7 +162,7 @@ TEST_F(T241Tests, EnumerateIPsNegative)
 		ASSERT_NE(0,
 			api_table.nv_soc_hwpm_device_get_info_fn(
 				dev, dev_attr, sizeof(uint8_t) * ip_count, ip));
-				
+
 		// Should fail with invalid buffer ptr.
 		ASSERT_NE(0,
 			api_table.nv_soc_hwpm_device_get_info_fn(
@@ -200,10 +196,9 @@ TEST_F(T241Tests, EnumerateIPsNegative)
 					dev, cur_ip, ip_attr, sizeof(fs_mask), NULL));
 		}
 	}
-	
 }
 
-TEST_F(T241Tests, EnumerateResources)
+TEST_F(T410Tests, EnumerateResources)
 {
 	uint32_t res_count, res_available, i, j;
 	nv_soc_hwpm_device dev;
@@ -213,9 +208,9 @@ TEST_F(T241Tests, EnumerateResources)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_RESOURCE_AVAILABLE_COUNT;
 
@@ -247,7 +242,7 @@ TEST_F(T241Tests, EnumerateResources)
 	}
 }
 
-TEST_F(T241Tests, EnumerateResourcesNegative)
+TEST_F(T410Tests, EnumerateResourcesNegative)
 {
 	uint32_t res_count, res_available, i, j;
 	nv_soc_hwpm_device dev;
@@ -257,9 +252,9 @@ TEST_F(T241Tests, EnumerateResourcesNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_RESOURCE_AVAILABLE_COUNT;
 
@@ -321,7 +316,7 @@ TEST_F(T241Tests, EnumerateResourcesNegative)
 	}
 }
 
-TEST_F(T241Tests, SessionAlloc)
+TEST_F(T410Tests, SessionAlloc)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -330,9 +325,9 @@ TEST_F(T241Tests, SessionAlloc)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
 
@@ -357,7 +352,7 @@ TEST_F(T241Tests, SessionAlloc)
 				session, session_attr, sizeof(pma_buffer_allocated),
 				&pma_buffer_allocated));
 		ASSERT_EQ(0U, pma_buffer_allocated);
-		
+
 		session_attr = NV_SOC_HWPM_SESSION_ATTRIBUTE_PMA_RECORD_BUFFER_SIZE;
 		size_t pma_record_buffer_size;
 		ASSERT_EQ(0,
@@ -365,7 +360,7 @@ TEST_F(T241Tests, SessionAlloc)
 				session, session_attr, sizeof(pma_record_buffer_size),
 				&pma_record_buffer_size));
 		ASSERT_EQ(0U, pma_record_buffer_size);
-		
+
 		session_attr = NV_SOC_HWPM_SESSION_ATTRIBUTE_PMA_RECORD_BUFFER_CPU_VA;
 		void* pma_record_buffer_cpu_va;
 		ASSERT_EQ(0,
@@ -425,7 +420,7 @@ TEST_F(T241Tests, SessionAlloc)
 	}
 }
 
-TEST_F(T241Tests, SessionAllocNegative)
+TEST_F(T410Tests, SessionAllocNegative)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -437,10 +432,10 @@ TEST_F(T241Tests, SessionAllocNegative)
 	// Should fail with invalid device handle.
 	dev.handle = 0xffffffff;
 	ASSERT_NE(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
-	
-	for (i = 0; i < t241_dev_count; i++) {
+
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
 
@@ -468,7 +463,7 @@ TEST_F(T241Tests, SessionAllocNegative)
 }
 
 
-TEST_F(T241Tests, SessionReserveResources)
+TEST_F(T410Tests, SessionReserveResources)
 {
 	uint32_t res_count, i;
 	nv_soc_hwpm_device dev;
@@ -478,9 +473,9 @@ TEST_F(T241Tests, SessionReserveResources)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Get available resources.
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_RESOURCE_AVAILABLE_COUNT;
@@ -510,7 +505,7 @@ TEST_F(T241Tests, SessionReserveResources)
 	}
 }
 
-TEST_F(T241Tests, SessionReserveResourcesNegative)
+TEST_F(T410Tests, SessionReserveResourcesNegative)
 {
 	uint32_t res_count, i;
 	nv_soc_hwpm_device dev;
@@ -520,9 +515,9 @@ TEST_F(T241Tests, SessionReserveResourcesNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Get available resources.
 		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_RESOURCE_AVAILABLE_COUNT;
@@ -566,7 +561,7 @@ TEST_F(T241Tests, SessionReserveResourcesNegative)
 	}
 }
 
-TEST_F(T241Tests, SessionAllocPma)
+TEST_F(T410Tests, SessionAllocPma)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -575,9 +570,9 @@ TEST_F(T241Tests, SessionAllocPma)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Maximum CMA size for NVIDIA config is 1024MB.
 		static const uint32_t kNumSizes = 3;
@@ -604,7 +599,7 @@ TEST_F(T241Tests, SessionAllocPma)
 					sizeof(pma_buffer_allocated),
 					&pma_buffer_allocated));
 			ASSERT_EQ(1U, pma_buffer_allocated);
-			
+
 			session_attr = NV_SOC_HWPM_SESSION_ATTRIBUTE_PMA_RECORD_BUFFER_SIZE;
 			size_t pma_record_buffer_size;
 			ASSERT_EQ(0,
@@ -614,7 +609,7 @@ TEST_F(T241Tests, SessionAllocPma)
 					sizeof(pma_record_buffer_size),
 					&pma_record_buffer_size));
 			ASSERT_EQ(record_buffer_params.size, pma_record_buffer_size);
-			
+
 			session_attr = NV_SOC_HWPM_SESSION_ATTRIBUTE_PMA_RECORD_BUFFER_CPU_VA;
 			void* pma_record_buffer_cpu_va;
 			ASSERT_EQ(0,
@@ -692,7 +687,7 @@ TEST_F(T241Tests, SessionAllocPma)
 	}
 }
 
-TEST_F(T241Tests, SessionAllocPmaNegative)
+TEST_F(T410Tests, SessionAllocPmaNegative)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -700,9 +695,9 @@ TEST_F(T241Tests, SessionAllocPmaNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		nv_soc_hwpm_pma_buffer_params record_buffer_params = {};
 		record_buffer_params.size = 1024 * 1024;
@@ -736,7 +731,7 @@ TEST_F(T241Tests, SessionAllocPmaNegative)
 	}
 }
 
-TEST_F(T241Tests, SessionSetGetPmaState)
+TEST_F(T410Tests, SessionSetGetPmaState)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -745,9 +740,9 @@ TEST_F(T241Tests, SessionSetGetPmaState)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -793,7 +788,7 @@ TEST_F(T241Tests, SessionSetGetPmaState)
 	}
 }
 
-TEST_F(T241Tests, SessionSetGetPmaStateNegative)
+TEST_F(T410Tests, SessionSetGetPmaStateNegative)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -801,9 +796,9 @@ TEST_F(T241Tests, SessionSetGetPmaStateNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -819,7 +814,7 @@ TEST_F(T241Tests, SessionSetGetPmaStateNegative)
 	}
 }
 
-TEST_F(T241Tests, DISABLED_SessionGetSetCredits)
+TEST_F(T410Tests, DISABLED_SessionGetSetCredits)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -827,9 +822,9 @@ TEST_F(T241Tests, DISABLED_SessionGetSetCredits)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -865,7 +860,7 @@ TEST_F(T241Tests, DISABLED_SessionGetSetCredits)
 	}
 }
 
-TEST_F(T241Tests, DISABLED_SessionGetSetCreditsNegative)
+TEST_F(T410Tests, DISABLED_SessionGetSetCreditsNegative)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -873,9 +868,9 @@ TEST_F(T241Tests, DISABLED_SessionGetSetCreditsNegative)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -898,37 +893,37 @@ TEST_F(T241Tests, DISABLED_SessionGetSetCreditsNegative)
 	}
 }
 
-void T241Tests::TestRegopsRead(nv_soc_hwpm_session session,
+void T410Tests::TestRegopsRead(nv_soc_hwpm_session session,
 	uint64_t pma_record_buffer_pma_va,
 	size_t record_buffer_size)
 {
 	int all_reg_ops_passed = 0;
 	static const uint32_t kRegOpsCount = 4;
 	nv_soc_hwpm_reg_ops_params reg_ops_params[kRegOpsCount];
-	
-	// profiler cap
-	reg_ops_params[0].in_offset = NV_PERF_PMASYS_PROFILER_CAPABILITIES;
+
+	// streaming cap
+	reg_ops_params[0].in_offset = NV_PERF_PMASYS_STREAMING_CAPABILITIES0;
 	reg_ops_params[0].in_out_val32 = 0;
 	reg_ops_params[0].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[0].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
 	reg_ops_params[0].out_status = NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS; // Initialize with def. value
 
 	// stream buf base lo
-	reg_ops_params[1].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASE(0);
+	reg_ops_params[1].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASE(0, 0);
 	reg_ops_params[1].in_out_val32 = 0;
 	reg_ops_params[1].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[1].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
 	reg_ops_params[1].out_status = NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS;
 
 	// stream buf base hi
-	reg_ops_params[2].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASEUPPER(0);
+	reg_ops_params[2].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASEUPPER(0, 0);
 	reg_ops_params[2].in_out_val32 = 0;
 	reg_ops_params[2].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[2].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
 	reg_ops_params[2].out_status = NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS;
 
 	// stream buf size
-	reg_ops_params[3].in_offset = NV_PERF_PMASYS_CHANNEL_OUTSIZE(0);
+	reg_ops_params[3].in_offset = NV_PERF_PMASYS_CHANNEL_OUTSIZE(0, 0);
 	reg_ops_params[3].in_out_val32 = 0;
 	reg_ops_params[3].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[3].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
@@ -945,8 +940,8 @@ void T241Tests::TestRegopsRead(nv_soc_hwpm_session session,
 	EXPECT_EQ(1, all_reg_ops_passed);
 
 	// Verify the register value.
-	printf("profiler cap: 0x%x\n", reg_ops_params[0].in_out_val32);
-	ASSERT_EQ(0x1000101U, reg_ops_params[0].in_out_val32);
+	printf("streaming cap: 0x%x\n", reg_ops_params[0].in_out_val32);
+	ASSERT_EQ(0x0000224U, reg_ops_params[0].in_out_val32);
 
 	printf("pma_record_buffer_pma_va: 0x%lx\n", pma_record_buffer_pma_va);
 	printf("stream buf base lo: 0x%x\n", reg_ops_params[1].in_out_val32);
@@ -959,7 +954,7 @@ void T241Tests::TestRegopsRead(nv_soc_hwpm_session session,
 	ASSERT_EQ(record_buffer_size, reg_ops_params[3].in_out_val32);
 }
 
-void T241Tests::TestRegopsWrite(nv_soc_hwpm_session session)
+void T410Tests::TestRegopsWrite(nv_soc_hwpm_session session)
 {
 	uint32_t i;
 	int all_reg_ops_passed = 0;
@@ -968,21 +963,21 @@ void T241Tests::TestRegopsWrite(nv_soc_hwpm_session session)
 	nv_soc_hwpm_reg_ops_params reg_ops_params[kRegOpsCount];
 
 	// stream buf base lo
-	reg_ops_params[0].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASE(0);
+	reg_ops_params[0].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASE(0, 0);
 	reg_ops_params[0].in_out_val32 = 0;
 	reg_ops_params[0].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[0].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
 	reg_ops_params[0].out_status = NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS;
 
 	// stream buf base hi
-	reg_ops_params[1].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASEUPPER(0);
+	reg_ops_params[1].in_offset = NV_PERF_PMASYS_CHANNEL_OUTBASEUPPER(0, 0);
 	reg_ops_params[1].in_out_val32 = 0;
 	reg_ops_params[1].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[1].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
 	reg_ops_params[1].out_status = NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS;
 
 	// stream buf size
-	reg_ops_params[2].in_offset = NV_PERF_PMASYS_CHANNEL_OUTSIZE(0);
+	reg_ops_params[2].in_offset = NV_PERF_PMASYS_CHANNEL_OUTSIZE(0, 0);
 	reg_ops_params[2].in_out_val32 = 0;
 	reg_ops_params[2].in_mask32 = 0xFFFFFFFF;
 	reg_ops_params[2].in_cmd = NV_SOC_HWPM_REG_OPS_CMD_READ32;
@@ -997,7 +992,7 @@ void T241Tests::TestRegopsWrite(nv_soc_hwpm_session session)
 			NV_SOC_HWPM_REG_OPS_VALIDATION_MODE_CONTINUE_ON_ERROR,
 			&all_reg_ops_passed));
 	EXPECT_EQ(1, all_reg_ops_passed);
-	
+
 	for (i = 0; i < kRegOpsCount; i++) {
 		reg_values[i] = reg_ops_params[i].in_out_val32;
 
@@ -1032,7 +1027,7 @@ void T241Tests::TestRegopsWrite(nv_soc_hwpm_session session)
 			NV_SOC_HWPM_REG_OPS_VALIDATION_MODE_CONTINUE_ON_ERROR,
 			&all_reg_ops_passed));
 	EXPECT_EQ(1, all_reg_ops_passed);
-	
+
 	for (i = 0; i < kRegOpsCount; i++) {
 		EXPECT_EQ((i + 1) * 32, reg_ops_params[i].in_out_val32);
 
@@ -1053,7 +1048,7 @@ void T241Tests::TestRegopsWrite(nv_soc_hwpm_session session)
 	EXPECT_EQ(1, all_reg_ops_passed);
 }
 
-TEST_F(T241Tests, SessionRegOps)
+TEST_F(T410Tests, SessionRegOps)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -1061,9 +1056,9 @@ TEST_F(T241Tests, SessionRegOps)
 	nv_soc_hwpm_session_attribute session_attr;
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -1099,7 +1094,7 @@ TEST_F(T241Tests, SessionRegOps)
 	}
 }
 
-void T241Tests::RegOpWrite32(
+void T410Tests::RegOpWrite32(
 	nv_soc_hwpm_session session, uint64_t address, uint32_t value, uint32_t mask)
 {
 	nv_soc_hwpm_reg_ops_params reg_ops_params = {};
@@ -1120,7 +1115,7 @@ void T241Tests::RegOpWrite32(
 	EXPECT_EQ(NV_SOC_HWPM_REG_OPS_STATUS_SUCCESS, reg_ops_params.out_status);
 }
 
-void T241Tests::RegOpRead32(
+void T410Tests::RegOpRead32(
 	nv_soc_hwpm_session session, uint64_t address, uint32_t *value)
 {
 	nv_soc_hwpm_reg_ops_params reg_ops_params = {};
@@ -1144,14 +1139,21 @@ void T241Tests::RegOpRead32(
 	*value = reg_ops_params.in_out_val32;
 }
 
-void T241Tests::SetupPma(nv_soc_hwpm_session session, const PmaConfigurationParams& params)
+void T410Tests::SetupPma(nv_soc_hwpm_session session, const PmaConfigurationParams &params)
 {
 	// Taken from Perfkit\Shared\Perfkit\Tests\Emulation\SOC\Tests\SocSignalTest\Src\TH500HwpmHal.cpp
+	nv_soc_hwpm_config_hs_credit_params credit_params;
+	uint32_t config_credits = 0;
+	ASSERT_EQ(0,
+		api_table.nv_soc_hwpm_session_get_hs_credits_fn(
+			session, TEGRA_SOC_HWPM_GET_TYPE_TOTAL_HS_CREDITS, &config_credits));
+	ASSERT_NE(0U, config_credits);
 
-	const uint32_t enable_hs = NV_PERF_PMMSYSROUTER_GLOBAL_SECURE_CONFIG_HS_STREAM_ENABLE;
-	const uint32_t config_credits = 0xFF; // FIXME: credit count must be queried!
-	RegOpWrite32(session, NV_PERF_PMMSYSROUTER_GLOBAL_SECURE_CONFIG, enable_hs, 0xFFFFFFFF);
-	RegOpWrite32(session, NV_PERF_PMMSYSROUTER_USER_CHANNEL_CONFIG_SECURE(0), config_credits, 0xFFFFFFFF);
+	credit_params.cblock_idx = 0;
+	credit_params.num_credits_per_chiplet = config_credits;
+	ASSERT_EQ(0,
+		api_table.nv_soc_hwpm_session_config_hs_credits_fn(
+			session, 1, &credit_params));
 
 	RegOpWrite32(session, NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONFIG_TESLA_MODE0(0), 0xFFFFFFFF, 0xFFFFFFFF);
 	RegOpWrite32(session, NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONFIG_TESLA_MODE1(0), 0xFFFFFFFF, 0xFFFFFFFF);
@@ -1174,7 +1176,7 @@ void T241Tests::SetupPma(nv_soc_hwpm_session session, const PmaConfigurationPara
 	RegOpWrite32(session, NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_STATUS1(0), 0x00000000, 0xFFFFFFFF);
 }
 
-void T241Tests::EnablePmaStreaming(nv_soc_hwpm_session session, const PmaConfigurationParams& params)
+void T410Tests::EnablePmaStreaming(nv_soc_hwpm_session session, const PmaConfigurationParams &params)
 {
 	uint32_t keep_latest_config =
 		(params.keep_latest) ?
@@ -1197,7 +1199,7 @@ void T241Tests::EnablePmaStreaming(nv_soc_hwpm_session session, const PmaConfigu
 
         RegOpWrite32(
 		session,
-		NV_PERF_PMASYS_CHANNEL_CONFIG_USER(0),
+		NV_PERF_PMASYS_CHANNEL_CONFIG_USER(0, 0),
 		channel_config_user,
 		0xFFFFFFFF);
 }
@@ -1213,7 +1215,7 @@ void T241Tests::EnablePmaStreaming(nv_soc_hwpm_session session, const PmaConfigu
 #define MC_MCC_CTL_PERFMUX_0_MCC_CTL_PERFMUX_SEL                         7:0
 #define NV_ADDRESS_MAP_MC0_BASE                                          0x0000000004040000
 
-void T241Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+void T410Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
 {
 	const uint32_t perfmon_idx = params.perfmon_idx;
 	uint32_t mode;
@@ -1352,7 +1354,6 @@ void T241Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_EVENT_SYNC_MODE, NV_PERF_PMMSYS_CONTROL_EVENT_SYNC_MODE_LEVEL)
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_FLAG_SYNC_MODE, NV_PERF_PMMSYS_CONTROL_FLAG_SYNC_MODE_LEVEL)
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_MODEC_4X16_4X32, NV_PERF_PMMSYS_CONTROL_MODEC_4X16_4X32_DISABLE)
-		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_CTXSW_MODE, NV_PERF_PMMSYS_CONTROL_CTXSW_MODE_DISABLED)
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_TIMEBASE_CYCLES, NV_PERF_PMMSYS_CONTROL_TIMEBASE_CYCLES_DISABLED)
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_SHADOW_STATE, NV_PERF_PMMSYS_CONTROL_SHADOW_STATE_INVALID)
 		| REG32_WR(0, NV_PERF_PMMSYS_CONTROL_DRIVE_DEBUG_PORT, NV_PERF_PMMSYS_CONTROL_DRIVE_DEBUG_PORT_NORMAL)
@@ -1361,7 +1362,7 @@ void T241Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 	RegOpWrite32(session, NV_PERF_PMMSYS_CONTROL(perfmon_idx), pmm_control, 0xFFFFFFFF);
 }
 
-void T241Tests::SetupWatchbus(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+void T410Tests::SetupWatchbus(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
 {
 	const uint32_t perfmon_idx = params.perfmon_idx;
 
@@ -1397,7 +1398,7 @@ void T241Tests::SetupWatchbus(nv_soc_hwpm_session session, const PmmConfiguratio
 	}
 }
 
-void T241Tests::TeardownPma(nv_soc_hwpm_session session)
+void T410Tests::TeardownPma(nv_soc_hwpm_session session)
 {
 	// Clear NV_PERF_PMASYS_CHANNEL_STATUS_MEMBUF_STATUS
 	const uint32_t pma_control_user = 0
@@ -1405,14 +1406,14 @@ void T241Tests::TeardownPma(nv_soc_hwpm_session session)
 			0,
 			NV_PERF_PMASYS_CHANNEL_CONTROL_USER_MEMBUF_CLEAR_STATUS,
 			NV_PERF_PMASYS_CHANNEL_CONTROL_USER_MEMBUF_CLEAR_STATUS_DOIT);
-	RegOpWrite32(session, NV_PERF_PMASYS_CHANNEL_CONTROL_USER(0), pma_control_user, 0xFFFFFFFF);
+	RegOpWrite32(session, NV_PERF_PMASYS_CHANNEL_CONTROL_USER(0, 0), pma_control_user, 0xFFFFFFFF);
 
 	RegOpWrite32(session, NV_PERF_PMMSYSROUTER_GLOBAL_CNTRL, 0x0, 0xFFFFFFFF);
-	RegOpWrite32(session, NV_PERF_PMASYS_CHANNEL_CONTROL_USER(0), 0x0, 0xFFFFFFFF);
+	RegOpWrite32(session, NV_PERF_PMASYS_CHANNEL_CONTROL_USER(0, 0), 0x0, 0xFFFFFFFF);
 }
 
-void T241Tests::TeardownPmm(
-	nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+void T410Tests::TeardownPmm(
+	nv_soc_hwpm_session session, const PmmConfigurationParams &params)
 {
 	const uint32_t perfmon_idx = params.perfmon_idx;
 
@@ -1432,12 +1433,12 @@ void T241Tests::TeardownPmm(
 	RegOpWrite32(session, NV_PERF_PMMSYS_SECURE_CONFIG(perfmon_idx), secure_config, 0xFFFFFFFF);
 }
 
-void T241Tests::TeardownPerfmux(nv_soc_hwpm_session session)
+void T410Tests::TeardownPerfmux(nv_soc_hwpm_session session)
 {
 	RegOpWrite32(session, NV_PERF_PMASYS_PERFMUX_CONFIG_SECURE, 0, 0xFFFFFFFF);
 }
 
-void T241Tests::IssuePmaTrigger(nv_soc_hwpm_session session)
+void T410Tests::IssuePmaTrigger(nv_soc_hwpm_session session)
 {
 	// This will issue PMA trigger to the perfmon.
 	// The perfmon then will snapshot the counter value into shadow regiters
@@ -1449,8 +1450,8 @@ void T241Tests::IssuePmaTrigger(nv_soc_hwpm_session session)
 	RegOpWrite32(session, NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONTROL(0), pma_global_trigger, 0xFFFFFFFF);
 }
 
-void T241Tests::HarvestCounters(
-	nv_soc_hwpm_session session, const PmmConfigurationParams& params, const uint32_t sig_val[4])
+void T410Tests::HarvestCounters(
+	nv_soc_hwpm_session session, const PmmConfigurationParams &params, const uint32_t sig_val[4])
 {
 	const uint32_t perfmon_idx = params.perfmon_idx;
 
@@ -1488,7 +1489,7 @@ void T241Tests::HarvestCounters(
 }
 
 
-TEST_F(T241Tests, SessionSignalTestPmaPerfmux)
+TEST_F(T410Tests, SessionSignalTestPmaPerfmux)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -1496,9 +1497,9 @@ TEST_F(T241Tests, SessionSignalTestPmaPerfmux)
 	nv_soc_hwpm_session_attribute session_attr;
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
@@ -1557,13 +1558,13 @@ TEST_F(T241Tests, SessionSignalTestPmaPerfmux)
 	}
 }
 
-TEST_F(T241Tests, SessionStreamoutTestModeEBasicStreaming)
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreaming)
 {
 	nv_soc_hwpm_device dev;
 	nv_soc_hwpm_session session;
 	nv_soc_hwpm_session_attribute session_attr;
 	uint32_t i, num_mem_bytes, num_triggers, num_perfmons;
-	
+
 	// From //hw/tools/perfalyze/chips/th500/pml_files/soc_perf/pm_programming_guide.txt
 	// Perfmon domain offset sys0
 	const uint32_t perfmon_idx = 30;
@@ -1571,9 +1572,9 @@ TEST_F(T241Tests, SessionStreamoutTestModeEBasicStreaming)
 
 	GetDevices();
 
-	for (i = 0; i < t241_dev_count; i++) {
+	for (i = 0; i < t410_dev_count; i++) {
 		printf("Device %d:\n", i);
-		dev = t241_dev[i];
+		dev = t410_dev[i];
 
 		// Allocate session.
 		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));

@@ -24,6 +24,7 @@ endif
 SOURCES = \
 	nv_soc_hwpm_test.cpp \
 	t241_test.cpp \
+	t410_test.cpp \
 	soc_mode_e_buffer.cpp
 
 OBJECTS=$(foreach x, $(basename $(SOURCES)), $(x).o)
@@ -43,6 +44,7 @@ CXXFLAGS += -I$(NV_SOURCE)/3rdparty/google/googletest/googletest/include
 CXXFLAGS += -I$(NV_SOURCE)/3rdparty/google/googletest/googletest/
 
 CXXFLAGS += -I$(NV_SOURCE)/hwinc-private/th500/66838280
+CXXFLAGS += -I$(NV_SOURCE)/hwinc-private/tb500/84849639
 
 GTEST_SOURCES += \
 	$(NV_SOURCE)/3rdparty/google/googletest/googletest/src/gtest-all.cc \
