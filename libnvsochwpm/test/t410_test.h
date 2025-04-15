@@ -1,17 +1,24 @@
-/*
- * Copyright (c) 2025, NVIDIA CORPORATION.  All rights reserved.
+/* SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: GPL-2.0-only
  *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms and conditions of the GNU General Public License,
+ * version 2, as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
  */
 
 #ifndef T410_TEST_H
 #define T410_TEST_H
 
 #include "nv_soc_hwpm_test.h"
+
+#include <vector>
+#include <cstdint>
 
 #define T410_MAX_SOCKETS 2
 
@@ -48,14 +55,17 @@ protected:
 		{
 			mode = MODE_B;
 			perfmon_idx = 0;
+			perfmon_base = 0;
 			enable_local_triggering = false;
 			enable_overflow_priming = false;
 			collect_one = false;
 		}
 
+		std::vector<uint32_t> expected_sig_val;
 
 		Mode mode;
 		uint32_t perfmon_idx;
+		uint64_t perfmon_base;
 
 		bool enable_local_triggering;
 		bool enable_overflow_priming;
@@ -80,7 +90,10 @@ protected:
 	void SetupPma(nv_soc_hwpm_session session, const PmaConfigurationParams &params);
 	void EnablePmaStreaming(nv_soc_hwpm_session session, const PmaConfigurationParams &params);
 	void SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
-	void SetupWatchbus(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusPma(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusCsnMbn(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPma(nv_soc_hwpm_session session);
 	void TeardownPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPerfmux(nv_soc_hwpm_session session);
@@ -89,6 +102,10 @@ protected:
 		nv_soc_hwpm_session session,
 		const PmmConfigurationParams &params,
 		const uint32_t sig_val[4]);
+
+	void InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationParams &params);
+	void ModeBTest(nv_soc_hwpm_resource resource);
+	void ModeETest(nv_soc_hwpm_resource resource);
 
 	nv_soc_hwpm_device t410_dev[T410_MAX_SOCKETS];
 	uint32_t t410_dev_count;
