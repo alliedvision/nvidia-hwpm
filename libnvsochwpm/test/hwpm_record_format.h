@@ -137,6 +137,191 @@ struct ModeERecordVolta : ModeERecordRaw
     }
 };
 
+// Basic mode E userdata record in the native HW layout
+struct ModeERecordUserData
+{
+	union
+	{
+		uint32_t data0_3;
+		struct
+		{
+			uint8_t data0;
+			uint8_t data1;
+			uint8_t data2;
+			uint8_t data3;
+		};
+	};
+
+	union
+	{
+		uint32_t meta;
+		struct
+		{
+			uint8_t cnt_d0_2;
+			uint8_t perfmon_id;
+			uint16_t d3_11_pid_sd_tm;
+		};
+	};
+
+	union
+	{
+		uint32_t data4_7;
+		struct
+		{
+			uint8_t data4;
+			uint8_t data5;
+			uint8_t data6;
+			uint8_t data7;
+		};
+	};
+
+	union
+	{
+		uint32_t data8_11;
+		struct
+		{
+			uint8_t data8;
+			uint8_t data9;
+			uint8_t data10;
+			uint8_t data11;
+		};
+	};
+
+	union
+	{
+		uint32_t data12_15;
+		struct
+		{
+			uint8_t data12;
+			uint8_t data13;
+			uint8_t data14;
+			uint8_t data15;
+		};
+	};
+
+	union
+	{
+		uint32_t data16_19;
+		struct
+		{
+			uint8_t data16;
+			uint8_t data17;
+			uint8_t data18;
+			uint8_t data19;
+		};
+	};
+
+	union
+	{
+		uint32_t data20_23;
+		struct
+		{
+			uint8_t data20;
+			uint8_t data21;
+			uint8_t data22;
+			uint8_t data23;
+		};
+	};
+
+	union
+	{
+		uint32_t data24_27;
+		struct
+		{
+			uint8_t data24;
+			uint8_t data25;
+			uint8_t data26;
+			uint8_t data27;
+		};
+	};
+
+	/* The number of bytes in data0-27.*/
+	uint32_t GetCount() const
+	{
+		uint32_t count = cnt_d0_2 & 0x1F;
+        	return count;
+	}
+
+	uint32_t GetPerfmonId() const
+	{
+		uint32_t perfmonId_lsb = perfmon_id;
+		uint32_t perfmonId_msb = (d3_11_pid_sd_tm & 0xe00) >> 1;
+		uint32_t perfmonId = perfmonId_msb | perfmonId_lsb;
+		return perfmonId;
+	}
+
+	uint32_t GetDropped() const
+	{
+		uint32_t dropped_lsb = cnt_d0_2 >> 5U;
+		uint32_t dropped_msb = (d3_11_pid_sd_tm & 0x1FFU) << 3;
+		uint32_t dropped = dropped_msb | dropped_lsb;
+		return dropped;
+	}
+
+	uint32_t GetSD() const
+	{
+		uint8_t sd = (d3_11_pid_sd_tm >> 12U) & 0x1U;
+		return sd;
+	}
+
+	uint32_t GetTM() const
+	{
+		uint8_t sd = (d3_11_pid_sd_tm >> 14U) & 0x1U;
+		return sd;
+	}
+};
+
+/*  MODE E user data packet
+Mode E while in USERDATA mode, see NV_PERF_PMM_CONTROL2_MODEE_USERDATA_ENABLED --
+
+Detailed description : http://p4viewer.nvidia.com/get/hw/doc/gpu/maxwell/maxwell/design/IAS/Maxwell_HWPM_IAS.doc, section 3.4.
+
+        15                     8 7                     0
+        .--+--+--+--+--+--+--+--+--+--+--+--+--+--+-----.
+0x00    |       data1[7:0]      |     data0[7:0]        |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x02    |       data3[7:0]      |     data2[7:0]        |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x04    |    PERFMONID[7:0]     | d[2:0] |   cnt[4:0]   | d[2:0] is lower 3 bits of dropped[13:0] field
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x06    |0 |TM|0 |SD|PI[10:8] |     dropped[11:3]       | PI is upper bits of PERFMONID
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x08    |        data5[7:0]     |     data4[7:0]        |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x0A    |        data7[7:0]     |     data6[7:0]        |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x0C    |        data9[7:0]     |     data8[7:0]        |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x0E    |        data11[7:0]    |     data10[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x10    |        data13[7:0]    |     data12[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x12    |        data15[7:0]    |     data14[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x14    |        data17[7:0]    |     data16[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x16    |        data19[7:0]    |     data18[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x18    |        data21[7:0]    |     data20[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x1A    |        data23[7:0]    |     data22[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x1C    |        data25[7:0]    |     data24[7:0]       |
+        +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0x1E    |        data27[7:0]    |     data26[7:0]       |
+        `--+--+--+--+--+--+--+--+--+--+--+--+--+--+-----'
+
+dropped[11:0] is the number of dropped bytes due to backpressure after this record.
+  There is no counting of bytes dropped before this record.  The only time we drop
+  bytes before a record is in the interval between
+  - PM trigger start, AND
+  - First byte of packet (userdata_start)
+cnt[4:0] is the number of valid bytes populated in this record.
+PERFMONID(lsb) (PI= PERFMONID msb) DS has the same meaning as mode C/E records.
+TM is a field spcific only to UserData mode, indicating a missed perf
+  trigger. TM is not context switched and is reset to 0 
+*/
+
 // =============================================================================
 // Mode C Record
 // =============================================================================

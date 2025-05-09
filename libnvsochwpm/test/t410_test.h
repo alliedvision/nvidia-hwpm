@@ -48,7 +48,8 @@ protected:
 		enum Mode {
 			MODE_B,
 			MODE_C,
-			MODE_E
+			MODE_E,
+			MODE_E_USERDATA
 		};
 
 		PmmConfigurationParams()
@@ -97,7 +98,11 @@ protected:
 	void TeardownPma(nv_soc_hwpm_session session);
 	void TeardownPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPerfmux(nv_soc_hwpm_session session);
-	void IssuePmaTrigger(nv_soc_hwpm_session session);
+	void IssuePmaTrigger(
+		nv_soc_hwpm_session session,
+		bool halt_before_trigger = false,
+		bool halt_after_trigger = false,
+		uint32_t delay_after_trigger = 0);
 	void HarvestCounters(
 		nv_soc_hwpm_session session,
 		const PmmConfigurationParams &params,
@@ -106,6 +111,7 @@ protected:
 	void InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationParams &params);
 	void ModeBTest(nv_soc_hwpm_resource resource);
 	void ModeETest(nv_soc_hwpm_resource resource);
+	void ModeETestUserData(nv_soc_hwpm_resource resource);
 
 	nv_soc_hwpm_device t410_dev[T410_MAX_SOCKETS];
 	uint32_t t410_dev_count;

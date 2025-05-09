@@ -26,6 +26,7 @@ enum RecordFormatType
 {
     ModeC,
     ModeE,
+    ModeE_userdata,
 };
 
 // realtime parse-flush
@@ -43,7 +44,7 @@ class SocModeEBuffer
 		void ResetParsedData();
 		void ParseRecords();
 		void PrintRecord(PmRecordSocCommonPrefix* record, bool is_pma_record,
-			bool is_mode_c = false);
+			enum RecordFormatType format_type);
 
 		nv_soc_hwpm_api_table m_api_table;
 		nv_soc_hwpm_session m_session;

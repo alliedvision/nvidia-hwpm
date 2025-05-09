@@ -191,7 +191,7 @@ void SocModeEBuffer::ParseRecords()
 					if (!p_mode_c_record->GetTimestamp()) {
 						m_zero_timestamp_detected = true;
 					}
-				} else {
+				} else if (m_record_format == RecordFormatType::ModeE) {
 					auto p_mode_e_record = (ModeERecordVolta*)p_record;
 					uint16_t sample_count = p_mode_e_record->GetSampleCount();
 					bool delayed_sampled = p_mode_e_record->IsDelayedSampled();
@@ -254,6 +254,9 @@ void SocModeEBuffer::ParseRecords()
 					if (!p_mode_e_record->GetTimestamp()) {
 						m_zero_timestamp_detected = true;
 					}
+				} else if (m_record_format == RecordFormatType::ModeE_userdata) {
+					m_num_valid_records++;
+					m_perfmon_id_trigger_count_map.emplace(record_perfmon_id, 0);
 				}
 			} else {
 				// Reach the end of valid records
@@ -378,9 +381,16 @@ uint64_t SocModeEBuffer::GetLastPmaTimestamp()
 	return m_last_pma_timestamp;
 }
 
-void SocModeEBuffer::PrintRecord(PmRecordSocCommonPrefix* record, bool is_pma_record, bool is_mode_c)
+void SocModeEBuffer::PrintRecord(
+	PmRecordSocCommonPrefix* record,
+	bool is_pma_record,
+	enum RecordFormatType format_type)
 {
 	char str_buffer[256];
+
+	bool is_mode_c = format_type == RecordFormatType::ModeC;
+	bool is_mode_e = format_type == RecordFormatType::ModeE;
+	bool is_mode_e_userdata = format_type == RecordFormatType::ModeE_userdata;
 
 	if (is_pma_record)
 	{
@@ -418,7 +428,7 @@ void SocModeEBuffer::PrintRecord(PmRecordSocCommonPrefix* record, bool is_pma_re
 			p_mode_c_record->counter[11]
 		);
 	}
-	else
+	else if (is_mode_e)
 	{
 		auto p_mode_e_record = (ModeERecordVolta*)(record);
 		sprintf(str_buffer,
@@ -433,6 +443,25 @@ void SocModeEBuffer::PrintRecord(PmRecordSocCommonPrefix* record, bool is_pma_re
 			p_mode_e_record->sampl,
 			p_mode_e_record->zero2,
 			p_mode_e_record->zero3
+		);
+	}
+	else if (is_mode_e_userdata)
+	{
+		auto p_mode_e_userdata_record = (ModeERecordUserData*)(record);
+		sprintf(str_buffer,
+			"[MODEE_UD] PERFMON %3x, COUNT %4u, DROPPED %d, SD %d, TM %d, DATA 0-3 0x%x, DATA 4-7 0x%x, DATA 8-11 0x%x, DATA 12-15 0x%x, DATA 16-19 0x%x, DATA 20-23 0x%x, DATA 24-27 0x%x\n",
+			p_mode_e_userdata_record->GetPerfmonId(),
+			p_mode_e_userdata_record->GetCount(),
+			p_mode_e_userdata_record->GetDropped(),
+			p_mode_e_userdata_record->GetSD(),
+			p_mode_e_userdata_record->GetTM(),
+			p_mode_e_userdata_record->data0_3,
+			p_mode_e_userdata_record->data4_7,
+			p_mode_e_userdata_record->data8_11,
+			p_mode_e_userdata_record->data12_15,
+			p_mode_e_userdata_record->data16_19,
+			p_mode_e_userdata_record->data20_23,
+			p_mode_e_userdata_record->data24_27
 		);
 	}
 	std::cerr << str_buffer;
@@ -482,7 +511,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Incomplete PMA record: ptimer == 0\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ true);
+                            PrintRecord(
+				p_record_common_prefix,
+				/*is_pma_record*/ true,
+				RecordFormatType::ModeC);
                         }
                         break;
                     }
@@ -493,7 +525,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Incomplete PMA record: totalTrigCnt == 0\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ true);
+                            PrintRecord(
+				p_record_common_prefix,
+				/*is_pma_record*/ true,
+				RecordFormatType::ModeC);
                         }
                         break;
                     }
@@ -503,7 +538,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Malformed PMA record: ptimer " << curr_ptimer << " <= lastPtimer " << last_pma_timestamp << "\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ true);
+                            PrintRecord(
+				p_record_common_prefix,
+				/*is_pma_record*/ true,
+				RecordFormatType::ModeC);
                         }
                         break;
                     }
@@ -513,7 +551,7 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Malformed PMA record: totalTrigCnt " << (int)total_trig_cnt << " <= lastTriggerCount " << (int)last_trigger_count << "\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ true);
+                            PrintRecord(p_record_common_prefix, /*is_pma_record*/true, RecordFormatType::ModeC);
                         }
                         break;
                     }
@@ -536,7 +574,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Incomplete ModeE record: timestamp == 0\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ false);
+                            PrintRecord(
+				p_record_common_prefix,
+				/*is_pma_record*/ false,
+				m_record_format);
                         }
                         break;
                     }
@@ -547,7 +588,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                         if (verbose)
                         {
                             std::cerr << "Incomplete ModeE record: totalTriggerCount == 0\n";
-                            PrintRecord(p_record_common_prefix, /*is_pma_record*/ false);
+                            PrintRecord(
+				p_record_common_prefix,
+				/*is_pma_record*/ false,
+				m_record_format);
                         }
                         break;
                     }
@@ -560,7 +604,10 @@ bool SocModeEBuffer::RealtimeParseFlush(SocRealtimeParseFlushData& stats, bool v
                             if (verbose)
                             {
                                 std::cerr << "Malformed ModeE record: totalTriggerCount " << (int)total_trigger_count << " <= lastTriggerCount " << (int)map_entry->second << "\n";
-                                PrintRecord(p_record_common_prefix, /*is_pma_record*/ false);
+                                PrintRecord(
+					p_record_common_prefix,
+					/*is_pma_record*/ false,
+					m_record_format);
                             }
                             break;
                         }
@@ -678,10 +725,15 @@ void SocModeEBuffer::PrintRecords(const size_t num_records_to_print) const
         printf("No.  PerfmonID Elaps_cyc DS SmpCt  C0   C1   C2   C3   C4   C5   C6   C7   C8   C9  C10  C11 \n");
         printf("---- --------- --------- -- ----- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----\n");
     }
-    else
-    {    
+    else if (m_record_format == RecordFormatType::ModeE)
+    {
         printf("No.  PerfmonID Elaps_cyc DS SmpCt Count0  Count1  Count2  Count3    TrgB     TrgA  \n");
         printf("---- --------- --------- -- ----- ------- ------- ------- ------- -------- --------\n");
+    }
+    else if (m_record_format == RecordFormatType::ModeE_userdata)
+    {
+	printf("No.  PerfmonID Count Dropped SD   TM DATA0-3 DATA4-7 DATA8-11 DATA12-15 DATA16-19 DATA20-23 DATA24-27\n");
+        printf("---- --------- ----- ------- ---- -- ------- ------- -------- --------- --------- --------- ---------\n");
     }
 
     uint32_t record_idx_lo = m_unread_head;
@@ -727,7 +779,7 @@ void SocModeEBuffer::PrintRecords(const size_t num_records_to_print) const
                         p_mode_c_record->counter[11]
                     );
                 }
-                else
+                else if (m_record_format == RecordFormatType::ModeE)
                 {
                     auto p_mode_e_record = (ModeERecordVolta*)p_record;
                     uint64_t timestamp = p_mode_e_record->GetTimestamp();
@@ -747,6 +799,26 @@ void SocModeEBuffer::PrintRecords(const size_t num_records_to_print) const
                         p_mode_e_record->sampl,
                         p_mode_e_record->zero2,
                         p_mode_e_record->zero3
+                    );
+                }
+                else if (m_record_format == RecordFormatType::ModeE_userdata)
+                {
+                    auto p_mode_e_userdata_record = (ModeERecordUserData*)(p_record);
+                    sprintf(str_buffer,
+                        "%4d %9x %5d %7d %4d %2d %7x %7x %8x %9x %9x %9x %9x\n",
+			ii,
+                        p_mode_e_userdata_record->GetPerfmonId(),
+                        p_mode_e_userdata_record->GetCount(),
+                        p_mode_e_userdata_record->GetDropped(),
+                        p_mode_e_userdata_record->GetSD(),
+                        p_mode_e_userdata_record->GetTM(),
+                        p_mode_e_userdata_record->data0_3,
+                        p_mode_e_userdata_record->data4_7,
+                        p_mode_e_userdata_record->data8_11,
+                        p_mode_e_userdata_record->data12_15,
+                        p_mode_e_userdata_record->data16_19,
+                        p_mode_e_userdata_record->data20_23,
+                        p_mode_e_userdata_record->data24_27
                     );
                 }
                 record_strings.emplace_back(std::string(str_buffer));
@@ -799,11 +871,13 @@ void SocModeEBuffer::DumpBuffer()
     // Print the first record
     if (perfmon_id == PMA_PerfmonId)
     {
-        PrintRecord(p_record_common_prefix, true /* isPmaRecord */);
+        PrintRecord(
+		p_record_common_prefix, true /* isPmaRecord */, m_record_format);
     }
     else
     {
-        PrintRecord(p_record_common_prefix, false /* isPmaRecord */, m_record_format == RecordFormatType::ModeC);
+        PrintRecord(
+		p_record_common_prefix, false /* isPmaRecord */, m_record_format);
     }
 
     // Iterate through remaining records
@@ -833,11 +907,13 @@ void SocModeEBuffer::DumpBuffer()
             auto perfmon_id = p_record_common_prefix->GetPerfmonId();
             if (perfmon_id == PMA_PerfmonId)
             {
-                PrintRecord(p_record_common_prefix, true /* isPmaRecord */);
+                PrintRecord(
+			p_record_common_prefix, true /* isPmaRecord */, m_record_format);
             }
             else
             {
-                PrintRecord(p_record_common_prefix, false /* isPmaRecord */, m_record_format == RecordFormatType::ModeC);
+                PrintRecord(
+			p_record_common_prefix, false /* isPmaRecord */, m_record_format);
             }
         }
     }

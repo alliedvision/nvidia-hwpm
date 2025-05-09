@@ -1257,12 +1257,18 @@ void T410Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 		NV_PERF_PMMSYS_SYS0_SIGVAL_PMA_TRIGGER,
 		0xFFFFFFFF);
 
-	// Enable GCM, local triggering.
-	uint32_t control_b =
+	// Enable GCM, local triggering, user data mode.
+	uint32_t control_d = 0;
+	uint32_t control_b = 0;
+	if (params.mode != PmmConfigurationParams::Mode::MODE_E_USERDATA) {
+		control_b =
 		REG32_WR(
 			0,
 			NV_PERF_PMMSYS_CONTROLB_COUNTING_MODE,
 			NV_PERF_PMMSYS_CONTROLB_COUNTING_MODE_GENERAL);
+	}
+	printf("counting mode control_b: %x\n", control_b);
+
 	if (params.enable_local_triggering)
 	{
 		control_b |= REG32_WR(
@@ -1274,7 +1280,20 @@ void T410Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 			NV_PERF_PMMSYS_CONTROLB_PMLOCALTRIGB_EN,
 			NV_PERF_PMMSYS_CONTROLB_PMLOCALTRIGB_EN_ENABLE);
 	}
+	if (params.mode == PmmConfigurationParams::Mode::MODE_E_USERDATA)
+	{
+		control_b |= REG32_WR(
+			0,
+			NV_PERF_PMMSYS_CONTROLB_MODEE_USERDATA,
+			NV_PERF_PMMSYS_CONTROLB_MODEE_USERDATA_ENABLED);
+
+		control_d |= REG32_WR(
+			0,
+			NV_PERF_PMMSYS_CONTROLD_MODEE_USERDATA_WINDOW_MODE,
+			NV_PERF_PMMSYS_CONTROLD_MODEE_USERDATA_WINDOW_MODE_DISABLED);
+	}
 	RegOpWrite32(session, PM_ADDR(PMMSYS, CONTROLB, perfmon_base), control_b, 0xFFFFFFFF);
+	RegOpWrite32(session, PM_ADDR(PMMSYS, CONTROLD, perfmon_base), control_d, 0xFFFFFFFF);
 
 	// Set perfmon id
 	const uint32_t soc_perfmon_prefix = 0x700;  // TODO: Temporary identifier
@@ -1358,6 +1377,8 @@ void T410Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 		RegOpWrite32(session, PM_ADDR(PMMSYS, CNTR1_INC, perfmon_base), counter_inc, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, CNTR2_INC, perfmon_base), counter_inc, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, CNTR3_INC, perfmon_base), counter_inc, 0xFFFFFFFF);
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E_USERDATA) {
+		mode = NV_PERF_PMMSYS_CONTROL_MODE_E;
 	}
 
 	// Finally, program CONTROL register
@@ -1376,7 +1397,7 @@ void T410Tests::SetupPmm(nv_soc_hwpm_session session, const PmmConfigurationPara
 	RegOpWrite32(session, PM_ADDR(PMMSYS, CONTROL, perfmon_base), pmm_control, 0xFFFFFFFF);
 }
 
-void T410Tests::SetupWatchbusPma(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
+void T410Tests::SetupWatchbusPma(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
 	const uint64_t perfmon_base = params.perfmon_base;
 
@@ -1468,7 +1489,7 @@ TEST_F(T410Tests, SessionRegOpsNvtherm)
 	}
 }
 
-void T410Tests::SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
+void T410Tests::SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
 	const uint64_t perfmon_base = params.perfmon_base;
 
@@ -1508,6 +1529,88 @@ void T410Tests::SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfi
 		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E_USERDATA) {
+		// PRIVATE SIGNAL (see mode B).
+		// ACTUAL SIGNAL.
+		// SIGNAL(name/width/domain/instancetype):--/nvtherm0.user_data_group/11/nvtherm0/tjv/
+		// ROUTE(index/registers):--/0/3/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_THERM_PM_CTRL_ENABLE/279275970299752/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_THERM_PM_SELECT_FLEX_A/279275970299752/0/63/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_THERM_PM_SELECT_FLEX_B/279275970299752/0/16128/0/0/1/none/
+		const char *use_actual_signal = getenv("USE_ACTUAL_SIGNAL");
+		printf("USE_ACTUAL_SIGNAL: %s\n", (use_actual_signal ? use_actual_signal : "0"));
+		bool use_static_signal = (!use_actual_signal || strcmp(use_actual_signal, "0") == 0);
+
+		// Need to use the _SC (self clear data) according to Nathan/Alex
+		uint32_t mux_sel = (use_static_signal) ? 0x5 : 0x1;
+		const char *use_guide = getenv("USE_GUIDE");
+		printf("USE_GUIDE: %s\n", (use_guide ? use_guide : "0"));
+		if (use_guide && strcmp(use_guide, "1") == 0)
+			mux_sel = (use_static_signal) ? 0x4 : 0x0;
+		const uint32_t channel_perfmux_sel = 0
+			| REG32_WR(
+				0,
+				NV_HWPM_GLOBAL_0_THERM_PM_SELECT_FLEX_A,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_HWPM_GLOBAL_0_THERM_PM_CTRL_ENABLE,
+				NV_HWPM_GLOBAL_0_THERM_PM_CTRL_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_THERM_PERFMUX, channel_perfmux_sel, 0xFFFFFFFF);
+
+		if (use_static_signal) {
+			printf("Setup userdata mode, capture '5' from 5555.\n");
+			RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF); // '5' from 5555
+			RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF); // '5' from 5555
+
+			// Force start and valid bit to true.
+			printf("Force start and valid bit to true.\n");
+			RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x00010001, 0xFFFFFFFF);
+		} else {
+			const char *capture_valid = getenv("CAPTURE_VALID");
+			bool capture_valid_bit = (capture_valid && strcmp(capture_valid, "1") == 0);
+			if (!capture_valid_bit) {
+				printf("Capture nvtherm debug data [7:0]\n");
+				// From Nathan:
+				// userdata_data_d                                   (user_data_group[7:0])                             //|> w
+				// ,.userdata_flush_d                                  (user_data_group[10])                              //|> w
+				// ,.userdata_start_d                                  (user_data_group[8])                               //|> w
+				// ,.userdata_valid_d                                  (user_data_group[9])                               //|> w
+				// );
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF); // user data signal[3:0]
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF); // user data signal[7:4]
+			} else {
+				printf("Capture nvtherm debug data [10:8]\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x201F1E, 0xFFFFFFFF); // user data signal[3:0]
+			}
+
+			const char *use_actual_start_valid = getenv("USE_ACTUAL_START_VALID");
+			printf("USE_ACTUAL_START_VALID: %s\n", (use_actual_start_valid ? use_actual_start_valid : "0"));
+			if (!use_actual_start_valid || strcmp(use_actual_start_valid, "0") == 0) {
+				// Force start and valid bit to true.
+				printf("Force start and valid bit to true.\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x00010001, 0xFFFFFFFF);
+			} else {
+				// Use actual start and valid bit.
+				// Userdata comes in over watchbus --
+				//     userdata[7:4]  = trig1_sel[3:0]
+				//     userdata[3:0]  = trig0_sel[3:0]
+				//     userdata_start = event_sel[2]
+				//     userdata_flush = event_sel[1]
+				//     userdata_vld   = event_sel[0]
+
+				// From Nathan:
+				// userdata_data_d                                   (user_data_group[7:0])                             //|> w
+				// ,.userdata_flush_d                                  (user_data_group[10])                              //|> w
+				// ,.userdata_start_d                                  (user_data_group[8])                               //|> w
+				// ,.userdata_valid_d                                  (user_data_group[9])                               //|> w
+				// );
+				printf("Use actual start and valid bit.\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x001E201F, 0xFFFFFFFF);
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_OP, perfmon_base), 0xFFFF, 0xFFFFFFFF);
+			}
+		}
 	}
 }
 
@@ -1565,7 +1668,7 @@ TEST_F(T410Tests, SessionRegOpsCsnMbn)
 	}
 }
 
-void T410Tests::SetupWatchbusCsnMbn(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
+void T410Tests::SetupWatchbusCsnMbn(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
 	const uint64_t perfmon_base = params.perfmon_base;
 
@@ -1663,7 +1766,7 @@ TEST_F(T410Tests, SessionRegOpsIpmu)
 	}
 }
 
-void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigurationParams &params)
+void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
 	const uint64_t perfmon_base = params.perfmon_base;
 
@@ -1673,12 +1776,12 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 		return;
 	} else if (params.mode == PmmConfigurationParams::Mode::MODE_B) {
 		// Core-0 IPMU perfmux.
+		// Source: //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		// SIGNAL(name/width/domain/instancetype):--/ucfcsnh0p0.ipmu02pm_static_pattern_a4a4_16/16/ucfcsnh0p0/tjv/
 		// ROUTE(index/registers):--/0/2/
 		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
 		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_EN/4718640/256/256/0/0/1/none/
 		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_SEL/4718640/1/255/0/0/1/none/
-		// Source: //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		const uint32_t mux_sel = 0x1;
 		const uint32_t channel_perfmux_sel = 0
 			| REG32_WR(
@@ -1703,6 +1806,74 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
 		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E_USERDATA) {
+		// PRIVATE SIGNAL (see mode B).
+		// ACTUAL SIGNAL.
+		// SIGNAL(name/width/domain/instancetype):--/ucfcsnh0p0.ipmu02pm_debug_event/16/ucfcsnh0p0/tjv/
+		// ROUTE(index/registers):--/0/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_EN/4718640/256/256/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_SEL/4718640/2/255/0/0/1/none/
+		const char *use_actual_signal = getenv("USE_ACTUAL_SIGNAL");
+		printf("USE_ACTUAL_SIGNAL: %s\n", (use_actual_signal ? use_actual_signal : "0"));
+		bool use_static_signal = (!use_actual_signal || strcmp(use_actual_signal, "0") == 0);
+		const uint32_t mux_sel = (use_static_signal) ? 0x1 : 0x2;
+		const uint32_t channel_perfmux_sel = 0
+			| REG32_WR(
+				0,
+				NV_HWPM_CORE_0_IPMU_MUX_SEL,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_HWPM_CORE_0_IPMU_ENABLE,
+				NV_HWPM_CORE_0_IPMU_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_HWPM_CORE_0_IPMU_PERFMUX, channel_perfmux_sel, 0xFFFFFFFF);
+
+		if (use_static_signal) {
+			printf("4/29 Setup userdata mode, capture 'a' from a4a4.\n");
+			RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF); // '4' from a4a4
+			RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF); // 'a' from a4a4
+
+			// Force start and valid bit to true.
+			printf("Force start and valid bit to true.\n");
+			RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x00010001, 0xFFFFFFFF);
+		} else {
+			const char *capture_valid = getenv("CAPTURE_VALID");
+			bool capture_valid_bit = (capture_valid && strcmp(capture_valid, "1") == 0);
+			if (!capture_valid_bit) {
+				printf("Capture ipmu debug data [10:3]\n");
+				// Data layout: https://p4hw-swarm.nvidia.com/files/hw/doc/soc/tb50x/sysarch/iPMU/iPMU%20IAS.docx#view
+				// valid: bit 0
+				// start: bit 1
+				// flush: bit 2
+				// data: bit 3 to 10
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x1C1B1A19, 0xFFFFFFFF); // user data signal[3:0]
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x201F1E1D, 0xFFFFFFFF); // user data signal[7:4]
+			} else {
+				printf("Capture ipmu debug data [7:0]\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF); // user data signal[3:0]
+				RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF); // user data signal[7:4]
+			}
+
+			const char *use_actual_start_valid = getenv("USE_ACTUAL_START_VALID");
+			printf("USE_ACTUAL_START_VALID: %s\n", (use_actual_start_valid ? use_actual_start_valid : "0"));
+			if (!use_actual_start_valid || strcmp(use_actual_start_valid, "0") == 0) {
+				// Force start and valid bit to true.
+				printf("Force start and valid bit to true.\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x00010001, 0xFFFFFFFF);
+			} else {
+				// Use actual start and valid bit.
+				// Userdata comes in over watchbus --
+				//     userdata[7:4]  = trig1_sel[3:0]
+				//     userdata[3:0]  = trig0_sel[3:0]
+				//     userdata_start = event_sel[2]
+				//     userdata_flush = event_sel[1]
+				//     userdata_vld   = event_sel[0]
+				printf("Use actual start and valid bit.\n");
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x00171816, 0xFFFFFFFF);
+				RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_OP, perfmon_base), 0xFFFF, 0xFFFFFFFF);
+			}
+		}
 	}
 }
 
@@ -1721,7 +1892,7 @@ void T410Tests::TeardownPma(nv_soc_hwpm_session session)
 }
 
 void T410Tests::TeardownPmm(
-	nv_soc_hwpm_session session, const PmmConfigurationParams &params)
+	nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
 	const uint64_t perfmon_base = params.perfmon_base;
 
@@ -1737,8 +1908,17 @@ void T410Tests::TeardownPerfmux(nv_soc_hwpm_session session)
 	RegOpWrite32(session, NV_PERF_PMASYS_PERFMUX_CONFIG_SECURE, 0, 0xFFFFFFFF);
 }
 
-void T410Tests::IssuePmaTrigger(nv_soc_hwpm_session session)
+void T410Tests::IssuePmaTrigger(
+	nv_soc_hwpm_session session,
+	bool halt_before_trigger,
+	bool halt_after_trigger,
+	uint32_t delay_after_trigger)
 {
+	if (halt_before_trigger) {
+		printf("Halting before trigger. Press enter to continue\n");
+		getchar();
+	}
+
 	// This will issue PMA trigger to the perfmon.
 	// The perfmon then will snapshot the counter value into shadow regiters
 	uint32_t pma_global_trigger = 0
@@ -1747,6 +1927,15 @@ void T410Tests::IssuePmaTrigger(nv_soc_hwpm_session session)
 			NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONTROL_GLOBAL_MANUAL_START,
 			NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONTROL_GLOBAL_MANUAL_START_PULSE);
 	RegOpWrite32(session, NV_PERF_PMASYS_COMMAND_SLICE_TRIGGER_CONTROL(0), pma_global_trigger, 0xFFFFFFFF);
+
+	if (halt_after_trigger) {
+		printf("Halting after trigger. Press enter to continue\n");
+		getchar();
+	}
+
+	if (delay_after_trigger) {
+		usleep(delay_after_trigger);
+	}
 }
 
 void T410Tests::HarvestCounters(
@@ -1957,8 +2146,25 @@ void T410Tests::ModeETest(nv_soc_hwpm_resource resource)
 	nv_soc_hwpm_session session;
 	nv_soc_hwpm_session_attribute session_attr;
 	uint32_t i, num_mem_bytes, num_triggers, num_perfmons;
+	const char *var_halt_before_trigger, *var_halt_after_trigger,
+		*var_delay_after_trigger;
+	bool halt_before_trigger, halt_after_trigger;
+	uint32_t delay_after_trigger;
 
 	num_perfmons = 1;
+
+	halt_before_trigger = false;
+	halt_after_trigger = false;
+	delay_after_trigger = 0;
+	var_halt_before_trigger = getenv("HALT_BEFORE_TRIGGER");
+	if (var_halt_before_trigger && strcmp(var_halt_before_trigger, "1") == 0)
+		halt_before_trigger = true;
+	var_halt_after_trigger = getenv("HALT_AFTER_TRIGGER");
+	if (var_halt_after_trigger && strcmp(var_halt_after_trigger, "1") == 0)
+		halt_after_trigger = true;
+	var_delay_after_trigger = getenv("DELAY_AFTER_TRIGGER");
+	if (var_delay_after_trigger)
+		delay_after_trigger = atoi(var_delay_after_trigger);
 
 	GetDevices();
 
@@ -2048,10 +2254,21 @@ void T410Tests::ModeETest(nv_soc_hwpm_resource resource)
 
 		printf("Watchbus setup done\n");
 
-		num_triggers = 5;
+		const char *halt_to_override = getenv("HALT_TO_OVERRIDE");
+		if (halt_to_override && strcmp(halt_to_override, "1") == 0) {
+			printf("Halt to override programming before trigger\n");
+			getchar();
+		}
+
+		const char *var_num_triggers = getenv("NUM_TRIGGERS");
+		num_triggers = (var_num_triggers) ? atoi(var_num_triggers) : 5;
 		usleep(1000000); // 1 second
 		for (i = 0; i < num_triggers; i++) {
-			IssuePmaTrigger(session);
+			IssuePmaTrigger(
+				session,
+				halt_before_trigger,
+				halt_after_trigger,
+				delay_after_trigger);
 		}
 		usleep(100000); // 100 milisecond
 
@@ -2116,4 +2333,151 @@ TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingCsnMbn)
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu)
 {
 	ModeETest(NV_SOC_HWPM_RESOURCE_CPU);
+}
+
+void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
+{
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_device_attribute dev_attr;
+	tegra_soc_hwpm_platform platform;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_session_attribute session_attr;
+	uint32_t i, num_mem_bytes;
+
+	printf("ModeETestUserData\n");
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		dev_attr = NV_SOC_HWPM_DEVICE_ATTRIBUTE_SOC_PLATFORM;
+		ASSERT_EQ(0,
+			api_table.nv_soc_hwpm_device_get_info_fn(
+				dev, dev_attr, sizeof(platform), &platform));
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve all resources.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_all_resources_fn(session));
+
+		// Allocate PMA buffers.
+		nv_soc_hwpm_pma_buffer_params record_buffer_params = {};
+		record_buffer_params.size =
+			((platform == TEGRA_SOC_HWPM_PLATFORM_SILICON) ? 100 : 32) * 1024 * 1024;
+		ASSERT_EQ(0,
+			api_table.nv_soc_hwpm_session_alloc_pma_fn(
+				session, &record_buffer_params));
+
+		session_attr = NV_SOC_HWPM_SESSION_ATTRIBUTE_PMA_RECORD_BUFFER_PMA_VA;
+		uint64_t pma_record_buffer_pma_va;
+		ASSERT_EQ(0,
+			api_table.nv_soc_hwpm_session_get_info_fn(
+				session,
+				session_attr,
+				sizeof(pma_record_buffer_pma_va),
+				&pma_record_buffer_pma_va));
+		ASSERT_NE(0U, pma_record_buffer_pma_va);
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		printf("Session started\n");
+
+		// Flush leftover records at the beginning of each subtest
+		nv_soc_hwpm_pma_channel_state_params set_get_state_param = {};
+		set_get_state_param.in_mem_bump = 0;
+		set_get_state_param.in_stream_mem_bytes = 1;
+		set_get_state_param.in_check_overflow = 1;
+		set_get_state_param.in_read_mem_head = 1;
+		ASSERT_EQ(0,
+		api_table.nv_soc_hwpm_session_set_get_pma_state_fn(
+			session, &set_get_state_param));
+		SocModeEBuffer soc_mode_e_buffer(api_table, session);
+		soc_mode_e_buffer.Initialize();
+		soc_mode_e_buffer.SetRecordFormat(RecordFormatType::ModeE_userdata);
+		num_mem_bytes = soc_mode_e_buffer.GetMemBytes();
+		soc_mode_e_buffer.FlushRecordsInBuffer(num_mem_bytes);
+
+		PmaConfigurationParams pma_params;
+		pma_params.enable_streaming = true;
+		SetupPma(session, pma_params);
+
+		printf("PMA setup done\n");
+
+		PmmConfigurationParams pmm_params;
+		InitPmmParams(resource, pmm_params);
+		pmm_params.mode = PmmConfigurationParams::Mode::MODE_E_USERDATA;
+		SetupPmm(session, pmm_params);
+
+		printf("PMM setup done\n");
+		switch (resource) {
+		case NV_SOC_HWPM_RESOURCE_NVTHERM:
+			SetupWatchbusNvtherm(session, pmm_params);
+			break;
+		case NV_SOC_HWPM_RESOURCE_CPU:
+			SetupWatchbusIpmu(session, pmm_params);
+			break;
+		default:
+			ASSERT_TRUE(false);
+			break;
+		}
+
+		printf("Watchbus setup done\n");
+
+		const char *halt_to_override = getenv("HALT_TO_OVERRIDE");
+		if (halt_to_override && strcmp(halt_to_override, "1") == 0) {
+			printf("Halt to override programming before trigger\n");
+			getchar();
+		}
+
+		usleep(100000); // 100 milisecond
+
+		TeardownPerfmux(session);
+		printf("Perfmux teardown done\n");
+
+		TeardownPmm(session, pmm_params);
+		printf("PMM teardown done\n");
+
+		TeardownPma(session);
+		printf("PMA teardown done\n");
+
+		printf("num_valid_records: %u\n", soc_mode_e_buffer.GetNumValidRecords());
+		printf("num_unique_perfmon_id: %u\n", soc_mode_e_buffer.GetNumUniquePerfmonID());
+
+		// Stream & verify membytes
+		set_get_state_param.in_mem_bump = 0;
+		set_get_state_param.in_stream_mem_bytes = 1;
+		set_get_state_param.in_check_overflow = 1;
+		set_get_state_param.in_read_mem_head = 1;
+		ASSERT_EQ(0,
+		api_table.nv_soc_hwpm_session_set_get_pma_state_fn(
+			session, &set_get_state_param));
+		num_mem_bytes = soc_mode_e_buffer.GetMemBytes();
+		printf("num_mem_bytes: %u\n", num_mem_bytes);
+		EXPECT_GT(num_mem_bytes, 0U);
+		EXPECT_EQ(num_mem_bytes,
+			soc_mode_e_buffer.GetNumValidRecords() * sizeof(ModeERecordRaw));
+
+		soc_mode_e_buffer.PrintRecords(100);
+
+		printf("================ BEGIN BUFFER DUMP ================\n");
+		soc_mode_e_buffer.DumpBuffer();
+		printf("================ END BUFFER DUMP ================\n");
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEUserDataNvtherm)
+{
+	ModeETestUserData(NV_SOC_HWPM_RESOURCE_NVTHERM);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEUserDataIpmu)
+{
+	ModeETestUserData(NV_SOC_HWPM_RESOURCE_CPU);
 }
