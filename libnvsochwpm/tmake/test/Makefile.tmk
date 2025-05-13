@@ -18,24 +18,33 @@
 #
 ###############################################################################
 
-ifdef NV_COMPONENT_FLAG_NVTEST_EXECUTABLE_SECTION
+ifdef NV_COMPONENT_FLAG_DYNAMIC_EXECUTABLE_SECTION
 include $(NV_BUILD_START_COMPONENT)
 
 NV_COMPONENT_NAME := nv_soc_hwpm_test
 
-NV_COMPONENT_SOURCES := \
-	nv_soc_hwpm_test.cpp \
-	t241_test.cpp
+_soc_hwpm_dir = ../..
+_test_hwpm_dir = $(_soc_hwpm_dir)/test
 
-_soc_hwpm_dir = ../../
+NV_COMPONENT_SOURCES := \
+	$(NV_SOURCE)/3rdparty/google/googletest/googletest/src/gtest_main.cc \
+	$(_test_hwpm_dir)/nv_soc_hwpm_test.cpp \
+	$(_test_hwpm_dir)/t241_test.cpp \
+	$(_test_hwpm_dir)/t410_test.cpp \
+	$(_test_hwpm_dir)/soc_mode_e_buffer.cpp
 
 NV_COMPONENT_CFLAGS := -DNV_IS_LDK=1 -Wall
 
 NV_COMPONENT_INCLUDES := \
 	$(_common_includes) \
 	$(NV_SOURCE)/3rdparty/google/googletest/googletest/include \
+	$(NV_SOURCE)/3rdparty/google/googletest/googletest \
 	$(NV_SOURCE)/3rdparty/google/googletest/googlemock/include \
-	$$(_soc_hwpm_dir)/include
+	$(NV_SOURCE)/hwinc-private/th500/66838280 \
+	$(NV_SOURCE)/hwinc-private/tb500/84849639 \
+	$(_soc_hwpm_dir) \
+	$(_soc_hwpm_dir)/include \
+	$(_test_hwpm_dir)
 
 NV_COMPONENT_NEEDED_STATIC_INTERFACE_DIRS := \
 	$(NV_SOURCE)/3rdparty/google/googletest/googletest \
@@ -52,5 +61,5 @@ NV_COMPONENT_SYSTEM_SHARED_LIBRARIES := \
 
 NV_COMPONENT_CODE_GENERATION := c++11
 
-include $(NV_BUILD_NVTEST_EXECUTABLE)
+include $(NV_BUILD_DYNAMIC_EXECUTABLE)
 endif

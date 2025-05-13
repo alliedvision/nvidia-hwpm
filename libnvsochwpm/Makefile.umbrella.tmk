@@ -26,7 +26,8 @@
 # Components in this repository
 #
 NV_REPOSITORY_COMPONENTS := \
-	tmake/lib
+	tmake/lib \
+	tmake/test
 # Local Variables:
 # indent-tabs-mode: t
 # tab-width: 8
