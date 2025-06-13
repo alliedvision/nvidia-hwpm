@@ -29,6 +29,17 @@ public:
 	~T410Tests() override;
 
 protected:
+	enum TestIp {
+		TEST_IP_PMA,
+		TEST_IP_NVTHERM,
+		TEST_IP_CSN,
+		TEST_IP_IPMU_CORE_0,
+		TEST_IP_IPMU_CORE_8_2x3, // For Presilicon
+		kTestIpCount
+	};
+
+	static const char* kTestIpName[kTestIpCount];
+
 	struct PmaConfigurationParams {
 		PmaConfigurationParams()
 		{
@@ -71,6 +82,8 @@ protected:
 		bool enable_local_triggering;
 		bool enable_overflow_priming;
 		bool collect_one;
+
+		uint32_t sub_resource;
 	};
 
 	void SetUp(void) override;
@@ -108,10 +121,10 @@ protected:
 		const PmmConfigurationParams &params,
 		const uint32_t sig_val[4]);
 
-	void InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationParams &params);
-	void ModeBTest(nv_soc_hwpm_resource resource);
-	void ModeETest(nv_soc_hwpm_resource resource);
-	void ModeETestUserData(nv_soc_hwpm_resource resource);
+	void InitPmmParams(TestIp ip, PmmConfigurationParams &params);
+	void ModeBTest(TestIp ip);
+	void ModeETest(TestIp ip);
+	void ModeETestUserData(std::vector<TestIp> ips);
 
 	nv_soc_hwpm_device t410_dev[T410_MAX_SOCKETS];
 	uint32_t t410_dev_count;

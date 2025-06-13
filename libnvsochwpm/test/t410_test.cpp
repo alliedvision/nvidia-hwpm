@@ -20,6 +20,16 @@
 #include "ip_names.h"
 #include <unistd.h>
 
+#include <unordered_map>
+
+const char* T410Tests::kTestIpName[T410Tests::kTestIpCount] = {
+		"PMA",
+		"NVTHERM",
+		"CSN",
+		"IPMU Core-0",
+		"IPMU Core-8 2x3 Presilicon",
+	};
+
 T410Tests::T410Tests() : NvSocHwpmTests(), t410_dev_count(0)
 {
 }
@@ -1543,11 +1553,11 @@ void T410Tests::SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfi
 		bool use_static_signal = (!use_actual_signal || strcmp(use_actual_signal, "0") == 0);
 
 		// Need to use the _SC (self clear data) according to Nathan/Alex
-		uint32_t mux_sel = (use_static_signal) ? 0x5 : 0x1;
-		const char *use_guide = getenv("USE_GUIDE");
-		printf("USE_GUIDE: %s\n", (use_guide ? use_guide : "0"));
-		if (use_guide && strcmp(use_guide, "1") == 0)
-			mux_sel = (use_static_signal) ? 0x4 : 0x0;
+		uint32_t mux_sel = (use_static_signal) ? 0x4 : 0x1;
+		const char *use_sc = getenv("USE_SELF_CLEAR");
+		printf("USE_SELF_CLEAR: %s\n", (use_sc ? use_sc : "0"));
+		if (use_sc && strcmp(use_sc, "1") == 0)
+			mux_sel = (use_static_signal) ? 0x5 : 0x0;
 		const uint32_t channel_perfmux_sel = 0
 			| REG32_WR(
 				0,
@@ -1714,6 +1724,7 @@ void T410Tests::SetupWatchbusCsnMbn(nv_soc_hwpm_session session, const PmmConfig
 
 // TODO: remove hardcoded values
 #define NV_HWPM_CORE_0_IPMU_PERFMUX (NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CORE0_CORE_HWPM_BASE + 0x30ULL)
+#define NV_HWPM_CORE_8_IPMU_PERFMUX (NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CORE8_CORE_HWPM_BASE + 0x30ULL)
 #define NV_HWPM_CORE_0_IPMU_ENABLE 8:8
 #define NV_HWPM_CORE_0_IPMU_ENABLE_ENABLE 0x1
 #define NV_HWPM_CORE_0_IPMU_MUX_SEL 7:0
@@ -1768,7 +1779,21 @@ TEST_F(T410Tests, SessionRegOpsIpmu)
 
 void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
 {
+	// Subresource to mux sel mapping.
+	static const std::unordered_map<uint32_t, uint32_t> kIpmuMuxSel = {
+		{ 0, 0x1 }, // core-0
+		{ 8, 0x0 }, // core-8
+	};
+
+	// Subresource to perfmux addr mapping.
+	static const std::unordered_map<uint32_t, uint64_t> kIpmuPerfmuxAddr = {
+		{ 0, NV_HWPM_CORE_0_IPMU_PERFMUX },
+		{ 8, NV_HWPM_CORE_8_IPMU_PERFMUX },
+	};
+
 	const uint64_t perfmon_base = params.perfmon_base;
+	const uint64_t perfmux_addr = kIpmuPerfmuxAddr.at(params.sub_resource);
+	const uint32_t static_sig_mux_sel = kIpmuMuxSel.at(params.sub_resource);
 
 	if (params.mode == PmmConfigurationParams::Mode::MODE_C) {
 		// Not supporting mode C testing for now.
@@ -1782,7 +1807,7 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
 		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_EN/4718640/256/256/0/0/1/none/
 		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_CORE0_IPMU_PERFMUX_CONTROL_PM_SEL/4718640/1/255/0/0/1/none/
-		const uint32_t mux_sel = 0x1;
+		const uint32_t mux_sel = static_sig_mux_sel;
 		const uint32_t channel_perfmux_sel = 0
 			| REG32_WR(
 				0,
@@ -1792,7 +1817,7 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 				0,
 				NV_HWPM_CORE_0_IPMU_ENABLE,
 				NV_HWPM_CORE_0_IPMU_ENABLE_ENABLE);
-		RegOpWrite32(session, NV_HWPM_CORE_0_IPMU_PERFMUX, channel_perfmux_sel, 0xFFFFFFFF);
+		RegOpWrite32(session, perfmux_addr, channel_perfmux_sel, 0xFFFFFFFF);
 
 		// Map 16-bit signals onto reduced watchbus by SEL
 		// See above comment, the start of the signal is targeted to watchbus bit 22.
@@ -1817,7 +1842,7 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 		const char *use_actual_signal = getenv("USE_ACTUAL_SIGNAL");
 		printf("USE_ACTUAL_SIGNAL: %s\n", (use_actual_signal ? use_actual_signal : "0"));
 		bool use_static_signal = (!use_actual_signal || strcmp(use_actual_signal, "0") == 0);
-		const uint32_t mux_sel = (use_static_signal) ? 0x1 : 0x2;
+		const uint32_t mux_sel = (use_static_signal) ? static_sig_mux_sel : 0x2;
 		const uint32_t channel_perfmux_sel = 0
 			| REG32_WR(
 				0,
@@ -1827,7 +1852,7 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 				0,
 				NV_HWPM_CORE_0_IPMU_ENABLE,
 				NV_HWPM_CORE_0_IPMU_ENABLE_ENABLE);
-		RegOpWrite32(session, NV_HWPM_CORE_0_IPMU_PERFMUX, channel_perfmux_sel, 0xFFFFFFFF);
+		RegOpWrite32(session, perfmux_addr, channel_perfmux_sel, 0xFFFFFFFF);
 
 		if (use_static_signal) {
 			printf("4/29 Setup userdata mode, capture 'a' from a4a4.\n");
@@ -1976,10 +2001,10 @@ void T410Tests::HarvestCounters(
 	EXPECT_EQ((uint64_t)sig_val[3] * elapsed, sample);
 }
 
-void T410Tests::InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationParams &params)
+void T410Tests::InitPmmParams(TestIp resource, PmmConfigurationParams &params)
 {
 	switch (resource) {
-	case NV_SOC_HWPM_RESOURCE_PMA:
+	case TEST_IP_PMA:
 		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/pmasys0/perfmon_sys/1/262144/NV_PERF_PMMSYS_/0/
 		// Perfmon domain offset pmasys0
@@ -1987,7 +2012,7 @@ void T410Tests::InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationPar
 		params.perfmon_base = PM_BASE(PMMSYS, ENGINE_SEL, params.perfmon_idx);
 		params.expected_sig_val = { 0xE, 0xE, 0xE, 0xE };
 		break;
-	case NV_SOC_HWPM_RESOURCE_NVTHERM:
+	case TEST_IP_NVTHERM:
 		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/nvtherm0/perfmon_tjv/27264/1048576/NV_PERF_PMMTJV_/-85899345920/
 		// Perfmon domain offset nvtherm0
@@ -1995,7 +2020,7 @@ void T410Tests::InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationPar
 		params.perfmon_base = PM_BASE(PMMTJV, ENGINE_SEL, params.perfmon_idx);
 		params.expected_sig_val = { 0x5, 0x5, 0x5, 0x5 };
 		break;
-	case NV_SOC_HWPM_RESOURCE_CSN:
+	case TEST_IP_CSN:
 		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ucfcsn7p0/perfmon_tjv/146432/2097152/NV_PERF_PMMTJV_/-85899345920/
 		// Perfmon domain offset csn0
@@ -2003,13 +2028,24 @@ void T410Tests::InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationPar
 		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CSN0_CSN_HWPM_PRI0_BASE;
 		params.expected_sig_val = { 0xa, 0x4, 0xa, 0x4 };
 		break;
-	case NV_SOC_HWPM_RESOURCE_CPU:
+	case TEST_IP_IPMU_CORE_0:
 		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
 		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ucfcsnh0p0/perfmon_tjv/158720/2097152/NV_PERF_PMMTJV_/-85899345920/
 		// Perfmon domain offset csnh0
 		params.perfmon_idx = 158720;
 		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CSNH0_CSN_HWPM_PRI0_BASE;
 		params.expected_sig_val = { 0x4, 0xa, 0x4, 0xa };
+		params.sub_resource = 0; // core-0
+		break;
+	case TEST_IP_IPMU_CORE_8_2x3:
+		// In presil 2x3 tile, the second cpu is on Core-8, which is connected to CSN-1 perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ucfcsn8p0/perfmon_tjv/146433/2097152/NV_PERF_PMMTJV_/-85899345920/
+		// Perfmon domain offset csn0
+		params.perfmon_idx = 146433;
+		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CSN1_CSN_HWPM_PRI0_BASE;
+		params.expected_sig_val = { 0xa, 0x4, 0xa, 0x4 };
+		params.sub_resource = 8; // core-8
 		break;
 	default:
 		ASSERT_TRUE(false);
@@ -2019,7 +2055,7 @@ void T410Tests::InitPmmParams(nv_soc_hwpm_resource resource, PmmConfigurationPar
 	printf("Perfmon idx: %x, base: %lx\n", params.perfmon_idx, params.perfmon_base);
 }
 
-void T410Tests::ModeBTest(nv_soc_hwpm_resource resource)
+void T410Tests::ModeBTest(TestIp resource)
 {
 	uint32_t i;
 	nv_soc_hwpm_device dev;
@@ -2072,16 +2108,17 @@ void T410Tests::ModeBTest(nv_soc_hwpm_resource resource)
 		printf("PMM setup done\n");
 
 		switch (resource) {
-		case NV_SOC_HWPM_RESOURCE_PMA:
+		case TEST_IP_PMA:
 			SetupWatchbusPma(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_NVTHERM:
+		case TEST_IP_NVTHERM:
 			SetupWatchbusNvtherm(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_CSN:
+		case TEST_IP_CSN:
 			SetupWatchbusCsnMbn(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_CPU:
+		case TEST_IP_IPMU_CORE_0:
+		case TEST_IP_IPMU_CORE_8_2x3:
 			SetupWatchbusIpmu(session, pmm_params);
 			break;
 		default:
@@ -2120,25 +2157,30 @@ void T410Tests::ModeBTest(nv_soc_hwpm_resource resource)
 
 TEST_F(T410Tests, SessionSignalTestPmaPerfmux)
 {
-	ModeBTest(NV_SOC_HWPM_RESOURCE_PMA);
+	ModeBTest(TEST_IP_PMA);
 }
 
 TEST_F(T410Tests, SessionSignalTestNvthermPerfmux)
 {
-	ModeBTest(NV_SOC_HWPM_RESOURCE_NVTHERM);
+	ModeBTest(TEST_IP_NVTHERM);
 }
 
 TEST_F(T410Tests, SessionSignalTestCsnMbnPerfmux)
 {
-	ModeBTest(NV_SOC_HWPM_RESOURCE_CSN);
+	ModeBTest(TEST_IP_CSN);
 }
 
 TEST_F(T410Tests, SessionSignalTestIpmuPerfmux)
 {
-	ModeBTest(NV_SOC_HWPM_RESOURCE_CPU);
+	ModeBTest(TEST_IP_IPMU_CORE_0);
 }
 
-void T410Tests::ModeETest(nv_soc_hwpm_resource resource)
+TEST_F(T410Tests, SessionSignalTestIpmuCore8_2x3_Perfmux)
+{
+	ModeBTest(TEST_IP_IPMU_CORE_8_2x3);
+}
+
+void T410Tests::ModeETest(TestIp resource)
 {
 	nv_soc_hwpm_device dev;
 	nv_soc_hwpm_device_attribute dev_attr;
@@ -2235,16 +2277,17 @@ void T410Tests::ModeETest(nv_soc_hwpm_resource resource)
 
 		printf("PMM setup done\n");
 		switch (resource) {
-		case NV_SOC_HWPM_RESOURCE_PMA:
+		case TEST_IP_PMA:
 			SetupWatchbusPma(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_NVTHERM:
+		case TEST_IP_NVTHERM:
 			SetupWatchbusNvtherm(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_CSN:
+		case TEST_IP_CSN:
 			SetupWatchbusCsnMbn(session, pmm_params);
 			break;
-		case NV_SOC_HWPM_RESOURCE_CPU:
+		case TEST_IP_IPMU_CORE_0:
+		case TEST_IP_IPMU_CORE_8_2x3:
 			SetupWatchbusIpmu(session, pmm_params);
 			break;
 		default:
@@ -2317,25 +2360,30 @@ void T410Tests::ModeETest(nv_soc_hwpm_resource resource)
 
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingPma)
 {
-	ModeETest(NV_SOC_HWPM_RESOURCE_PMA);
+	ModeETest(TEST_IP_PMA);
 }
 
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingNvtherm)
 {
-	ModeETest(NV_SOC_HWPM_RESOURCE_NVTHERM);
+	ModeETest(TEST_IP_NVTHERM);
 }
 
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingCsnMbn)
 {
-	ModeETest(NV_SOC_HWPM_RESOURCE_CSN);
+	ModeETest(TEST_IP_CSN);
 }
 
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu)
 {
-	ModeETest(NV_SOC_HWPM_RESOURCE_CPU);
+	ModeETest(TEST_IP_IPMU_CORE_0);
 }
 
-void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu_Core8_2x3)
+{
+	ModeETest(TEST_IP_IPMU_CORE_8_2x3);
+}
+
+void T410Tests::ModeETestUserData(std::vector<TestIp> ips)
 {
 	nv_soc_hwpm_device dev;
 	nv_soc_hwpm_device_attribute dev_attr;
@@ -2366,7 +2414,7 @@ void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
 		// Allocate PMA buffers.
 		nv_soc_hwpm_pma_buffer_params record_buffer_params = {};
 		record_buffer_params.size =
-			((platform == TEGRA_SOC_HWPM_PLATFORM_SILICON) ? 100 : 32) * 1024 * 1024;
+			((platform == TEGRA_SOC_HWPM_PLATFORM_SILICON) ? 100 : 1) * 1024 * 1024;
 		ASSERT_EQ(0,
 			api_table.nv_soc_hwpm_session_alloc_pma_fn(
 				session, &record_buffer_params));
@@ -2407,25 +2455,29 @@ void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
 
 		printf("PMA setup done\n");
 
-		PmmConfigurationParams pmm_params;
-		InitPmmParams(resource, pmm_params);
-		pmm_params.mode = PmmConfigurationParams::Mode::MODE_E_USERDATA;
-		SetupPmm(session, pmm_params);
+		std::vector<PmmConfigurationParams> pmm_params(ips.size());
+		for (size_t i = 0; i < ips.size(); i++) {
+			TestIp ip = ips[i];
+			InitPmmParams(ip, pmm_params[i]);
+			pmm_params[i].mode = PmmConfigurationParams::Mode::MODE_E_USERDATA;
+			SetupPmm(session, pmm_params[i]);
 
-		printf("PMM setup done\n");
-		switch (resource) {
-		case NV_SOC_HWPM_RESOURCE_NVTHERM:
-			SetupWatchbusNvtherm(session, pmm_params);
-			break;
-		case NV_SOC_HWPM_RESOURCE_CPU:
-			SetupWatchbusIpmu(session, pmm_params);
-			break;
-		default:
-			ASSERT_TRUE(false);
-			break;
+			printf("PMM setup done, test ip: %s\n", kTestIpName[ip]);
+			switch (ip) {
+			case TEST_IP_NVTHERM:
+				SetupWatchbusNvtherm(session, pmm_params[i]);
+				break;
+			case TEST_IP_IPMU_CORE_0:
+			case TEST_IP_IPMU_CORE_8_2x3:
+				SetupWatchbusIpmu(session, pmm_params[i]);
+				break;
+			default:
+				ASSERT_TRUE(false);
+				break;
+			}
+
+			printf("Watchbus setup done, test ip: %s\n", kTestIpName[ip]);
 		}
-
-		printf("Watchbus setup done\n");
 
 		const char *halt_to_override = getenv("HALT_TO_OVERRIDE");
 		if (halt_to_override && strcmp(halt_to_override, "1") == 0) {
@@ -2433,13 +2485,15 @@ void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
 			getchar();
 		}
 
-		usleep(100000); // 100 milisecond
+		usleep(1000); // 1 milisecond
 
 		TeardownPerfmux(session);
 		printf("Perfmux teardown done\n");
 
-		TeardownPmm(session, pmm_params);
-		printf("PMM teardown done\n");
+		for (size_t i = 0; i < ips.size(); i++) {
+			TeardownPmm(session, pmm_params[i]);
+			printf("PMM teardown done, test ip: %s\n", kTestIpName[ips[i]]);
+		}
 
 		TeardownPma(session);
 		printf("PMA teardown done\n");
@@ -2474,10 +2528,25 @@ void T410Tests::ModeETestUserData(nv_soc_hwpm_resource resource)
 
 TEST_F(T410Tests, SessionStreamoutTestModeEUserDataNvtherm)
 {
-	ModeETestUserData(NV_SOC_HWPM_RESOURCE_NVTHERM);
+	ModeETestUserData({TEST_IP_NVTHERM});
 }
 
 TEST_F(T410Tests, SessionStreamoutTestModeEUserDataIpmu)
 {
-	ModeETestUserData(NV_SOC_HWPM_RESOURCE_CPU);
+	ModeETestUserData({TEST_IP_IPMU_CORE_0});
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEUserDataIpmu_Core8_2x3)
+{
+	ModeETestUserData({TEST_IP_IPMU_CORE_8_2x3});
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEUserDataIpmuNvtherm)
+{
+	ModeETestUserData({TEST_IP_IPMU_CORE_0, TEST_IP_NVTHERM});
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEUserDataIpmuCore0_8_2x3)
+{
+	ModeETestUserData({TEST_IP_IPMU_CORE_0, TEST_IP_IPMU_CORE_8_2x3});
 }
