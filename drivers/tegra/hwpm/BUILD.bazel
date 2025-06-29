@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-only
-# SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 load("//build/kernel/kleaf:kernel.bzl", "kernel_module")
 
@@ -31,7 +31,7 @@ kernel_module(
     ]) + [
         ":headers",
         "//hwpm:hwpm_headers",
-        "//nvidia-oot/scripts/conftest:conftest_headers",
+        "//ootm/nvidia-public/scripts/conftest:conftest_headers",
     ],
 
     outs = [
