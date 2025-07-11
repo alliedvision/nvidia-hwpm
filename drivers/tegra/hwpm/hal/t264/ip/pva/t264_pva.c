@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -223,7 +223,7 @@ static struct hwpm_ip_inst t264_pva_inst_static_array[
 		},
 
 		.element_fs_mask = 0U,
-		.dev_name = "/dev/nvpvadebugfs/pva0/hwpm",
+		.dev_name = "/dev/pvadebugfs/pva0/hwpm",
 	},
 };
 
