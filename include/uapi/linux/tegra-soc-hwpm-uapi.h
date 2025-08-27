@@ -73,6 +73,7 @@ enum tegra_soc_hwpm_ip {
 	TEGRA_SOC_HWPM_IP_SLC_EXT_0,	/* SLC (extended) instance 32-63 */
 	TEGRA_SOC_HWPM_IP_SLC_EXT_1,	/* SLC (extended) instance 64-95 */
 	TEGRA_SOC_HWPM_IP_SLC_EXT_2,	/* SLC (extended) instance 96-127 */
+	TEGRA_SOC_HWPM_IP_PCIE_CXLB,
 	TERGA_SOC_HWPM_NUM_IPS
 };
 
@@ -171,6 +172,7 @@ enum tegra_soc_hwpm_resource {
 	TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_0,	/* SLC (extended) instance 32-63 */
 	TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_1,	/* SLC (extended) instance 64-95 */
 	TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_2,	/* SLC (extended) instance 96-127 */
+	TEGRA_SOC_HWPM_RESOURCE_PCIE_CXLB,
 	TERGA_SOC_HWPM_NUM_RESOURCES
 };
 

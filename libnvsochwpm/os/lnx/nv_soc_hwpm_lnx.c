@@ -146,6 +146,9 @@ static uint32_t get_ip_max_instances(
 			return 32;
 		case NV_SOC_HWPM_IP_SLC_EXT_2:
 			return 2;
+		case NV_SOC_HWPM_IP_PCIE:
+		case NV_SOC_HWPM_IP_PCIE_CXLB:
+			return 6;
 		default:
 			break;
 		}

@@ -2001,6 +2001,284 @@ void T410Tests::SetupWatchbusSlcSccSlice(nv_soc_hwpm_session session, const PmmC
 	}
 }
 
+// TODO: remove hardcoded values
+// Only PCORE-0 is available in FPGA
+#define NV_TLU_PXTS__HWPM__REG0_0 (NV_ADDRESS_MAP_SYSTEM_0_PCORE_0_PCIE_C0_CTL_0_PCORE_PXTL_BASE + 0xf4f0ULL)
+#define NV_TLU_PXTS__HWPM__REG0_0_HWPM__PM_CTRL_SEL0 22:16
+#define NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN 8:8
+#define NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN_ENABLE 0x1
+#define NV_TLU_PXTS__HWPM__REG0_0_HWPM__LINK_MASK 7:0
+
+TEST_F(T410Tests, SessionRegOpsPcieCore)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_PCIE };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_TLU_PXTS__HWPM__REG0_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x1;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_TLU_PXTS__HWPM__REG0_0_HWPM__PM_CTRL_SEL0,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN,
+			NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN_ENABLE);
+		RegOpWrite32(session, NV_TLU_PXTS__HWPM__REG0_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_TLU_PXTS__HWPM__REG0_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+void T410Tests::SetupWatchbusPcieCore(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+{
+	const uint64_t perfmon_base = params.perfmon_base;
+
+	if (params.mode == PmmConfigurationParams::Mode::MODE_C) {
+		// Not supporting mode C testing for now.
+		ASSERT_TRUE(false);
+		return;
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_B) {
+		// PCIE core perfmux.
+		// SIGNAL(name/width/domain/instancetype):--/xtl0.xtl2pm_static_pattern_5555_16/16/xtl0/sys/
+		// ROUTE(index/registers):--/0/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_PXTS__HWPM__REG0_HWPM_XTL_PM_EN/279366188194032/256/256/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_PXTS__HWPM__REG0_HWPM_PM_CTRL_SEL0/279366188194032/786432/8323072/0/0/1/none/
+		// Source: //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		const uint32_t mux_sel = 0xC;
+		const uint32_t channel_perfmux_sel = 0
+			| REG32_WR(
+				0,
+				NV_TLU_PXTS__HWPM__REG0_0_HWPM__PM_CTRL_SEL0,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN,
+				NV_TLU_PXTS__HWPM__REG0_0_HWPM__XTL_PM_EN_ENABLE);
+		RegOpWrite32(session, NV_TLU_PXTS__HWPM__REG0_0, channel_perfmux_sel, 0xFFFFFFFF);
+
+		// Map 16-bit signals onto reduced watchbus by SEL
+		// See above comment, the start of the signal is targeted to watchbus bit 22.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF);  // '5' from 5555
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF);  // '5' from 5555
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x21201F1E, 0xFFFFFFFF);  // '5' from 5555
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x25242322, 0xFFFFFFFF); // '5' from 5555
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E) {
+		// PMA perfmon true bit.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	}
+}
+
+// TODO: remove hardcoded values
+// Only PCORE-0 is available in FPGA
+#define NV_CXL_BRG_PERFMUX_CONTROL_0 (NV_ADDRESS_MAP_SYSTEM_0_PCORE_0_PCIE_C0_CTL_0_CXLBRG_BASE + 0x11660ULL)
+#define NV_CXL_BRG_PERFMUX_CONTROL_0_SEL3 31:24
+#define NV_CXL_BRG_PERFMUX_CONTROL_0_SEL2 23:16
+#define NV_CXL_BRG_PERFMUX_CONTROL_0_SEL1 15:8
+#define NV_CXL_BRG_PERFMUX_CONTROL_0_SEL0 7:0
+
+#define NV_CXL_BRG_PERFMUX_CONTROL1_0 (NV_ADDRESS_MAP_SYSTEM_0_PCORE_0_PCIE_C0_CTL_0_CXLBRG_BASE + 0x11664ULL)
+#define NV_CXL_BRG_PERFMUX_CONTROL1_0_EN 31:31
+#define NV_CXL_BRG_PERFMUX_CONTROL1_0_EN_ENABLE 0x1
+
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0 (NV_ADDRESS_MAP_SYSTEM_0_PCORE_0_PCIE_C0_CTL_0_CXLBRG_BASE + 0x000123e0ULL)
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_EN 31:31
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_EN_ENABLE 0x1
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL3 30:24
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL2 23:16
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL1 15:8
+#define NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL0 7:0
+
+TEST_F(T410Tests, SessionRegOpsPcieCxlb)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_PCIE_CXLB };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_CXL_BRG_PERFMUX_CONTROL_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x1;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_CXL_BRG_PERFMUX_CONTROL_0_SEL0,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_CXL_BRG_PERFMUX_CONTROL_0_SEL1,
+			(mux_sel + 1));
+		RegOpWrite32(session, NV_CXL_BRG_PERFMUX_CONTROL_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_CXL_BRG_PERFMUX_CONTROL_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+void T410Tests::SetupWatchbusPcieCxlb(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+{
+	const uint64_t perfmon_base = params.perfmon_base;
+
+	if (params.mode == PmmConfigurationParams::Mode::MODE_C) {
+		// Not supporting mode C testing for now.
+		ASSERT_TRUE(false);
+		return;
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_B) {
+		// PCIE CXLB perfmux.
+		// SIGNAL(name/width/domain/instancetype):--/cxlbrg0.pm_static_pattern_A_bit0/1/cxlbrg0/sys/
+		// ROUTE(index/registers):--/0/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/22/0/0/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL1_EN/279366189519204/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL_SEL0/279366189519200/99/255/0/0/1/none/
+		// ROUTE(index/registers):--/1/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/26/0/4/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL1_EN/279366189519204/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL_SEL1/279366189519200/25344/65280/0/0/1/none/
+		// ROUTE(index/registers):--/2/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/30/0/8/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL1_EN/279366189519204/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL_SEL2/279366189519200/6488064/16711680/0/0/1/none/
+		// ROUTE(index/registers):--/3/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/34/0/12/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL1_EN/279366189519204/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_PERFMUX_CONTROL_SEL3/279366189519200/1660944384/4278190080/0/0/1/none/
+		// ROUTE(index/registers):--/4/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/38/0/16/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_EN/279366189522656/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_SEL0/279366189522656/1/255/0/0/1/none/
+		// ROUTE(index/registers):--/5/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/42/0/20/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_EN/279366189522656/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_SEL1/279366189522656/256/65280/0/0/1/none/
+		// ROUTE(index/registers):--/6/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/46/0/24/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_EN/279366189522656/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_SEL2/279366189522656/65536/16711680/0/0/1/none/
+		// ROUTE(index/registers):--/7/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/50/0/28/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_EN/279366189522656/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_0_CXL_BRG_LL_PERFMUX_CONTROL_SEL3/279366189522656/16777216/2130706432/0/0/1/none/
+		// Source: //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// See the signal group mapping in https://sc.talos.nvidia.com/serve;file-limit=none/home/tegra_manuals/include_chip/collector/tb500s/dev_nv_cxl_rp_iom.html
+		uint32_t mux_sel = 0x63;
+		uint32_t perfmux_control = 0
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_PERFMUX_CONTROL_0_SEL0,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_PERFMUX_CONTROL_0_SEL1,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_PERFMUX_CONTROL_0_SEL2,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_PERFMUX_CONTROL_0_SEL3,
+				mux_sel);
+		RegOpWrite32(session, NV_CXL_BRG_PERFMUX_CONTROL_0, perfmux_control, 0xFFFFFFFF);
+
+		perfmux_control = 0
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_PERFMUX_CONTROL1_0_EN,
+				NV_CXL_BRG_PERFMUX_CONTROL1_0_EN_ENABLE);
+		RegOpWrite32(session, NV_CXL_BRG_PERFMUX_CONTROL1_0, perfmux_control, 0xFFFFFFFF);
+
+		mux_sel = 0x1;
+		perfmux_control = 0
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL0,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL1,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL2,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_SEL3,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_EN,
+				NV_CXL_BRG_LL_PERFMUX_CONTROL_0_EN_ENABLE);
+		RegOpWrite32(session, NV_CXL_BRG_LL_PERFMUX_CONTROL_0, perfmux_control, 0xFFFFFFFF);
+
+		// Map 16-bit signals onto reduced watchbus by SEL
+		// See above comment, the start of the signal is targeted to watchbus bit 22.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x19181716, 0xFFFFFFFF);  // 'A' from AAAA
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x1D1C1B1A, 0xFFFFFFFF);  // 'A' from AAAA
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x21201F1E, 0xFFFFFFFF);  // 'A' from AAAA
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x25242322, 0xFFFFFFFF); // 'A' from AAAA
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E) {
+		// PMA perfmon true bit.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	}
+}
+
 void T410Tests::TeardownPma(nv_soc_hwpm_session session)
 {
 	// Clear NV_PERF_PMASYS_CHANNEL_STATUS_MEMBUF_STATUS
@@ -2155,6 +2433,20 @@ void T410Tests::InitPmmParams(TestIp resource, PmmConfigurationParams &params)
 		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CSN1_CSN_HWPM_PRI0_BASE;
 		params.expected_sig_val = { 0xa, 0x4, 0xa, 0x0 };
 		break;
+	case TEST_IP_PCIE_CORE:
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/xtl0/perfmon_sys/1056768/524288/NV_PERF_PMMSYS_/0/
+		params.perfmon_idx = 1056768;
+		params.perfmon_base = NV_ADDRESS_MAP_SYSTEM_0_RPG_PM_PCIE_CORE_0_BASE;
+		params.expected_sig_val = { 0x5, 0x5, 0x5, 0x5 };
+		break;
+	case TEST_IP_PCIE_CXLB:
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/cxlbrg0/perfmon_sys/1056769/524288/NV_PERF_PMMSYS_/0/
+		params.perfmon_idx = 1056769;
+		params.perfmon_base = NV_ADDRESS_MAP_SYSTEM_0_RPG_PM_PCIE_CXLBR_0_BASE;
+		params.expected_sig_val = { 0xA, 0xA, 0xA, 0xA };
+		break;
 	default:
 		ASSERT_TRUE(false);
 		break;
@@ -2232,6 +2524,12 @@ void T410Tests::ModeBTest(TestIp resource)
 		case TEST_IP_SLC8_SCC_SLICE:
 			SetupWatchbusSlcSccSlice(session, pmm_params);
 			break;
+		case TEST_IP_PCIE_CORE:
+			SetupWatchbusPcieCore(session, pmm_params);
+			break;
+		case TEST_IP_PCIE_CXLB:
+			SetupWatchbusPcieCxlb(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2294,6 +2592,16 @@ TEST_F(T410Tests, SessionSignalTestIpmuCore8_2x3_Perfmux)
 TEST_F(T410Tests, SessionSignalTestSlcSccSlicePerfmux)
 {
 	ModeBTest(TEST_IP_SLC8_SCC_SLICE);
+}
+
+TEST_F(T410Tests, SessionSignalTestPcieCorePerfmux)
+{
+	ModeBTest(TEST_IP_PCIE_CORE);
+}
+
+TEST_F(T410Tests, SessionSignalTestPcieCxlbPerfmux)
+{
+	ModeBTest(TEST_IP_PCIE_CXLB);
 }
 
 void T410Tests::ModeETest(TestIp resource)
@@ -2409,6 +2717,12 @@ void T410Tests::ModeETest(TestIp resource)
 		case TEST_IP_SLC8_SCC_SLICE:
 			SetupWatchbusSlcSccSlice(session, pmm_params);
 			break;
+		case TEST_IP_PCIE_CORE:
+			SetupWatchbusPcieCore(session, pmm_params);
+			break;
+		case TEST_IP_PCIE_CXLB:
+			SetupWatchbusPcieCxlb(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2505,6 +2819,16 @@ TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu_Core8_2x3)
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingSlcSccSlice)
 {
 	ModeETest(TEST_IP_SLC8_SCC_SLICE);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingPcieCore)
+{
+	ModeETest(TEST_IP_PCIE_CORE);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingPcieCxlb)
+{
+	ModeETest(TEST_IP_PCIE_CXLB);
 }
 
 void T410Tests::ModeETestUserData(std::vector<TestIp> ips)

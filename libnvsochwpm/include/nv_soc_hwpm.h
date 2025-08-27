@@ -84,6 +84,7 @@ typedef enum {
 	NV_SOC_HWPM_IP_SLC_EXT_0,	/* SLC (extended) instance 32-63 */
 	NV_SOC_HWPM_IP_SLC_EXT_1,	/* SLC (extended) instance 64-95 */
 	NV_SOC_HWPM_IP_SLC_EXT_2,	/* SLC (extended) instance 96-127 */
+	NV_SOC_HWPM_IP_PCIE_CXLB,
 	NV_SOC_HWPM_NUM_IPS
 } nv_soc_hwpm_ip;
 
@@ -157,6 +158,7 @@ typedef enum {
 	NV_SOC_HWPM_RESOURCE_SLC_EXT_0,	/* SLC (extended) instance 32-63 */
 	NV_SOC_HWPM_RESOURCE_SLC_EXT_1,	/* SLC (extended) instance 64-95 */
 	NV_SOC_HWPM_RESOURCE_SLC_EXT_2,	/* SLC (extended) instance 96-127 */
+	NV_SOC_HWPM_RESOURCE_PCIE_CXLB,
 	NV_SOC_HWPM_NUM_RESOURCES
 } nv_soc_hwpm_resource;
 

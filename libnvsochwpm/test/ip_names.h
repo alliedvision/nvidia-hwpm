@@ -69,6 +69,7 @@ static const char *kIpNames[NV_SOC_HWPM_NUM_IPS] = {
 	"SLC_EXT_0",
 	"SLC_EXT_1",
 	"SLC_EXT_2",
+	"PCIE_CXLB",
 };
 
 static const char *kResourceNames[NV_SOC_HWPM_NUM_RESOURCES] = {
@@ -123,6 +124,7 @@ static const char *kResourceNames[NV_SOC_HWPM_NUM_RESOURCES] = {
 	"SLC_EXT_0",
 	"SLC_EXT_1",
 	"SLC_EXT_2",
+	"PCIE_CXLB",
 };
 
 #endif // IP_NAMES_H
