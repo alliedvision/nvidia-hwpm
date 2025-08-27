@@ -35,6 +35,7 @@ protected:
 		TEST_IP_CSN,
 		TEST_IP_IPMU_CORE_0,
 		TEST_IP_IPMU_CORE_8_2x3, // For Presilicon
+		TEST_IP_SLC8_SCC_SLICE,
 		kTestIpCount
 	};
 
@@ -108,6 +109,7 @@ protected:
 	void SetupWatchbusNvtherm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void SetupWatchbusCsnMbn(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusSlcSccSlice(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPma(nv_soc_hwpm_session session);
 	void TeardownPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPerfmux(nv_soc_hwpm_session session);

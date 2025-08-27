@@ -168,6 +168,18 @@ static u32 tegra_hwpm_translate_soc_hwpm_ip(struct tegra_soc_hwpm *hwpm,
 	case TEGRA_SOC_HWPM_IP_CSNH:
 		ip_enum_idx = TEGRA_HWPM_IP_CSNH;
 		break;
+	case TEGRA_SOC_HWPM_IP_SLC:
+		ip_enum_idx = TEGRA_HWPM_IP_SLC;
+		break;
+	case TEGRA_SOC_HWPM_IP_SLC_EXT_0:
+		ip_enum_idx = TEGRA_HWPM_IP_SLC_EXT_0;
+		break;
+	case TEGRA_SOC_HWPM_IP_SLC_EXT_1:
+		ip_enum_idx = TEGRA_HWPM_IP_SLC_EXT_1;
+		break;
+	case TEGRA_SOC_HWPM_IP_SLC_EXT_2:
+		ip_enum_idx = TEGRA_HWPM_IP_SLC_EXT_2;
+		break;
 	default:
 		tegra_hwpm_err(hwpm,
 			"Queried enum tegra_soc_hwpm_ip %d is invalid",
@@ -353,6 +365,18 @@ u32 tegra_hwpm_translate_soc_hwpm_resource(struct tegra_soc_hwpm *hwpm,
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_CSNH:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_CSNH;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_SLC:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_SLC;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_0:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_SLC_EXT_0;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_1:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_SLC_EXT_1;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_SLC_EXT_2:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_SLC_EXT_2;
 		break;
 	default:
 		tegra_hwpm_err(hwpm,

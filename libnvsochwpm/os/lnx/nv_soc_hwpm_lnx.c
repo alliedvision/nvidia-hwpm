@@ -138,6 +138,14 @@ static uint32_t get_ip_max_instances(
 			return 10;
 		case NV_SOC_HWPM_IP_CSNH:
 			return 7;
+		case NV_SOC_HWPM_IP_SLC:
+			return 32;
+		case NV_SOC_HWPM_IP_SLC_EXT_0:
+			return 32;
+		case NV_SOC_HWPM_IP_SLC_EXT_1:
+			return 32;
+		case NV_SOC_HWPM_IP_SLC_EXT_2:
+			return 2;
 		default:
 			break;
 		}

@@ -1902,6 +1902,105 @@ void T410Tests::SetupWatchbusIpmu(nv_soc_hwpm_session session, const PmmConfigur
 	}
 }
 
+// TODO: remove hardcoded values
+// Only SLC-8 is available in FPGA
+#define NV_HWPM_SLC8_SCC_SLICE_PERFMUX (NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_SLC8_SCC_SLICE_HWPM_BASE + 0x0ULL)
+#define NV_HWPM_SLC8_SCC_SLICE_ENABLE 31:31
+#define NV_HWPM_SLC8_SCC_SLICE_ENABLE_ENABLE 0x1
+#define NV_HWPM_SLC8_SCC_SLICE_MUX_SEL_1 14:8
+#define NV_HWPM_SLC8_SCC_SLICE_MUX_SEL_0 6:0
+
+TEST_F(T410Tests, SessionRegOpsSlcSccSlice)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_SLC };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_HWPM_SLC8_SCC_SLICE_PERFMUX, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x4;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_HWPM_SLC8_SCC_SLICE_MUX_SEL_1,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_HWPM_SLC8_SCC_SLICE_ENABLE,
+			NV_HWPM_SLC8_SCC_SLICE_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_HWPM_SLC8_SCC_SLICE_PERFMUX, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_HWPM_SLC8_SCC_SLICE_PERFMUX, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+void T410Tests::SetupWatchbusSlcSccSlice(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+{
+	const uint64_t perfmon_base = params.perfmon_base;
+
+	if (params.mode == PmmConfigurationParams::Mode::MODE_C) {
+		// Not supporting mode C testing for now.
+		ASSERT_TRUE(false);
+		return;
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_B) {
+		// SLC SCC SLICE perfmux.
+		// SIGNAL(name/width/domain/instancetype):--/ucfcsnh0p0.slc02pm_static_pattern_a4a_12/12/ucfcsnh0p0/tjv/
+		// ROUTE(index/registers):--/0/2/
+		// DESTINATION(lsb_bitposition/watchbus_readback_index/watchbus_readback_lsb):--/70/1/16/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_SLC0_SCC_SLICE_HWPM_PMC_HWPM_PERF_MUX_0_ENABLE/19927040/2147483648/2147483648/0/0/1/none/
+		// REGWRITE(field/addr/val/mask/chipletoffset/instanceoffset/instancecount/instancetype):--/NV_HWPM_GLOBAL_SLC0_SCC_SLICE_HWPM_PMC_HWPM_PERF_MUX_0_MUX_SEL0/19927040/0/127/0/0/1/none/
+		// Source: //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		const uint32_t mux_sel = 0x0;
+		const uint32_t channel_perfmux_sel = 0
+			| REG32_WR(
+				0,
+				NV_HWPM_SLC8_SCC_SLICE_MUX_SEL_0,
+				mux_sel)
+			| REG32_WR(
+				0,
+				NV_HWPM_SLC8_SCC_SLICE_ENABLE,
+				NV_HWPM_SLC8_SCC_SLICE_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_HWPM_SLC8_SCC_SLICE_PERFMUX, channel_perfmux_sel, 0xFFFFFFFF);
+
+		// Map 16-bit signals onto reduced watchbus by SEL
+		// See above comment, the start of the signal is targeted to watchbus bit 70.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x49484746, 0xFFFFFFFF);  // 'a' from a4a
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x4D4C4B4A, 0xFFFFFFFF);  // '4' from a4a
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x51504F4E, 0xFFFFFFFF);  // 'a' from a4a
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x55545352, 0xFFFFFFFF); // '0' from a4a
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E) {
+		// PMA perfmon true bit.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	}
+}
+
 void T410Tests::TeardownPma(nv_soc_hwpm_session session)
 {
 	// Clear NV_PERF_PMASYS_CHANNEL_STATUS_MEMBUF_STATUS
@@ -2047,6 +2146,15 @@ void T410Tests::InitPmmParams(TestIp resource, PmmConfigurationParams &params)
 		params.expected_sig_val = { 0xa, 0x4, 0xa, 0x4 };
 		params.sub_resource = 8; // core-8
 		break;
+	case TEST_IP_SLC8_SCC_SLICE:
+		// SLC8 is connected to CSN-1 perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ucfcsnh0p0/perfmon_tjv/158720/2097152/NV_PERF_PMMTJV_/-85899345920/
+		// Perfmon domain offset csnh0
+		params.perfmon_idx = 158720;
+		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_MMCTLP_COMP_TYPE_CSN1_CSN_HWPM_PRI0_BASE;
+		params.expected_sig_val = { 0xa, 0x4, 0xa, 0x0 };
+		break;
 	default:
 		ASSERT_TRUE(false);
 		break;
@@ -2121,6 +2229,9 @@ void T410Tests::ModeBTest(TestIp resource)
 		case TEST_IP_IPMU_CORE_8_2x3:
 			SetupWatchbusIpmu(session, pmm_params);
 			break;
+		case TEST_IP_SLC8_SCC_SLICE:
+			SetupWatchbusSlcSccSlice(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2178,6 +2289,11 @@ TEST_F(T410Tests, SessionSignalTestIpmuPerfmux)
 TEST_F(T410Tests, SessionSignalTestIpmuCore8_2x3_Perfmux)
 {
 	ModeBTest(TEST_IP_IPMU_CORE_8_2x3);
+}
+
+TEST_F(T410Tests, SessionSignalTestSlcSccSlicePerfmux)
+{
+	ModeBTest(TEST_IP_SLC8_SCC_SLICE);
 }
 
 void T410Tests::ModeETest(TestIp resource)
@@ -2290,6 +2406,9 @@ void T410Tests::ModeETest(TestIp resource)
 		case TEST_IP_IPMU_CORE_8_2x3:
 			SetupWatchbusIpmu(session, pmm_params);
 			break;
+		case TEST_IP_SLC8_SCC_SLICE:
+			SetupWatchbusSlcSccSlice(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2381,6 +2500,11 @@ TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu)
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingIpmu_Core8_2x3)
 {
 	ModeETest(TEST_IP_IPMU_CORE_8_2x3);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingSlcSccSlice)
+{
+	ModeETest(TEST_IP_SLC8_SCC_SLICE);
 }
 
 void T410Tests::ModeETestUserData(std::vector<TestIp> ips)
