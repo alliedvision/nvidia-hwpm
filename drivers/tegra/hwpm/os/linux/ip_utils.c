@@ -183,6 +183,24 @@ static u32 tegra_hwpm_translate_soc_hwpm_ip(struct tegra_soc_hwpm *hwpm,
 	case TEGRA_SOC_HWPM_IP_PCIE_CXLB:
 		ip_enum_idx = TEGRA_HWPM_IP_PCIE_CXLB;
 		break;
+	case TEGRA_SOC_HWPM_IP_C2C_GRS:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_GRS;
+		break;
+	case TEGRA_SOC_HWPM_IP_C2C_LLIC:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_LLIC;
+		break;
+	case TEGRA_SOC_HWPM_IP_C2C_LLIM:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_LLIM;
+		break;
+	case TEGRA_SOC_HWPM_IP_C2C_LPIC:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_LPIC;
+		break;
+	case TEGRA_SOC_HWPM_IP_C2C_LPIS:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_LPIS;
+		break;
+	case TEGRA_SOC_HWPM_IP_C2C_UPHY:
+		ip_enum_idx = TEGRA_HWPM_IP_C2C_UPHY;
+		break;
 	default:
 		tegra_hwpm_err(hwpm,
 			"Queried enum tegra_soc_hwpm_ip %d is invalid",
@@ -383,6 +401,24 @@ u32 tegra_hwpm_translate_soc_hwpm_resource(struct tegra_soc_hwpm *hwpm,
 		break;
 	case TEGRA_SOC_HWPM_RESOURCE_PCIE_CXLB:
 		res_enum_idx = TEGRA_HWPM_RESOURCE_PCIE_CXLB;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_GRS:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_GRS;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_LLIC:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_LLIC;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_LLIM:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_LLIM;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_LPIC:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_LPIC;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_LPIS:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_LPIS;
+		break;
+	case TEGRA_SOC_HWPM_RESOURCE_C2C_UPHY:
+		res_enum_idx = TEGRA_HWPM_RESOURCE_C2C_UPHY;
 		break;
 	default:
 		tegra_hwpm_err(hwpm,

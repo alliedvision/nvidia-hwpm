@@ -2279,6 +2279,381 @@ void T410Tests::SetupWatchbusPcieCxlb(nv_soc_hwpm_session session, const PmmConf
 	}
 }
 
+// TODO: remove hardcoded values
+#ifndef NV_ADDRESS_MAP_COMPUTE_0_C2C_0_GRP_BASE
+#define NV_ADDRESS_MAP_COMPUTE_0_C2C_0_GRP_BASE NV_ADDRESS_MAP_COMPUTE_0_C2C_0_BASE
+#endif
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_0 (NV_ADDRESS_MAP_COMPUTE_0_C2C_0_GRP_BASE + 0x15ccULL)
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_ACCUM_CLEAR 11:11
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_DIV_4_OR_DIV_8 10:10
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_CG1_SLCG_DISABLED 9:9
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_ENABLE 8:8
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_SEL 7:0
+#define NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_ENABLE_ENABLE 0x1
+
+TEST_F(T410Tests, SessionRegOpsC2CGRS)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_GRS };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x5;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_SEL,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_ENABLE,
+			NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_HWPM_SLC8_SCC_SLICE_PERFMUX, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PC2C_C2CS0_LINK_TL_L2_PM_CTRL_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+// TODO: remove hardcoded values
+#ifndef NV_ADDRESS_MAP_COMPUTE_0_CTCLLI_0_GRP_BASE
+#define NV_ADDRESS_MAP_COMPUTE_0_CTCLLI_0_GRP_BASE NV_ADDRESS_MAP_COMPUTE_0_CTCLLI_0_BASE
+#endif
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_0 (NV_ADDRESS_MAP_COMPUTE_0_CTCLLI_0_GRP_BASE + 0x30ULL)
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_ENABLE 25:25
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX4 24:20
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX3 19:15
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX2 14:10
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX1 9:5
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX0 4:0
+#define NV_PCTCLLI_CTCLLI_MISC_L1_PMA_ENABLE_ENABLE 0x1
+
+TEST_F(T410Tests, SessionRegOpsC2CLLIC)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_LLIC };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PCTCLLI_CTCLLI_MISC_L1_PMA_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x6;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PCTCLLI_CTCLLI_MISC_L1_PMA_SEL_MUX1,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PCTCLLI_CTCLLI_MISC_L1_PMA_ENABLE,
+			NV_PCTCLLI_CTCLLI_MISC_L1_PMA_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_PCTCLLI_CTCLLI_MISC_L1_PMA_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PCTCLLI_CTCLLI_MISC_L1_PMA_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+// TODO: remove hardcoded values
+#ifndef NV_ADDRESS_MAP_MEM_0_CTCLLI_0_GRP_BASE
+#define NV_ADDRESS_MAP_MEM_0_CTCLLI_0_GRP_BASE NV_ADDRESS_MAP_MEM_0_CTCLLI_0_BASE
+#endif
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_0 (NV_ADDRESS_MAP_MEM_0_CTCLLI_0_GRP_BASE + 0x3ccULL)
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_ACCUM_CLEAR 11:11
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_DIV_4_OR_DIV_8 10:10
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_CG1_SLCG_DISABLED 9:9
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_ENABLE 8:8
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_SEL 7:0
+#define NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_ENABLE_ENABLE 0x1
+
+TEST_F(T410Tests, SessionRegOpsC2CLLIM)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_LLIM };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x8;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_SEL,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_ENABLE,
+			NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_ENABLE_ENABLE);
+		RegOpWrite32(session, NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PCTCLLI_CTCLLI_LINK_TL_L2_PM_CTRL_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+// TODO: remove hardcoded values
+#ifndef NV_ADDRESS_MAP_COMPUTE_0_CTCLPI_0_GRP_BASE
+#define NV_ADDRESS_MAP_COMPUTE_0_CTCLPI_0_GRP_BASE NV_ADDRESS_MAP_COMPUTE_0_CTCLPI_0_BASE
+#endif
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_0 (NV_ADDRESS_MAP_COMPUTE_0_CTCLPI_0_GRP_BASE + 0x248ULL)
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX7 31:24
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX6 23:16
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX5 15:8
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX4 7:0
+
+TEST_F(T410Tests, SessionRegOpsC2CLPIC)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_LPIC };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x7;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX7,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_SEL_MUX4,
+			mux_sel);
+		RegOpWrite32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL1_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+// TODO: remove hardcoded values
+#ifndef NV_ADDRESS_MAP_SYSTEM_0_CTCLPI_0_GRP_BASE
+#define NV_ADDRESS_MAP_SYSTEM_0_CTCLPI_0_GRP_BASE NV_ADDRESS_MAP_SYSTEM_0_CTCLPI_0_BASE
+#endif
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_0 (NV_ADDRESS_MAP_SYSTEM_0_CTCLPI_0_GRP_BASE + 0x24CULL)
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUXB 31:24
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUXA 23:16
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUX9 15:8
+#define NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUX8 7:0
+
+TEST_F(T410Tests, SessionRegOpsC2CLPIS)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_LPIS };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0x9;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUX9,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_SEL_MUXA,
+			mux_sel);
+		RegOpWrite32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PCTCLPI_CTCLPIS_LINK_TL_L2_PM_CTRL2_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+// TODO: remove hardcoded values
+#define NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_0 (NV_ADDRESS_MAP_SYSTEM_0_PCIEHUB_0_CTCUPHY_0_BASE + 0x14CULL)
+#define NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXF 31:24
+#define NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXE 23:16
+#define NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXD 15:8
+#define NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXC 7:0
+
+TEST_F(T410Tests, SessionRegOpsC2CUPHY)
+{
+	uint32_t i, channel_perfmux_sel;
+	nv_soc_hwpm_device dev;
+	nv_soc_hwpm_session session;
+	nv_soc_hwpm_resource res_ids[1] = { NV_SOC_HWPM_RESOURCE_C2C_UPHY };
+
+	GetDevices();
+
+	for (i = 0; i < t410_dev_count; i++) {
+		printf("Device %d:\n", i);
+		dev = t410_dev[i];
+
+		// Allocate session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_alloc_fn(dev, &session));
+
+		// Reserve resource.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_reserve_resources_fn(session, 1, res_ids));
+
+		// Start session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_start_fn(session));
+
+		// The perfmux value should be initialized to 0.
+		RegOpRead32(session, NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_0, &channel_perfmux_sel);
+		EXPECT_EQ(0x0U, channel_perfmux_sel);
+
+		// Set the perfmux to an arbitrary value.
+		const uint32_t mux_sel = 0xa;
+		const uint32_t write_val = 0
+		| REG32_WR(
+			0,
+			NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXC,
+			mux_sel)
+		| REG32_WR(
+			0,
+			NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_SEL_MUXD,
+			mux_sel);
+		RegOpWrite32(session, NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_0, write_val, 0xFFFFFFFF);
+
+		// Read back the perfmux value.
+		RegOpRead32(session, NV_PCTCUPHY_CTCUPHYS_LINK_TL_L2_PM_CTRL3_0, &channel_perfmux_sel);
+		EXPECT_EQ(write_val, channel_perfmux_sel);
+
+		// Free session.
+		ASSERT_EQ(0, api_table.nv_soc_hwpm_session_free_fn(session));
+	}
+}
+
+void T410Tests::SetupWatchbusC2C(nv_soc_hwpm_session session, const PmmConfigurationParams& params)
+{
+	const uint64_t perfmon_base = params.perfmon_base;
+
+	if (params.mode == PmmConfigurationParams::Mode::MODE_C) {
+		// Not supporting mode C testing for now.
+		ASSERT_TRUE(false);
+		return;
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_B) {
+		// TODO: the guide doesnt say the pattern so we dont know the expected value out of this perfmux.
+		// Skip it for now.
+		printf("C2C static pattern value is unknown, skipping C2C perfmux setup for now.\n");
+		ASSERT_TRUE(false);
+		return;
+	} else if (params.mode == PmmConfigurationParams::Mode::MODE_E) {
+		// PMA perfmon true bit.
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG0_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, TRIG1_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, EVENT_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+		RegOpWrite32(session, PM_ADDR(PMMSYS, SAMPLE_SEL, perfmon_base), 0x0, 0xFFFFFFFF);
+	}
+}
+
 void T410Tests::TeardownPma(nv_soc_hwpm_session session)
 {
 	// Clear NV_PERF_PMASYS_CHANNEL_STATUS_MEMBUF_STATUS
@@ -2447,6 +2822,54 @@ void T410Tests::InitPmmParams(TestIp resource, PmmConfigurationParams &params)
 		params.perfmon_base = NV_ADDRESS_MAP_SYSTEM_0_RPG_PM_PCIE_CXLBR_0_BASE;
 		params.expected_sig_val = { 0xA, 0xA, 0xA, 0xA };
 		break;
+	case TEST_IP_C2C_GRS:
+		// C2C GRS perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctctjva0/perfmon_tjv/42/2097152/NV_PERF_PMMTJV_/-85899345920/
+		// Perfmon domain offset C2C GRS perfmon0
+		params.perfmon_idx = 42;
+		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_RPG_PM_CTCGRS_0_BASE;
+		break;
+	case TEST_IP_C2C_LLIC:
+		// C2C LLI in Compute Die perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctcllitjva0/perfmon_tjv/50/2097152/NV_PERF_PMMTJV_/-85899345920/
+		// Perfmon domain offset C2C LLIC perfmon0
+		params.perfmon_idx = 50;
+		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_RPG_PM_CTCLLI_0_BASE;
+		break;
+	case TEST_IP_C2C_LLIM:
+		// C2C LLI in Memory Die perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctcllitjua0/perfmon_tju/0/17179869184/NV_PERF_PMMTJU_/-68719476736/
+		// Perfmon domain offset C2C LLIM perfmon0
+		params.perfmon_idx = 0;
+		params.perfmon_base = NV_ADDRESS_MAP_MEM_0_RPG_PM_C2CLLI_0_BASE;
+		break;
+	case TEST_IP_C2C_LPIC:
+		// C2C LPI in Compute Die perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctclpitjva0/perfmon_tjv/46/2097152/NV_PERF_PMMTJV_/-85899345920/
+		// Perfmon domain offset C2C LPIC perfmon0
+		params.perfmon_idx = 46;
+		params.perfmon_base = NV_ADDRESS_MAP_COMPUTE_0_RPG_PM_CTCLPI_0_BASE;
+		break;
+	case TEST_IP_C2C_LPIS:
+		// C2C LPI in System Die perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctclpisysa0/perfmon_sys/1048608/524288/NV_PERF_PMMSYS_/0/
+		// Perfmon domain offset C2C LPIS perfmon0
+		params.perfmon_idx = 1048608;
+		params.perfmon_base = NV_ADDRESS_MAP_SYSTEM_0_RPG_PM_CTCLPI_0_BASE;
+		break;
+	case TEST_IP_C2C_UPHY:
+		// C2C UPHY perfmon.
+		// From //hw/nvmobile_tb50x/ip/perf/hwpm_soc/2.2/dvlib/specs/src_tb500/pm_programming_guide.txt
+		// PERFMON(domainame/chiplet/index/chipletoffset/regprefix/offsetfromPMMSYS):--/ctcuphysys0/perfmon_sys/1051051/524288/NV_PERF_PMMSYS_/0/
+		// Perfmon domain offset C2C UPHY perfmon0
+		params.perfmon_idx = 1051051;
+		params.perfmon_base = NV_ADDRESS_MAP_SYSTEM_0_RPG_PM_CTCUPHY_0_BASE;
+		break;
 	default:
 		ASSERT_TRUE(false);
 		break;
@@ -2530,6 +2953,14 @@ void T410Tests::ModeBTest(TestIp resource)
 		case TEST_IP_PCIE_CXLB:
 			SetupWatchbusPcieCxlb(session, pmm_params);
 			break;
+		case TEST_IP_C2C_GRS:
+		case TEST_IP_C2C_LLIC:
+		case TEST_IP_C2C_LLIM:
+		case TEST_IP_C2C_LPIC:
+		case TEST_IP_C2C_LPIS:
+		case TEST_IP_C2C_UPHY:
+			SetupWatchbusC2C(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2602,6 +3033,36 @@ TEST_F(T410Tests, SessionSignalTestPcieCorePerfmux)
 TEST_F(T410Tests, SessionSignalTestPcieCxlbPerfmux)
 {
 	ModeBTest(TEST_IP_PCIE_CXLB);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CGRSPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_GRS);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CLLICPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_LLIC);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CLLIMPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_LLIM);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CLPICPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_LPIC);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CLPISPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_LPIS);
+}
+
+TEST_F(T410Tests, SessionSignalTestC2CUPHYPerfmux)
+{
+	ModeBTest(TEST_IP_C2C_UPHY);
 }
 
 void T410Tests::ModeETest(TestIp resource)
@@ -2723,6 +3184,14 @@ void T410Tests::ModeETest(TestIp resource)
 		case TEST_IP_PCIE_CXLB:
 			SetupWatchbusPcieCxlb(session, pmm_params);
 			break;
+		case TEST_IP_C2C_GRS:
+		case TEST_IP_C2C_LLIC:
+		case TEST_IP_C2C_LLIM:
+		case TEST_IP_C2C_LPIC:
+		case TEST_IP_C2C_LPIS:
+		case TEST_IP_C2C_UPHY:
+			SetupWatchbusC2C(session, pmm_params);
+			break;
 		default:
 			ASSERT_TRUE(false);
 			break;
@@ -2829,6 +3298,36 @@ TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingPcieCore)
 TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingPcieCxlb)
 {
 	ModeETest(TEST_IP_PCIE_CXLB);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CGRS)
+{
+	ModeETest(TEST_IP_C2C_GRS);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CLLIC)
+{
+	ModeETest(TEST_IP_C2C_LLIC);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CLLIM)
+{
+	ModeETest(TEST_IP_C2C_LLIM);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CLPIC)
+{
+	ModeETest(TEST_IP_C2C_LPIC);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CLPIS)
+{
+	ModeETest(TEST_IP_C2C_LPIS);
+}
+
+TEST_F(T410Tests, SessionStreamoutTestModeEBasicStreamingC2CUPHY)
+{
+	ModeETest(TEST_IP_C2C_UPHY);
 }
 
 void T410Tests::ModeETestUserData(std::vector<TestIp> ips)

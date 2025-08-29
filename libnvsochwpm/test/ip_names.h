@@ -70,6 +70,12 @@ static const char *kIpNames[NV_SOC_HWPM_NUM_IPS] = {
 	"SLC_EXT_1",
 	"SLC_EXT_2",
 	"PCIE_CXLB",
+	"C2C_GRS",
+	"C2C_LLIC",
+	"C2C_LLIM",
+	"C2C_LPIC",
+	"C2C_LPIS",
+	"C2C_UPHY",
 };
 
 static const char *kResourceNames[NV_SOC_HWPM_NUM_RESOURCES] = {
@@ -125,6 +131,12 @@ static const char *kResourceNames[NV_SOC_HWPM_NUM_RESOURCES] = {
 	"SLC_EXT_1",
 	"SLC_EXT_2",
 	"PCIE_CXLB",
+	"C2C_GRS",
+	"C2C_LLIC",
+	"C2C_LLIM",
+	"C2C_LPIC",
+	"C2C_LPIS",
+	"C2C_UPHY",
 };
 
 #endif // IP_NAMES_H

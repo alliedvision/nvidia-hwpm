@@ -38,6 +38,12 @@ protected:
 		TEST_IP_SLC8_SCC_SLICE,
 		TEST_IP_PCIE_CORE,
 		TEST_IP_PCIE_CXLB,
+		TEST_IP_C2C_GRS,
+		TEST_IP_C2C_LLIC,
+		TEST_IP_C2C_LLIM,
+		TEST_IP_C2C_LPIC,
+		TEST_IP_C2C_LPIS,
+		TEST_IP_C2C_UPHY,
 		kTestIpCount
 	};
 
@@ -114,6 +120,7 @@ protected:
 	void SetupWatchbusSlcSccSlice(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void SetupWatchbusPcieCore(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void SetupWatchbusPcieCxlb(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
+	void SetupWatchbusC2C(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPma(nv_soc_hwpm_session session);
 	void TeardownPmm(nv_soc_hwpm_session session, const PmmConfigurationParams &params);
 	void TeardownPerfmux(nv_soc_hwpm_session session);

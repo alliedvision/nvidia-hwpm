@@ -149,6 +149,18 @@ static uint32_t get_ip_max_instances(
 		case NV_SOC_HWPM_IP_PCIE:
 		case NV_SOC_HWPM_IP_PCIE_CXLB:
 			return 6;
+		case NV_SOC_HWPM_IP_C2C_GRS:
+			return 2;
+		case NV_SOC_HWPM_IP_C2C_LLIC:
+			return 8;
+		case NV_SOC_HWPM_IP_C2C_LLIM:
+			return 4;
+		case NV_SOC_HWPM_IP_C2C_LPIC:
+			return 2;
+		case NV_SOC_HWPM_IP_C2C_LPIS:
+			return 2;
+		case NV_SOC_HWPM_IP_C2C_UPHY:
+			return 6;
 		default:
 			break;
 		}
